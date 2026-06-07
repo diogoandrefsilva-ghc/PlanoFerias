@@ -53,6 +53,7 @@ header{padding:10px 0 4px}
 .brand{display:flex;align-items:center;gap:8px;background:rgba(255,253,248,.78);backdrop-filter:blur(5px);
   padding:6px 13px 6px 7px;border-radius:12px;border:1px solid rgba(21,48,42,.08);pointer-events:auto}
 .brand h1{font-size:16px;line-height:1}
+.brand .sunlogo{width:26px!important;height:26px!important;flex:none;display:block}
 .scene-top .statepill{margin-left:auto;pointer-events:auto;background:rgba(255,253,248,.82);backdrop-filter:blur(5px)}
 
 /* HERO */
@@ -328,12 +329,13 @@ td.datecell{white-space:nowrap;font-variant-numeric:tabular-nums;width:1%;font-w
       </svg>
       <div class="scene-top">
         <div class="brand">
-          <div class="dot">
-            <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="5.2" fill="#fff"/>
-              <g stroke="#fff" stroke-width="1.7" stroke-linecap="round">
+          <svg class="sunlogo" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="5.2" fill="#F0A93A"/>
+            <g stroke="#F0A93A" stroke-width="1.9" stroke-linecap="round">
               <path d="M12 2.4v2.6"/><path d="M12 19v2.6"/><path d="M2.4 12h2.6"/><path d="M19 12h2.6"/>
-              <path d="M5 5l1.9 1.9"/><path d="M17.1 17.1L19 19"/><path d="M19 5l-1.9 1.9"/><path d="M6.9 17.1L5 19"/></g></svg>
-          </div>
+              <path d="M5 5l1.9 1.9"/><path d="M17.1 17.1L19 19"/><path d="M19 5l-1.9 1.9"/><path d="M6.9 17.1L5 19"/>
+            </g>
+          </svg>
           <h1 id="appTitle">Plano de Férias</h1>
         </div>
         <div class="statepill" id="statePill"><span class="led"></span><span id="stateTxt">Local</span></div>
@@ -537,9 +539,6 @@ td.datecell{white-space:nowrap;font-variant-numeric:tabular-nums;width:1%;font-w
     </div>
 
     <input type="file" id="fileInput" accept="application/json" style="display:none">
-    <p class="muted" style="font-size:12px;text-align:center;margin-top:18px;line-height:1.6">
-      Dados guardados localmente no browser. Sincronização via API GitHub Contents (escrita) e leitura autenticada/raw.<br>
-      Não sou consultor financeiro — isto é só uma ferramenta de previsão.</p>
   </section>
 </div>
 
