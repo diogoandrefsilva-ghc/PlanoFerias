@@ -145,7 +145,8 @@ td.valcell .saldo{display:block;font-size:11px;color:var(--ink3);font-weight:500
   color:var(--ink2);padding:6px 14px}
 td.datecell{white-space:nowrap;font-variant-numeric:tabular-nums;width:1%;font-weight:600;font-size:12.5px}
 .tcell{margin-top:4px}
-.tcell .chip{font-size:9.5px;padding:2px 6px}
+.tcell .chip{font-size:9px;padding:1px 6px}
+.tcell .tag-auto{font-size:8.5px;padding:1px 6px;margin-left:5px}
 
 /* BUTTONS */
 .btn{display:inline-flex;align-items:center;gap:7px;font-size:13.5px;font-weight:600;padding:9px 15px;border-radius:11px;
@@ -179,7 +180,10 @@ td.datecell{white-space:nowrap;font-variant-numeric:tabular-nums;width:1%;font-w
 .field input,.field select,.field textarea{width:100%;font-family:inherit;font-size:16px;height:50px;line-height:1.2;
   padding:0 14px;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);
   box-sizing:border-box;-webkit-appearance:none;appearance:none;text-align:left;margin:0;display:block;vertical-align:top}
-.field input[type=date]{-webkit-appearance:none;appearance:none;min-height:50px}
+.field input[type=date]{-webkit-appearance:none;appearance:none;min-height:50px;text-align:left}
+.field input[type=date]::-webkit-date-and-time-value{text-align:left;margin:0}
+.field input[type=date]::-webkit-datetime-edit{text-align:left;padding:0}
+.field input[type=date]::-webkit-calendar-picker-indicator{margin-left:auto}
 .field textarea{height:auto;min-height:90px;padding:12px 14px;line-height:1.45}
 .field input:focus,.field select:focus{outline:none;border-color:var(--diogo)}
 .seg{display:flex;gap:6px;flex-wrap:wrap}
@@ -229,6 +233,13 @@ td.datecell{white-space:nowrap;font-variant-numeric:tabular-nums;width:1%;font-w
 .simitem .ic.dep{background:var(--posBg);color:var(--pos)} .simitem .ic.men{background:var(--diogoBg);color:var(--diogo)}
 .simitem .t{flex:1}.simitem .t b{font-size:14px}.simitem .t span{display:block;font-size:12px;color:var(--ink3)}
 
+/* ACCORDION DEFINIÇÕES */
+.acc-hdr{display:flex;align-items:center;gap:10px;margin:14px 2px 0;cursor:pointer;user-select:none;-webkit-user-select:none}
+.acc-hdr h2{font-size:19px}.acc-hdr h3{font-size:15px}
+.acc-hdr .ln{flex:1;height:1px;background:var(--line)}
+.acc-hdr .arr{font-size:13px;color:var(--ink3);transition:transform .2s;flex:none}
+.acc-hdr.open .arr{transform:rotate(180deg)}
+.acc-body{display:none}.acc-body.open{display:block}
 /* DEFINIÇÕES */
 .deflist{padding:6px 4px}
 .defrow{display:flex;gap:12px;align-items:center;padding:14px 16px;border-bottom:1px solid var(--line2)}
@@ -332,10 +343,10 @@ td.datecell{white-space:nowrap;font-variant-numeric:tabular-nums;width:1%;font-w
   <nav class="tabs" id="tabs">
     <button data-tab="resumo" class="active">Resumo</button>
     <button data-tab="movimentos">Movimentos</button>
+    <button data-tab="penas">Edenred Penas</button>
     <button data-tab="evolucao">Evolução</button>
     <button data-tab="simulacao">Simulação</button>
     <button data-tab="reforcos">Reforços</button>
-    <button data-tab="penas">Edenred Penas</button>
     <button data-tab="definicoes">Definições</button>
   </nav>
 
@@ -365,7 +376,7 @@ td.datecell{white-space:nowrap;font-variant-numeric:tabular-nums;width:1%;font-w
     <div class="tablewrap">
       <table id="movTable">
         <thead><tr>
-          <th>Data</th><th>Descrição</th><th class="r">Valor / Saldo</th>
+          <th>Data</th><th>Descrição</th><th class="r">Valor<div style="font-size:9px;font-weight:500;text-transform:none;letter-spacing:0;opacity:.7;margin-top:1px">Saldo</div></th>
         </tr></thead>
         <tbody id="movBody"></tbody>
       </table>
@@ -460,7 +471,7 @@ td.datecell{white-space:nowrap;font-variant-numeric:tabular-nums;width:1%;font-w
       <button class="btn sm" id="btnPastPena">Mostrar anteriores</button>
     </div>
     <div class="tablewrap">
-      <table><thead><tr><th>Data</th><th>Descrição</th><th class="r">Valor / Saldo</th></tr></thead>
+      <table><thead><tr><th>Data</th><th>Descrição</th><th class="r">Valor<div style="font-size:9px;font-weight:500;text-transform:none;letter-spacing:0;opacity:.7;margin-top:1px">Saldo</div></th></tr></thead>
       <tbody id="penaBody"></tbody></table>
     </div>
     <p class="hint" style="margin:10px 4px">Toca num movimento para o editar ou eliminar. Numa saída, parte sai do Edenred e o restante da conta de férias (gera lá uma despesa automática). O Edenred nunca fica negativo e a app evita parcelas inferiores a 10 € de qualquer dos lados.</p>
@@ -468,54 +479,62 @@ td.datecell{white-space:nowrap;font-variant-numeric:tabular-nums;width:1%;font-w
 
   <!-- DEFINIÇÕES -->
   <section class="panel" id="p-definicoes">
-    <div class="section-title"><h2>Poupança mensal</h2><div class="ln"></div></div>
-    <div class="card deflist">
-      <div class="defrow"><div class="t"><b>Plano ativo</b><span>Gera contribuições mensais no forecast</span></div>
-        <div class="tg" id="tgPlano"></div></div>
-      <div class="defrow"><div class="t"><b>Prolongar até</b><span>Último mês com poupança mensal</span></div>
-        <input type="month" class="miniinput" id="planoAte"></div>
-      <div class="defrow"><div class="t"><b>Dia do mês</b><span>Dia em que entra a poupança</span></div>
-        <input type="number" min="1" max="28" class="miniinput" style="width:80px" id="planoDia"></div>
-    </div>
-    <div class="section-title" style="margin-top:14px"><h3 style="font-size:15px">Valores (55 / 45)</h3><div class="ln"></div>
-      <button class="btn sm ro-hideable" id="btnAddSeg">+ Alteração</button></div>
-    <div class="card" id="segList" style="padding:2px 4px"></div>
-    <p class="hint" style="margin:8px 4px">Cada linha define o valor mensal total a partir de um mês. O total é dividido 55% Diogo / 45% Margarida.</p>
 
-    <div class="section-title"><h2>Conta</h2><div class="ln"></div></div>
-    <div class="card deflist">
-      <div class="defrow"><div class="t"><b>Título</b></div><input class="miniinput" style="width:200px" id="setTitulo"></div>
-      <div class="defrow"><div class="t"><b>Saldo inicial</b><span id="setDataInfo"></span></div>
-        <input type="number" step="0.01" class="miniinput" style="width:120px" id="setSaldoIni"></div>
-      <div class="defrow"><div class="t"><b>Data inicial</b></div>
-        <input type="date" class="miniinput" id="setDataIni"></div>
-      <div class="defrow"><div class="t"><b>Proporção de reforço</b><span>Diogo / Margarida</span></div>
-        <div class="splitline"><input type="number" class="miniinput" id="setSplitD" min="0" max="100"><span class="muted">/</span><input type="number" class="miniinput" id="setSplitM" min="0" max="100" disabled></div></div>
-      <div class="defrow"><div class="t"><b>Saldo de segurança</b><span>Buffer mínimo por defeito</span></div>
-        <input type="number" step="50" class="miniinput" style="width:120px" id="setBuffer"></div>
+    <div class="acc-hdr" id="acc-poupanca"><h2>Poupança mensal</h2><div class="ln"></div><span class="arr">▾</span></div>
+    <div class="acc-body" id="accb-poupanca">
+      <div class="card deflist" style="margin-top:12px">
+        <div class="defrow"><div class="t"><b>Plano ativo</b><span>Gera contribuições mensais no forecast</span></div>
+          <div class="tg" id="tgPlano"></div></div>
+        <div class="defrow"><div class="t"><b>Prolongar até</b><span>Último mês com poupança mensal</span></div>
+          <input type="month" class="miniinput" id="planoAte"></div>
+        <div class="defrow"><div class="t"><b>Dia do mês</b><span>Dia em que entra a poupança</span></div>
+          <input type="number" min="1" max="28" class="miniinput" style="width:80px" id="planoDia"></div>
+      </div>
+      <div class="section-title" style="margin-top:14px"><h3 style="font-size:15px">Valores (55 / 45)</h3><div class="ln"></div>
+        <button class="btn sm ro-hideable" id="btnAddSeg">+ Alteração</button></div>
+      <div class="card" id="segList" style="padding:2px 4px"></div>
+      <p class="hint" style="margin:8px 4px">Cada linha define o valor mensal total a partir de um mês. O total é dividido 55% Diogo / 45% Margarida.</p>
     </div>
 
-    <div class="section-title"><h2>Sincronização (GitHub)</h2><div class="ln"></div></div>
-    <div class="card deflist">
-      <div class="defrow"><div class="t"><b>Owner</b></div><input class="miniinput" style="width:200px" id="ghOwner"></div>
-      <div class="defrow"><div class="t"><b>Repositório</b></div><input class="miniinput" style="width:200px" id="ghRepo"></div>
-      <div class="defrow"><div class="t"><b>Ficheiro (path)</b></div><input class="miniinput" style="width:200px" id="ghPath"></div>
-      <div class="defrow"><div class="t"><b>Branch</b></div><input class="miniinput" style="width:120px" id="ghBranch"></div>
-      <div class="defrow"><div class="t"><b>Token (PAT)</b><span>Fica só neste browser. Usa um token de curta duração.</span></div>
-        <input class="miniinput" type="password" style="width:200px" id="ghToken" placeholder="ghp_…"></div>
-      <div class="defrow"><div class="t"><b>Guardar token neste browser</b></div><div class="tg" id="tgSaveTok"></div></div>
-      <div class="defrow"><div class="t"><b>Modo só-leitura</b><span>Esconde edição (para partilhar via Pages)</span></div>
-        <div class="tg" id="tgRO"></div></div>
+    <div class="acc-hdr" id="acc-conta"><h2>Conta</h2><div class="ln"></div><span class="arr">▾</span></div>
+    <div class="acc-body" id="accb-conta">
+      <div class="card deflist" style="margin-top:12px">
+        <div class="defrow"><div class="t"><b>Título</b></div><input class="miniinput" style="width:200px" id="setTitulo"></div>
+        <div class="defrow"><div class="t"><b>Saldo inicial</b><span id="setDataInfo"></span></div>
+          <input type="number" step="0.01" class="miniinput" style="width:120px" id="setSaldoIni"></div>
+        <div class="defrow"><div class="t"><b>Data inicial</b></div>
+          <input type="date" class="miniinput" id="setDataIni"></div>
+        <div class="defrow"><div class="t"><b>Proporção de reforço</b><span>Diogo / Margarida</span></div>
+          <div class="splitline"><input type="number" class="miniinput" id="setSplitD" min="0" max="100"><span class="muted">/</span><input type="number" class="miniinput" id="setSplitM" min="0" max="100" disabled></div></div>
+        <div class="defrow"><div class="t"><b>Saldo de segurança</b><span>Buffer mínimo por defeito</span></div>
+          <input type="number" step="50" class="miniinput" style="width:120px" id="setBuffer"></div>
+      </div>
     </div>
-    <div class="grid g2" style="margin-top:14px">
-      <button class="btn primary full ro-hideable" id="btnPush">☁︎ Guardar na nuvem</button>
-      <button class="btn full" id="btnPull">⤓ Recarregar da nuvem</button>
+
+    <div class="acc-hdr" id="acc-github"><h2>Sincronização (GitHub)</h2><div class="ln"></div><span class="arr">▾</span></div>
+    <div class="acc-body" id="accb-github">
+      <div class="card deflist" style="margin-top:12px">
+        <div class="defrow"><div class="t"><b>Owner</b></div><input class="miniinput" style="width:200px" id="ghOwner"></div>
+        <div class="defrow"><div class="t"><b>Repositório</b></div><input class="miniinput" style="width:200px" id="ghRepo"></div>
+        <div class="defrow"><div class="t"><b>Ficheiro (path)</b></div><input class="miniinput" style="width:200px" id="ghPath"></div>
+        <div class="defrow"><div class="t"><b>Branch</b></div><input class="miniinput" style="width:120px" id="ghBranch"></div>
+        <div class="defrow"><div class="t"><b>Token (PAT)</b><span>Fica só neste browser. Usa um token de curta duração.</span></div>
+          <input class="miniinput" type="password" style="width:200px" id="ghToken" placeholder="ghp_…"></div>
+        <div class="defrow"><div class="t"><b>Guardar token neste browser</b></div><div class="tg" id="tgSaveTok"></div></div>
+        <div class="defrow"><div class="t"><b>Modo só-leitura</b><span>Esconde edição (para partilhar via Pages)</span></div>
+          <div class="tg" id="tgRO"></div></div>
+      </div>
+      <div class="grid g2" style="margin-top:14px">
+        <button class="btn primary full ro-hideable" id="btnPush">☁︎ Guardar na nuvem</button>
+        <button class="btn full" id="btnPull">⤓ Recarregar da nuvem</button>
+      </div>
+      <div class="grid g3" style="margin-top:10px">
+        <button class="btn full" id="btnExport">Exportar JSON</button>
+        <button class="btn full ro-hideable" id="btnImport">Importar JSON</button>
+        <button class="btn full ro-hideable" id="btnReset">Repor exemplo</button>
+      </div>
     </div>
-    <div class="grid g3" style="margin-top:10px">
-      <button class="btn full" id="btnExport">Exportar JSON</button>
-      <button class="btn full ro-hideable" id="btnImport">Importar JSON</button>
-      <button class="btn full ro-hideable" id="btnReset">Repor exemplo</button>
-    </div>
+
     <input type="file" id="fileInput" accept="application/json" style="display:none">
     <p class="muted" style="font-size:12px;text-align:center;margin-top:18px;line-height:1.6">
       Dados guardados localmente no browser. Sincronização via API GitHub Contents (escrita) e leitura autenticada/raw.<br>
@@ -733,12 +752,12 @@ function renderMov(){
     const mo=m.data.slice(0,7);
     if(mo!==lastM){lastM=mo;html+='<tr class="divider-month"><td colspan="3">'+fmtMesAno(m.data)+'</td></tr>';}
     const fut=m.data>t,pos=m.valor>=0;
-    const chip=m.tipo==='contribuicao'?'<span class="chip contrib">Contrib.</span>':m.tipo==='receita'?'<span class="chip receita">Receita</span>':'<span class="chip despesa">Despesa</span>';
+    const chip=m.tipo==='contribuicao'?'<span class="chip contrib">Contribuição</span>':m.tipo==='receita'?'<span class="chip receita">Receita</span>':'<span class="chip despesa">Despesa</span>';
     const isMin=m.data===minData&&m.saldo===minSaldo;
     const editable=!m.auto&&!RO;
     html+='<tr class="'+(fut?'future ':'')+(isMin?'minrow ':'')+(m.auto?'autorow ':'')+'"'+(editable?' data-edit="'+m.id+'"':'')+'>'
-      +'<td class="datecell">'+fmtDayMonth(m.data)+'<div class="tcell">'+chip+'</div></td>'
-      +'<td class="desccell"><b>'+esc(m.descricao)+(m.auto?' <span class="tag-auto">auto</span>':'')+'</b></td>'
+      +'<td class="datecell">'+fmtDayMonth(m.data)+'</td>'
+      +'<td class="desccell"><b>'+esc(m.descricao)+'</b><div class="tcell">'+chip+(m.auto?' <span class="tag-auto">auto</span>':'')+'</div></td>'
       +'<td class="r valcell"><span class="val num '+(pos?'pos':'neg')+'">'+fmt(m.valor)+'</span>'
       +'<span class="saldo num '+(m.saldo<buf?'low':'')+'">'+fmt(m.saldo)+'</span></td></tr>';
   });
@@ -860,8 +879,12 @@ function renderQuick(){
   btn.style.display=RO?'none':'inline-flex';btn._v={total:sp.total,d,mg};
 }
 function aplicarRef(){const btn=document.getElementById('btnAplicarRef');if(!btn._v)return;
-  DATA.movimentos.push({id:uid(),data:todayISO(),descricao:'Reforço (Diogo '+fmt(btn._v.d)+' / Margarida '+fmt(btn._v.mg)+')',valor:btn._v.total,tipo:'contribuicao',pessoa:'Comum'});
-  persist();renderAll();toast('Reforço registado');document.getElementById('quickRef').value='';renderQuick();}
+  const v=btn._v;
+  openMov(null);
+  mTipo='contribuicao';document.querySelectorAll('#segTipo button').forEach(b=>b.classList.toggle('on',b.dataset.t===mTipo));
+  document.getElementById('fValor').value=v.total;
+  document.getElementById('fDesc').value='Reforço (Diogo '+fmt(v.d)+' / Margarida '+fmt(v.mg)+')';
+  document.getElementById('quickRef').value='';renderQuick();}
 
 /* ---------- EDENRED PENAS ---------- */
 // Calcula o livro do Edenred Penas. A Edenred não pode ser reforçada: só
@@ -907,8 +930,8 @@ function renderPenas(){
     const split=m.ferias>0.005?'<div class="psub">Total '+fmt(Math.abs(m.valor))+' · '+fmt(m.ferias)+' pela conta de férias</div>':'';
     const editable=!RO;
     html+='<tr class="'+(fut?'future ':'')+(m.saldo<-0.005?'minrow ':'')+'"'+(editable?' data-pe="'+m.id+'"':'')+'>'
-      +'<td class="datecell">'+fmtDayMonth(m.data)+'<div class="tcell">'+chip+'</div></td>'
-      +'<td class="desccell"><b>'+esc(m.obs)+'</b>'+split+'</td>'
+      +'<td class="datecell">'+fmtDayMonth(m.data)+'</td>'
+      +'<td class="desccell"><b>'+esc(m.obs)+'</b><div class="tcell">'+chip+'</div>'+split+'</td>'
       +'<td class="r valcell"><span class="val num '+(pos?'pos':'neg')+'">'+fmt(m.edenred)+'</span>'
       +'<span class="saldo num '+(m.saldo<-0.005?'low':'')+'">'+fmt(m.saldo)+'</span></td></tr>';
   });
@@ -1151,6 +1174,12 @@ function init(){
   document.getElementById('btnImport').onclick=()=>document.getElementById('fileInput').click();
   document.getElementById('fileInput').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{DATA=migrate(JSON.parse(r.result));persist();renderAll();renderDef();renderSim();toast('Importado');}catch(err){toast('Ficheiro inválido');}};r.readAsText(f);};
   document.getElementById('btnReset').onclick=()=>{if(confirm('Repor os dados de exemplo? Perdes as alterações locais.')){DATA=freshData();persist();renderAll();renderDef();renderSim();toast('Dados repostos');}};
+
+  // accordions definições
+  ['poupanca','conta','github'].forEach(id=>{
+    const hdr=document.getElementById('acc-'+id),body=document.getElementById('accb-'+id);
+    hdr.onclick=()=>{hdr.classList.toggle('open');body.classList.toggle('open');};
+  });
 
   renderAll();renderDef();renderSim();applyRO();
   setState(RO?'ro':'','Local'+(RO?' · só-leitura':''));
