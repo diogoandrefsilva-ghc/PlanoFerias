@@ -823,11 +823,11 @@ function renderSim(){
   const dl=(v)=>v===0?'':'<span class="delta '+(v>0?'up':'down')+'">'+(v>0?'+':'')+fmt(v)+'</span>';
   document.getElementById('simCmp').innerHTML=
     '<div class="cmpcard"><div class="lbl">Plano atual</div>'
-    +'<div class="cmpline"><span class="k">Saldo previsto</span><span class="vv">'+fmt(base.saldoTarget)+'</span></div>'
-    +'<div class="cmpline"><span class="k">Saldo mínimo</span><span class="vv">'+fmt(base.low[0]?base.low[0].saldo:0)+'</span></div></div>'
+    +'<div class="cmpline"><span class="k">Saldo previsto <span class="muted" style="font-size:11px;font-weight:400">('+fmtDate(base.target)+')</span></span><span class="vv">'+fmt(base.saldoTarget)+'</span></div>'
+    +'<div class="cmpline"><span class="k">Saldo mínimo <span class="muted" style="font-size:11px;font-weight:400">'+(base.low[0]?'('+fmtDate(base.low[0].data)+')':'')+'</span></span><span class="vv">'+fmt(base.low[0]?base.low[0].saldo:0)+'</span></div></div>'
     +'<div class="cmpcard" style="border-color:var(--diogo)"><div class="lbl" style="color:var(--diogo)">Simulado</div>'
-    +'<div class="cmpline"><span class="k">Saldo previsto</span><span class="vv">'+fmt(sim.saldoTarget)+dl(dT)+'</span></div>'
-    +'<div class="cmpline"><span class="k">Saldo mínimo</span><span class="vv">'+fmt(sim.low[0]?sim.low[0].saldo:0)+dl(dM)+'</span></div></div>';
+    +'<div class="cmpline"><span class="k">Saldo previsto <span class="muted" style="font-size:11px;font-weight:400">('+fmtDate(sim.target)+')</span></span><span class="vv">'+fmt(sim.saldoTarget)+dl(dT)+'</span></div>'
+    +'<div class="cmpline"><span class="k">Saldo mínimo <span class="muted" style="font-size:11px;font-weight:400">'+(sim.low[0]?'('+fmtDate(sim.low[0].data)+')':'')+'</span></span><span class="vv">'+fmt(sim.low[0]?sim.low[0].saldo:0)+dl(dM)+'</span></div></div>';
   renderSimChart(base.L,sim.L);
   document.getElementById('btnSimAplicar').style.display=RO?'none':'inline-flex';
 }
