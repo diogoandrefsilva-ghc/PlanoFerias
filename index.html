@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Plano Financeiro — Férias</title>
+<title>Plano de Férias</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Schibsted+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -35,37 +35,44 @@ h1,h2,h3{font-family:'Fraunces',serif;font-weight:600;letter-spacing:-.01em;line
 button{font-family:inherit;cursor:pointer;border:none;background:none}
 
 /* HEADER */
-header{padding:26px 0 8px}
-.brand{display:flex;align-items:center;gap:11px;flex-wrap:wrap}
-.dot{width:34px;height:34px;border-radius:11px;background:linear-gradient(140deg,var(--diogo),#0f4a54);
-  display:grid;place-items:center;color:#fff;font-family:'Fraunces';font-weight:600;box-shadow:var(--shadow)}
-.brand h1{font-size:23px}
-.brand .sub{font-size:12.5px;color:var(--ink3);margin-top:1px}
-.statepill{margin-left:auto;display:inline-flex;align-items:center;gap:7px;font-size:12px;
+header{padding:10px 0 4px}
+.dot{width:30px;height:30px;border-radius:9px;background:linear-gradient(150deg,#F2B441,#E08A2E);
+  display:grid;place-items:center;box-shadow:var(--shadow);flex:none}
+.statepill{display:inline-flex;align-items:center;gap:7px;font-size:12px;
   background:var(--card);border:1px solid var(--line);padding:6px 12px;border-radius:999px;color:var(--ink2)}
 .statepill .led{width:8px;height:8px;border-radius:50%;background:var(--ink3)}
 .statepill.ok .led{background:var(--pos)} .statepill.busy .led{background:var(--gold);animation:pulse 1s infinite}
 .statepill.err .led{background:var(--neg)} .statepill.ro .led{background:var(--diogo)}
 @keyframes pulse{50%{opacity:.3}}
 
+/* SCENE */
+.scene{position:relative;margin:12px 0 0;border-radius:var(--radius);overflow:hidden;border:1px solid var(--line);box-shadow:var(--shadow)}
+.scene svg{display:block;width:100%;height:104px}
+@media(min-width:560px){.scene svg{height:132px}}
+.scene-top{position:absolute;inset:0;padding:11px 12px;display:flex;align-items:flex-start;gap:10px;pointer-events:none}
+.brand{display:flex;align-items:center;gap:8px;background:rgba(255,253,248,.78);backdrop-filter:blur(5px);
+  padding:6px 13px 6px 7px;border-radius:12px;border:1px solid rgba(21,48,42,.08);pointer-events:auto}
+.brand h1{font-size:16px;line-height:1}
+.scene-top .statepill{margin-left:auto;pointer-events:auto;background:rgba(255,253,248,.82);backdrop-filter:blur(5px)}
+
 /* HERO */
-.hero{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:14px;margin:18px 0 6px}
-.hcard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-  padding:18px 20px;box-shadow:var(--shadow);position:relative;overflow:hidden}
-.hcard.lead{background:linear-gradient(150deg,#173b33,#15302a);color:#F6F1E7;border-color:transparent}
-.hcard.lead .lbl{color:rgba(246,241,231,.7)}
-.lbl{font-size:11.5px;text-transform:uppercase;letter-spacing:.09em;color:var(--ink3);font-weight:600}
-.big{font-size:34px;margin-top:6px}
-.hcard.lead .big{font-size:40px}
-.hcard .meta{font-size:12.5px;color:var(--ink3);margin-top:5px}
-.hcard.lead .meta{color:rgba(246,241,231,.65)}
-.warnflag{display:inline-block;margin-top:8px;font-size:11.5px;font-weight:600;padding:3px 9px;border-radius:999px}
-.warnflag.bad{background:var(--negBg);color:var(--neg)} .warnflag.good{background:var(--posBg);color:var(--pos)}
+.hero{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0 0}
+.hcard{background:var(--card);border:1px solid var(--line);border-radius:15px;
+  padding:14px 16px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.hcard:first-child{background:linear-gradient(150deg,#1d443b,#16332c);border-color:transparent}
+.hcard:first-child .lbl{color:rgba(246,241,231,.72)}
+.hcard:first-child .big{color:#F6F1E7}
+.hcard:first-child .meta{color:rgba(246,241,231,.6)}
+.lbl{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink3);font-weight:600}
+.big{font-size:23px;margin-top:5px}
+.hcard .meta{font-size:11px;color:var(--ink3);margin-top:3px}
 
 /* TABS */
-nav.tabs{display:flex;gap:4px;margin:20px 0 14px;background:var(--paper2);padding:5px;border-radius:14px;
-  border:1px solid var(--line2);overflow-x:auto;-webkit-overflow-scrolling:touch}
-nav.tabs button{flex:1;white-space:nowrap;padding:9px 14px;border-radius:10px;font-size:14px;font-weight:600;
+nav.tabs{position:sticky;top:8px;z-index:25;display:flex;gap:4px;margin:14px 0 14px;
+  background:rgba(239,232,218,.92);backdrop-filter:blur(10px);padding:6px;border-radius:14px;
+  border:1px solid var(--line2);overflow-x:auto;-webkit-overflow-scrolling:touch;
+  box-shadow:0 6px 20px -12px rgba(21,48,42,.4)}
+nav.tabs button{flex:1;white-space:nowrap;padding:9px 13px;border-radius:10px;font-size:13.5px;font-weight:600;
   color:var(--ink2);transition:.18s}
 nav.tabs button.active{background:var(--card);color:var(--ink);box-shadow:var(--shadow)}
 .panel{display:none;animation:fade .25s ease} .panel.active{display:block}
@@ -82,8 +89,15 @@ nav.tabs button.active{background:var(--card);color:var(--ink);box-shadow:var(--
 .stat .lbl{margin-bottom:6px}
 .stat .v{font-size:24px}
 .stat .s{font-size:12px;color:var(--ink3);margin-top:3px}
-.bar{height:7px;border-radius:99px;background:var(--paper2);overflow:hidden;margin-top:10px;display:flex}
-.bar i{display:block;height:100%}
+
+/* LOW CARDS */
+.lowcard{padding:16px 18px;position:relative;overflow:hidden}
+.lowcard .rk{position:absolute;top:12px;right:14px;font-family:'Fraunces';font-size:30px;color:var(--line);font-weight:600;line-height:1}
+.lowcard .v{font-size:26px;margin:2px 0 2px}
+.lowcard .v.danger{color:var(--neg)} .lowcard .v.warn{color:var(--gold)}
+.lowcard .d{font-size:12.5px;color:var(--ink3)}
+.lowcard .desc{font-size:13px;font-weight:600;color:var(--ink2);margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lowcard .stripe{position:absolute;left:0;top:0;bottom:0;width:4px}
 
 /* TABLE */
 .toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:6px 2px 14px}
@@ -91,7 +105,7 @@ nav.tabs button.active{background:var(--card);color:var(--ink);box-shadow:var(--
   border-radius:10px;background:var(--card);color:var(--ink)}
 .toolbar input[type=search]{min-width:170px;flex:1}
 .tablewrap{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--line);background:var(--card);box-shadow:var(--shadow)}
-table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:560px}
+table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:520px}
 th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink3);font-weight:700;
   padding:12px 14px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--card);z-index:1}
 td{padding:11px 14px;border-bottom:1px solid var(--line2);vertical-align:middle}
@@ -99,20 +113,23 @@ tr:last-child td{border-bottom:none}
 td.r,th.r{text-align:right}
 tr.future td{color:var(--ink2)} tr.future td:first-child{position:relative}
 tr.future td:first-child::before{content:'';position:absolute;left:0;top:8px;bottom:8px;width:3px;border-radius:9px;background:var(--gold);opacity:.55}
-tr.minrow{background:linear-gradient(0deg,var(--negBg),var(--negBg))}
+tr.minrow{background:var(--negBg)}
 .val{font-weight:600;font-family:'Fraunces',serif}
 .val.pos{color:var(--pos)} .val.neg{color:var(--neg)}
 .saldo{font-family:'Fraunces',serif;font-weight:500}
 .saldo.low{color:var(--neg)}
 .chip{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:600;padding:3px 9px;border-radius:999px;white-space:nowrap}
-.chip.diogo{background:var(--diogoBg);color:var(--diogo)} .chip.marg{background:var(--margBg);color:var(--marg)}
+.chip.contrib{background:var(--diogoBg);color:var(--diogo)}
 .chip.receita{background:var(--posBg);color:var(--pos)} .chip.despesa{background:var(--negBg);color:var(--neg)}
-.chip.comum{background:var(--paper2);color:var(--ink2)}
+.tag-auto{font-size:10px;font-weight:700;letter-spacing:.05em;color:var(--gold);background:rgba(190,142,58,.13);padding:2px 7px;border-radius:999px;margin-left:6px;text-transform:uppercase}
 .rowact{display:flex;gap:4px;justify-content:flex-end}
 .iconbtn{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;color:var(--ink3);font-size:14px}
 .iconbtn:hover{background:var(--paper2);color:var(--ink)}
 .divider-month td{background:var(--paper2);font-weight:700;font-size:11.5px;text-transform:uppercase;letter-spacing:.06em;
   color:var(--ink2);padding:6px 14px}
+td.datecell{white-space:nowrap;font-variant-numeric:tabular-nums;vertical-align:top;width:1%}
+.tcell{margin-top:5px}
+.tcell .chip{font-size:10px;padding:2px 7px}
 
 /* BUTTONS */
 .btn{display:inline-flex;align-items:center;gap:7px;font-size:13.5px;font-weight:600;padding:9px 15px;border-radius:11px;
@@ -143,8 +160,11 @@ tr.minrow{background:linear-gradient(0deg,var(--negBg),var(--negBg))}
 .modal .x:hover{background:var(--paper2)}
 .field{margin-bottom:14px}
 .field label{display:block;font-size:12px;font-weight:600;color:var(--ink2);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em}
-.field input,.field select,.field textarea{width:100%;font-family:inherit;font-size:15px;padding:11px 13px;border:1px solid var(--line);
-  border-radius:12px;background:var(--card);color:var(--ink)}
+.field input,.field select,.field textarea{width:100%;font-family:inherit;font-size:16px;height:50px;line-height:1.2;
+  padding:0 14px;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);
+  box-sizing:border-box;-webkit-appearance:none;appearance:none;text-align:left;margin:0;display:block;vertical-align:top}
+.field input[type=date]{-webkit-appearance:none;appearance:none;min-height:50px}
+.field textarea{height:auto;min-height:90px;padding:12px 14px;line-height:1.45}
 .field input:focus,.field select:focus{outline:none;border-color:var(--diogo)}
 .seg{display:flex;gap:6px;flex-wrap:wrap}
 .seg button{flex:1;min-width:84px;padding:10px;border-radius:11px;border:1px solid var(--line);background:var(--card);font-weight:600;font-size:13.5px;color:var(--ink2)}
@@ -159,7 +179,14 @@ tr.minrow{background:linear-gradient(0deg,var(--negBg),var(--negBg))}
 .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--ink2);padding:6px 8px 2px}
 .legend i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:5px;vertical-align:-1px}
 
-/* REFORÇO */
+/* PLANO / SEGMENTOS */
+.segrow{display:flex;gap:10px;align-items:center;padding:12px 14px;border-bottom:1px solid var(--line2);flex-wrap:wrap}
+.segrow:last-child{border-bottom:none}
+.segrow input[type=month],.segrow input[type=number]{font-family:inherit;font-size:14px;padding:8px 11px;border:1px solid var(--line);border-radius:10px;background:var(--card)}
+.segrow .split{font-size:12px;color:var(--ink3);flex:1;min-width:130px}
+.segrow .split b{color:var(--ink2)}
+
+/* REFORÇO / SIM PCARDS */
 .reforco-out{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
 .pcard{padding:18px;border-radius:var(--radius);border:1px solid var(--line);box-shadow:var(--shadow);position:relative;overflow:hidden}
 .pcard.diogo{background:var(--diogoBg);border-color:transparent} .pcard.marg{background:var(--margBg);border-color:transparent}
@@ -171,6 +198,21 @@ tr.minrow{background:linear-gradient(0deg,var(--negBg),var(--negBg))}
 .callout.warn{background:var(--negBg);border-color:transparent;color:#7d2b1a}
 .callout.ok{background:var(--posBg);border-color:transparent;color:#1c5a3e}
 
+/* COMPARE */
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.cmpcard{padding:16px 18px;border-radius:var(--radius);border:1px solid var(--line);box-shadow:var(--shadow);background:var(--card)}
+.cmpcard .lbl{margin-bottom:8px}
+.cmpline{display:flex;justify-content:space-between;align-items:baseline;padding:7px 0;border-bottom:1px dashed var(--line2)}
+.cmpline:last-child{border-bottom:none}
+.cmpline .k{font-size:13px;color:var(--ink2)} .cmpline .vv{font-family:'Fraunces';font-weight:600;font-size:17px}
+.delta{font-size:12px;font-weight:600;margin-left:6px}
+.delta.up{color:var(--pos)} .delta.down{color:var(--neg)}
+.simitem{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--line2)}
+.simitem:last-child{border-bottom:none}
+.simitem .ic{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;flex:none;font-size:16px}
+.simitem .ic.dep{background:var(--posBg);color:var(--pos)} .simitem .ic.men{background:var(--diogoBg);color:var(--diogo)}
+.simitem .t{flex:1}.simitem .t b{font-size:14px}.simitem .t span{display:block;font-size:12px;color:var(--ink3)}
+
 /* DEFINIÇÕES */
 .deflist{padding:6px 4px}
 .defrow{display:flex;gap:12px;align-items:center;padding:14px 16px;border-bottom:1px solid var(--line2)}
@@ -180,6 +222,7 @@ tr.minrow{background:linear-gradient(0deg,var(--negBg),var(--negBg))}
 .tg::after{content:'';position:absolute;top:2px;left:2px;width:21px;height:21px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:.2s}
 .tg.on{background:var(--diogo);border-color:transparent}.tg.on::after{left:21px}
 .splitline{display:flex;align-items:center;gap:8px}.splitline input{width:64px;text-align:center}
+.miniinput{font-family:inherit;font-size:15px;padding:9px 12px;border:1px solid var(--line);border-radius:11px;background:var(--card)}
 .empty{text-align:center;padding:40px 20px;color:var(--ink3)}
 .empty .ic{font-size:30px;opacity:.4}
 .toast{position:fixed;left:50%;bottom:84px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--paper);
@@ -188,9 +231,8 @@ tr.minrow{background:linear-gradient(0deg,var(--negBg),var(--negBg))}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .ro-hide{display:none!important}
 @media(max-width:720px){
-  .hero{grid-template-columns:1fr;gap:10px}.hcard.lead .big{font-size:36px}
-  .g3,.g4{grid-template-columns:1fr 1fr}.reforco-out{grid-template-columns:1fr}
-  .brand h1{font-size:20px}
+  .g3,.g4{grid-template-columns:1fr 1fr}.reforco-out,.cmp{grid-template-columns:1fr}
+  .brand h1{font-size:17px}.big{font-size:21px}
 }
 @media(max-width:480px){.g3,.g4{grid-template-columns:1fr}}
 </style>
@@ -198,31 +240,75 @@ tr.minrow{background:linear-gradient(0deg,var(--negBg),var(--negBg))}
 <body>
 <div class="wrap">
   <header>
-    <div class="brand">
-      <div class="dot">F</div>
-      <div>
-        <h1 id="appTitle">Plano Financeiro</h1>
-        <div class="sub" id="appSub">Poupança & despesas — Diogo + Margarida</div>
-      </div>
-      <div class="statepill" id="statePill"><span class="led"></span><span id="stateTxt">Local</span></div>
-    </div>
-
-    <div class="hero">
-      <div class="hcard lead">
-        <div class="lbl">Saldo hoje</div>
-        <div class="big num" id="saldoHoje">—</div>
-        <div class="meta" id="saldoHojeMeta"></div>
-      </div>
-      <div class="hcard">
-        <div class="lbl">Saldo previsto (final)</div>
-        <div class="big num" id="saldoFinal">—</div>
-        <div class="meta" id="saldoFinalMeta"></div>
-      </div>
-      <div class="hcard">
-        <div class="lbl">Saldo mínimo previsto</div>
-        <div class="big num" id="saldoMin">—</div>
-        <div class="meta" id="saldoMinMeta"></div>
-        <span class="warnflag" id="minFlag"></span>
+    <div class="scene">
+      <svg viewBox="0 0 800 130" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#FAE3C4"/><stop offset="0.55" stop-color="#F6E4D2"/><stop offset="1" stop-color="#FBF4E7"/>
+          </linearGradient>
+          <linearGradient id="seaG" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#2C8593"/><stop offset="1" stop-color="#176975"/>
+          </linearGradient>
+        </defs>
+        <rect width="800" height="130" fill="url(#sky)"/>
+        <!-- sun -->
+        <g>
+          <circle cx="132" cy="40" r="19" fill="#F0A93A"/>
+          <g stroke="#F0A93A" stroke-width="2.6" stroke-linecap="round" opacity=".8">
+            <path d="M132 16v-7"/><path d="M132 64v7"/><path d="M108 40h-7"/><path d="M156 40h7"/>
+            <path d="M114 22l-5-5"/><path d="M150 58l5 5"/><path d="M150 22l5-5"/><path d="M114 58l-5 5"/>
+          </g>
+        </g>
+        <!-- plane + contrail -->
+        <path d="M175 34 C 300 18, 400 26, 500 16" fill="none" stroke="#15302A" stroke-width="2" stroke-dasharray="2 7" stroke-linecap="round" opacity=".4"/>
+        <g transform="translate(500 12) rotate(-8)" fill="#15302A">
+          <path d="M0 0 L24 -3 L31 0 L24 3 Z"/>
+          <path d="M11 -1 L4 -11 L8 -11 L18 -2 Z"/>
+          <path d="M11 1 L4 11 L8 11 L18 2 Z"/>
+          <path d="M26 -2 L22 -7 L25 -7 L30 -1 Z"/>
+        </g>
+        <!-- sea -->
+        <path d="M0 88 Q 200 80 400 86 T 800 84 L800 104 L0 104 Z" fill="url(#seaG)"/>
+        <g stroke="#BFE6E6" stroke-width="1.5" stroke-linecap="round" opacity=".5" fill="none">
+          <path d="M70 96 q 8 -5 16 0"/><path d="M250 99 q 8 -5 16 0"/><path d="M430 95 q 8 -5 16 0"/><path d="M610 98 q 8 -5 16 0"/>
+        </g>
+        <!-- palms right -->
+        <g transform="translate(650 110)">
+          <path d="M0 0 q -7 -32 6 -58" fill="none" stroke="#A06A3C" stroke-width="5.5" stroke-linecap="round"/>
+          <g transform="translate(6 -58)" fill="#2E7D5B">
+            <path d="M0 0 C -26 -8 -46 -2 -58 10 C -42 0 -18 0 0 4 Z"/>
+            <path d="M0 0 C -20 -22 -16 -40 -6 -52 C -8 -34 -2 -16 4 -2 Z"/>
+            <path d="M0 0 C 10 -24 28 -32 44 -34 C 26 -28 12 -14 6 0 Z"/>
+            <path d="M0 0 C 24 -10 46 -6 60 6 C 42 -2 16 -2 2 4 Z"/>
+            <circle cx="0" cy="2" r="3.2" fill="#7B4F2A"/>
+          </g>
+        </g>
+        <g transform="translate(722 114)">
+          <path d="M0 0 q 8 -28 -4 -52" fill="none" stroke="#8E5C32" stroke-width="5.5" stroke-linecap="round"/>
+          <g transform="translate(-4 -52)" fill="#3A8C66">
+            <path d="M0 0 C 24 -8 44 -2 56 10 C 40 0 16 0 0 4 Z"/>
+            <path d="M0 0 C 18 -22 14 -40 4 -52 C 6 -34 0 -16 -6 -2 Z"/>
+            <path d="M0 0 C -12 -22 -30 -30 -46 -32 C -28 -26 -12 -12 -6 0 Z"/>
+            <path d="M0 0 C -24 -10 -46 -6 -60 6 C -42 -2 -16 -2 -2 4 Z"/>
+            <circle cx="0" cy="2" r="3.2" fill="#5e3c1f"/>
+          </g>
+        </g>
+        <!-- sand (foreground, bigger) -->
+        <path d="M0 130 L0 99 Q 180 91 380 99 Q 580 106 800 93 L800 130 Z" fill="#EAD8AC"/>
+        <path d="M0 130 L0 112 Q 210 106 430 112 Q 640 117 800 107 L800 130 Z" fill="#E0C893"/>
+        <g fill="#CBAE76" opacity=".55"><circle cx="120" cy="120" r="1.6"/><circle cx="200" cy="124" r="1.4"/><circle cx="330" cy="121" r="1.6"/><circle cx="470" cy="123" r="1.4"/><circle cx="560" cy="120" r="1.6"/></g>
+      </svg>
+      <div class="scene-top">
+        <div class="brand">
+          <div class="dot">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="5.2" fill="#fff"/>
+              <g stroke="#fff" stroke-width="1.7" stroke-linecap="round">
+              <path d="M12 2.4v2.6"/><path d="M12 19v2.6"/><path d="M2.4 12h2.6"/><path d="M19 12h2.6"/>
+              <path d="M5 5l1.9 1.9"/><path d="M17.1 17.1L19 19"/><path d="M19 5l-1.9 1.9"/><path d="M6.9 17.1L5 19"/></g></svg>
+          </div>
+          <h1 id="appTitle">Plano de Férias</h1>
+        </div>
+        <div class="statepill" id="statePill"><span class="led"></span><span id="stateTxt">Local</span></div>
       </div>
     </div>
   </header>
@@ -231,6 +317,7 @@ tr.minrow{background:linear-gradient(0deg,var(--negBg),var(--negBg))}
     <button data-tab="resumo" class="active">Resumo</button>
     <button data-tab="movimentos">Movimentos</button>
     <button data-tab="evolucao">Evolução</button>
+    <button data-tab="simulacao">Simulação</button>
     <button data-tab="reforcos">Reforços</button>
     <button data-tab="penas">Penas</button>
     <button data-tab="definicoes">Definições</button>
@@ -238,31 +325,16 @@ tr.minrow{background:linear-gradient(0deg,var(--negBg),var(--negBg))}
 
   <!-- RESUMO -->
   <section class="panel active" id="p-resumo">
-    <div class="section-title"><h2>Contribuições</h2><div class="ln"></div></div>
-    <div class="grid g2">
-      <div class="card stat">
-        <div class="lbl" style="color:var(--diogo)">Diogo</div>
-        <div class="v num" id="cDiogo">—</div>
-        <div class="s" id="cDiogoPct"></div>
-      </div>
-      <div class="card stat">
-        <div class="lbl" style="color:var(--marg)">Margarida</div>
-        <div class="v num" id="cMarg">—</div>
-        <div class="s" id="cMargPct"></div>
-      </div>
-    </div>
-    <div class="card stat" style="margin-top:14px">
-      <div class="lbl">Proporção de contribuições (real)</div>
-      <div class="bar" id="splitBar"></div>
-      <div class="s" id="splitTxt" style="margin-top:8px"></div>
+    <div class="hero">
+      <div class="hcard"><div class="lbl">Saldo hoje</div><div class="big num" id="saldoHoje">—</div><div class="meta" id="saldoHojeMeta"></div></div>
+      <div class="hcard"><div class="lbl">Menor saldo previsto</div><div class="big num" id="menorSaldo">—</div><div class="meta" id="menorSaldoMeta"></div></div>
     </div>
 
-    <div class="section-title"><h2>Fluxos</h2><div class="ln"></div></div>
-    <div class="grid g4">
-      <div class="card stat"><div class="lbl">Total contribuições</div><div class="v num" id="totContrib">—</div></div>
-      <div class="card stat"><div class="lbl">Outras receitas</div><div class="v num" id="totReceita">—</div></div>
-      <div class="card stat"><div class="lbl">Total despesas</div><div class="v num" id="totDespesa">—</div></div>
-      <div class="card stat"><div class="lbl">Saldo líquido</div><div class="v num" id="totLiquido">—</div></div>
+    <div class="section-title"><h2>Fluxos previstos</h2><div class="ln"></div></div>
+    <div class="grid g3">
+      <div class="card stat"><div class="lbl">Plano poupança mensal</div><div class="v num" id="fxPlano">—</div><div class="s" id="fxPlanoSub"></div></div>
+      <div class="card stat"><div class="lbl">Contribuições previstas</div><div class="v num" id="fxContrib">—</div><div class="s">De hoje em diante</div></div>
+      <div class="card stat"><div class="lbl">Despesas previstas</div><div class="v num" id="fxDespesa">—</div><div class="s">De hoje em diante</div></div>
     </div>
 
     <div class="section-title"><h2>Próximas despesas</h2><div class="ln"></div></div>
@@ -279,23 +351,18 @@ tr.minrow{background:linear-gradient(0deg,var(--negBg),var(--negBg))}
         <option value="receita">Receitas</option>
         <option value="despesa">Despesas</option>
       </select>
-      <select id="mPessoa">
-        <option value="">Todos</option>
-        <option value="Diogo">Diogo</option>
-        <option value="Margarida">Margarida</option>
-        <option value="Comum">Comum</option>
-      </select>
-      <button class="btn sm ro-hideable" id="btnGerar">↻ Gerar poupanças</button>
+      <button class="btn sm" id="btnPast">Mostrar anteriores</button>
     </div>
     <div class="tablewrap">
       <table id="movTable">
         <thead><tr>
-          <th>Data</th><th>Descrição</th><th>Tipo</th><th>Quem</th>
+          <th>Data</th><th>Descrição</th>
           <th class="r">Valor</th><th class="r">Saldo</th><th class="r ro-hideable"></th>
         </tr></thead>
         <tbody id="movBody"></tbody>
       </table>
     </div>
+    <p class="hint" style="margin:10px 4px">As linhas marcadas <span class="tag-auto">auto</span> vêm do plano de poupança mensal (editas em Definições).</p>
   </section>
 
   <!-- EVOLUÇÃO -->
@@ -320,11 +387,38 @@ tr.minrow{background:linear-gradient(0deg,var(--negBg),var(--negBg))}
     </div>
   </section>
 
+  <!-- SIMULAÇÃO -->
+  <section class="panel" id="p-simulacao">
+    <div class="card" style="padding:20px">
+      <h2 style="font-size:19px">Simulação de cenários</h2>
+      <p class="muted" style="font-size:13.5px;margin-top:6px">Testa um depósito extra ou uma alteração da poupança mensal a partir de uma data. Vês logo o impacto no plano, sem mexer nos dados reais — só aplicas se quiseres.</p>
+      <div class="grid g2 ro-hideable" style="margin-top:14px">
+        <button class="btn full" id="btnSimDep">+ Depósito extra</button>
+        <button class="btn full" id="btnSimMen">+ Alterar poupança mensal</button>
+      </div>
+      <div id="simList" style="margin-top:14px"></div>
+    </div>
+
+    <div id="simResult" style="display:none">
+      <div class="section-title"><h2>Base vs Simulado</h2><div class="ln"></div></div>
+      <div class="cmp" id="simCmp"></div>
+      <div class="card chartbox" style="margin-top:14px">
+        <h3>Evolução do saldo — comparação</h3>
+        <div class="legend"><span><i style="background:var(--ink3)"></i>Plano atual</span><span><i style="background:var(--diogo)"></i>Simulado</span></div>
+        <div class="cwrap"><canvas id="chartSim"></canvas></div>
+      </div>
+      <div class="grid g2" style="margin-top:14px">
+        <button class="btn primary full ro-hideable" id="btnSimAplicar">✓ Aplicar ao plano</button>
+        <button class="btn full" id="btnSimLimpar">Limpar simulação</button>
+      </div>
+    </div>
+  </section>
+
   <!-- REFORÇOS -->
   <section class="panel" id="p-reforcos">
     <div class="card" style="padding:20px">
       <h2 style="font-size:19px">Precisamos de reforçar?</h2>
-      <p class="muted" style="font-size:13.5px;margin-top:6px">Define o saldo de segurança que queres manter sempre disponível. A app calcula o reforço necessário para o saldo previsto nunca descer abaixo desse valor, e divide-o segundo a tua proporção.</p>
+      <p class="muted" style="font-size:13.5px;margin-top:6px">Define o saldo de segurança que queres manter sempre disponível. A app calcula o reforço necessário para o saldo previsto nunca descer abaixo desse valor, dividido na proporção 55/45.</p>
       <div class="row2" style="margin-top:16px;max-width:420px">
         <div class="field" style="margin:0">
           <label>Saldo de segurança (€)</label>
@@ -367,30 +461,42 @@ tr.minrow{background:linear-gradient(0deg,var(--negBg),var(--negBg))}
 
   <!-- DEFINIÇÕES -->
   <section class="panel" id="p-definicoes">
+    <div class="section-title"><h2>Poupança mensal</h2><div class="ln"></div></div>
+    <div class="card deflist">
+      <div class="defrow"><div class="t"><b>Plano ativo</b><span>Gera contribuições mensais no forecast</span></div>
+        <div class="tg" id="tgPlano"></div></div>
+      <div class="defrow"><div class="t"><b>Prolongar até</b><span>Último mês com poupança mensal</span></div>
+        <input type="month" class="miniinput" id="planoAte"></div>
+      <div class="defrow"><div class="t"><b>Dia do mês</b><span>Dia em que entra a poupança</span></div>
+        <input type="number" min="1" max="28" class="miniinput" style="width:80px" id="planoDia"></div>
+    </div>
+    <div class="section-title" style="margin-top:14px"><h3 style="font-size:15px">Valores (55 / 45)</h3><div class="ln"></div>
+      <button class="btn sm ro-hideable" id="btnAddSeg">+ Alteração</button></div>
+    <div class="card" id="segList" style="padding:2px 4px"></div>
+    <p class="hint" style="margin:8px 4px">Cada linha define o valor mensal total a partir de um mês. O total é dividido 55% Diogo / 45% Margarida.</p>
+
     <div class="section-title"><h2>Conta</h2><div class="ln"></div></div>
     <div class="card deflist">
-      <div class="defrow"><div class="t"><b>Título</b><span>Nome apresentado no topo</span></div>
-        <input class="field" style="width:200px" id="setTitulo"></div>
+      <div class="defrow"><div class="t"><b>Título</b></div><input class="miniinput" style="width:200px" id="setTitulo"></div>
       <div class="defrow"><div class="t"><b>Saldo inicial</b><span id="setDataInfo"></span></div>
-        <input type="number" step="0.01" style="width:120px;font-family:inherit;font-size:15px;padding:9px 12px;border:1px solid var(--line);border-radius:11px;background:var(--card)" id="setSaldoIni"></div>
-      <div class="defrow"><div class="t"><b>Data inicial</b><span>Data do saldo de abertura</span></div>
-        <input type="date" style="font-family:inherit;font-size:15px;padding:9px 12px;border:1px solid var(--line);border-radius:11px;background:var(--card)" id="setDataIni"></div>
-      <div class="defrow"><div class="t"><b>Proporção de reforço</b><span>Diogo / Margarida (soma 100%)</span></div>
-        <div class="splitline"><input type="number" id="setSplitD" min="0" max="100"><span class="muted">/</span><input type="number" id="setSplitM" min="0" max="100" disabled></div></div>
+        <input type="number" step="0.01" class="miniinput" style="width:120px" id="setSaldoIni"></div>
+      <div class="defrow"><div class="t"><b>Data inicial</b></div>
+        <input type="date" class="miniinput" id="setDataIni"></div>
+      <div class="defrow"><div class="t"><b>Proporção de reforço</b><span>Diogo / Margarida</span></div>
+        <div class="splitline"><input type="number" class="miniinput" id="setSplitD" min="0" max="100"><span class="muted">/</span><input type="number" class="miniinput" id="setSplitM" min="0" max="100" disabled></div></div>
       <div class="defrow"><div class="t"><b>Saldo de segurança</b><span>Buffer mínimo por defeito</span></div>
-        <input type="number" step="50" style="width:120px;font-family:inherit;font-size:15px;padding:9px 12px;border:1px solid var(--line);border-radius:11px;background:var(--card)" id="setBuffer"></div>
+        <input type="number" step="50" class="miniinput" style="width:120px" id="setBuffer"></div>
     </div>
 
     <div class="section-title"><h2>Sincronização (GitHub)</h2><div class="ln"></div></div>
     <div class="card deflist">
-      <div class="defrow"><div class="t"><b>Owner</b></div><input class="field" style="width:200px" id="ghOwner"></div>
-      <div class="defrow"><div class="t"><b>Repositório</b></div><input class="field" style="width:200px" id="ghRepo"></div>
-      <div class="defrow"><div class="t"><b>Ficheiro (path)</b></div><input class="field" style="width:200px" id="ghPath"></div>
-      <div class="defrow"><div class="t"><b>Branch</b></div><input class="field" style="width:120px" id="ghBranch"></div>
+      <div class="defrow"><div class="t"><b>Owner</b></div><input class="miniinput" style="width:200px" id="ghOwner"></div>
+      <div class="defrow"><div class="t"><b>Repositório</b></div><input class="miniinput" style="width:200px" id="ghRepo"></div>
+      <div class="defrow"><div class="t"><b>Ficheiro (path)</b></div><input class="miniinput" style="width:200px" id="ghPath"></div>
+      <div class="defrow"><div class="t"><b>Branch</b></div><input class="miniinput" style="width:120px" id="ghBranch"></div>
       <div class="defrow"><div class="t"><b>Token (PAT)</b><span>Fica só neste browser. Usa um token de curta duração.</span></div>
-        <input class="field" type="password" style="width:200px" id="ghToken" placeholder="ghp_…"></div>
-      <div class="defrow"><div class="t"><b>Guardar token neste browser</b><span>Se desligado, o token é esquecido ao fechar</span></div>
-        <div class="tg" id="tgSaveTok"></div></div>
+        <input class="miniinput" type="password" style="width:200px" id="ghToken" placeholder="ghp_…"></div>
+      <div class="defrow"><div class="t"><b>Guardar token neste browser</b></div><div class="tg" id="tgSaveTok"></div></div>
       <div class="defrow"><div class="t"><b>Modo só-leitura</b><span>Esconde edição (para partilhar via Pages)</span></div>
         <div class="tg" id="tgRO"></div></div>
     </div>
@@ -405,7 +511,7 @@ tr.minrow{background:linear-gradient(0deg,var(--negBg),var(--negBg))}
     </div>
     <input type="file" id="fileInput" accept="application/json" style="display:none">
     <p class="muted" style="font-size:12px;text-align:center;margin-top:18px;line-height:1.6">
-      Dados guardados localmente no browser. A sincronização usa a API GitHub Contents (escrita) e leitura autenticada/raw.<br>
+      Dados guardados localmente no browser. Sincronização via API GitHub Contents (escrita) e leitura autenticada/raw.<br>
       Não sou consultor financeiro — isto é só uma ferramenta de previsão.</p>
   </section>
 </div>
@@ -421,16 +527,11 @@ tr.minrow{background:linear-gradient(0deg,var(--negBg),var(--negBg))}
       <button data-t="receita">Receita</button>
       <button data-t="despesa">Despesa</button>
     </div></div>
-  <div class="field" id="fldPessoa"><label>Quem contribui</label>
-    <div class="seg" id="segPessoa">
-      <button data-p="Diogo" class="on">Diogo</button>
-      <button data-p="Margarida">Margarida</button>
-    </div></div>
   <div class="row2">
     <div class="field"><label>Data</label><input type="date" id="fData"></div>
     <div class="field"><label>Valor (€)</label><input type="number" step="0.01" id="fValor" placeholder="0,00"></div>
   </div>
-  <div class="field"><label>Descrição</label><input type="text" id="fDesc" placeholder="ex.: Voos, Poupança Diogo…"></div>
+  <div class="field"><label>Descrição</label><input type="text" id="fDesc" placeholder="ex.: Voos, Depósito extra…"></div>
   <div class="row2" style="margin-top:4px">
     <button class="btn ghost full" data-close>Cancelar</button>
     <button class="btn primary full" id="btnSaveMov">Guardar</button>
@@ -438,29 +539,31 @@ tr.minrow{background:linear-gradient(0deg,var(--negBg),var(--negBg))}
   <button class="btn ghost full" id="btnDelMov" style="color:var(--neg);margin-top:8px;display:none">Eliminar movimento</button>
 </div></div>
 
-<!-- MODAL GERAR -->
-<div class="overlay" id="ovGen"><div class="modal">
-  <div class="mh"><h3>Gerar poupanças recorrentes</h3><button class="x" data-close>×</button></div>
-  <p class="muted" style="font-size:13px;margin-bottom:14px">Cria automaticamente as contribuições mensais até uma data, para fazeres o forecast do saldo.</p>
-  <div class="field"><label>Quem</label>
-    <div class="seg" id="genPessoa">
-      <button data-p="ambos" class="on">Ambos</button>
-      <button data-p="Diogo">Diogo</button>
-      <button data-p="Margarida">Margarida</button>
+<!-- MODAL SIM -->
+<div class="overlay" id="ovSim"><div class="modal">
+  <div class="mh"><h3 id="simModalTitle">Ajuste de simulação</h3><button class="x" data-close>×</button></div>
+  <div class="field"><label>Tipo de ajuste</label>
+    <div class="seg" id="segSim">
+      <button data-s="deposito" class="on">Depósito extra</button>
+      <button data-s="mensal">Alterar mensal</button>
     </div></div>
-  <div class="row2">
-    <div class="field"><label>Valor Diogo (€)</label><input type="number" step="10" id="genVD" value="200"></div>
-    <div class="field"><label>Valor Margarida (€)</label><input type="number" step="10" id="genVM" value="160"></div>
+  <div id="simFldDep">
+    <div class="row2">
+      <div class="field"><label>Data</label><input type="date" id="sData"></div>
+      <div class="field"><label>Valor (€)</label><input type="number" step="50" id="sValor" placeholder="ex.: 1000"></div>
+    </div>
+    <div class="field"><label>Descrição</label><input type="text" id="sDesc" placeholder="Depósito extra"></div>
   </div>
-  <div class="row2">
-    <div class="field"><label>Dia do mês</label><input type="number" min="1" max="28" id="genDia" value="1"></div>
-    <div class="field"><label>Nº de meses</label><input type="number" min="1" max="60" id="genN" value="12"></div>
+  <div id="simFldMen" style="display:none">
+    <div class="row2">
+      <div class="field"><label>A partir de</label><input type="month" id="sDesde"></div>
+      <div class="field"><label>Novo valor mensal (€)</label><input type="number" step="10" id="sMensal" placeholder="ex.: 500"></div>
+    </div>
+    <p class="hint" id="simMenHint"></p>
   </div>
-  <div class="field"><label>Começar em</label><input type="month" id="genInicio"></div>
-  <p class="hint" id="genHint"></p>
-  <div class="row2" style="margin-top:6px">
+  <div class="row2" style="margin-top:4px">
     <button class="btn ghost full" data-close>Cancelar</button>
-    <button class="btn primary full" id="btnDoGen">Gerar</button>
+    <button class="btn primary full" id="btnSaveSim">Adicionar ao cenário</button>
   </div>
 </div></div>
 
@@ -483,122 +586,157 @@ tr.minrow{background:linear-gradient(0deg,var(--negBg),var(--negBg))}
 
 <script>
 const SEED = {"saldoInicial":2900,"dataInicial":"2026-04-04","movimentos":[{"id":"m1","data":"2026-04-23","descricao":"Reembolso IRS","valor":1136.2,"tipo":"receita","pessoa":"Comum"},{"id":"m2","data":"2026-04-23","descricao":"Voos Paris","valor":-513.99,"tipo":"despesa","pessoa":"Comum"},{"id":"m3","data":"2026-04-23","descricao":"Depósito Disney","valor":-344.46,"tipo":"despesa","pessoa":"Comum"},{"id":"m4","data":"2026-04-23","descricao":"Sinal Altura","valor":-450.0,"tipo":"despesa","pessoa":"Comum"},{"id":"m5","data":"2026-05-03","descricao":"Poupança Diogo","valor":200.0,"tipo":"contribuicao","pessoa":"Diogo"},{"id":"m6","data":"2026-05-04","descricao":"Poupança Margarida","valor":160.0,"tipo":"contribuicao","pessoa":"Margarida"},{"id":"m7","data":"2026-05-26","descricao":"Santa Eulália","valor":-1375.89,"tipo":"despesa","pessoa":"Comum"},{"id":"m8","data":"2026-06-01","descricao":"Poupança Diogo","valor":200.0,"tipo":"contribuicao","pessoa":"Diogo"},{"id":"m9","data":"2026-06-01","descricao":"Poupança Margarida","valor":160.0,"tipo":"contribuicao","pessoa":"Margarida"},{"id":"m10","data":"2026-06-29","descricao":"Depósito Férias Diogo","valor":825.0,"tipo":"contribuicao","pessoa":"Diogo"},{"id":"m11","data":"2026-06-29","descricao":"Depósito Férias Margarida","valor":675.0,"tipo":"contribuicao","pessoa":"Margarida"},{"id":"m12","data":"2026-07-01","descricao":"Poupança Diogo","valor":200.0,"tipo":"contribuicao","pessoa":"Diogo"},{"id":"m13","data":"2026-07-01","descricao":"Poupança Margarida","valor":160.0,"tipo":"contribuicao","pessoa":"Margarida"},{"id":"m14","data":"2026-07-01","descricao":"Adriana","valor":-1685.0,"tipo":"despesa","pessoa":"Comum"},{"id":"m15","data":"2026-08-01","descricao":"Poupança Diogo","valor":200.0,"tipo":"contribuicao","pessoa":"Diogo"},{"id":"m16","data":"2026-08-01","descricao":"Poupança Margarida","valor":160.0,"tipo":"contribuicao","pessoa":"Margarida"},{"id":"m17","data":"2026-08-01","descricao":"Altura","valor":-950.0,"tipo":"despesa","pessoa":"Comum"},{"id":"m18","data":"2026-09-01","descricao":"Poupança Diogo","valor":200.0,"tipo":"contribuicao","pessoa":"Diogo"},{"id":"m19","data":"2026-09-01","descricao":"Poupança Margarida","valor":160.0,"tipo":"contribuicao","pessoa":"Margarida"},{"id":"m20","data":"2026-09-01","descricao":"Seguro Penas","valor":-35.0,"tipo":"despesa","pessoa":"Comum"},{"id":"m21","data":"2026-10-01","descricao":"Poupança Diogo","valor":200.0,"tipo":"contribuicao","pessoa":"Diogo"},{"id":"m22","data":"2026-10-01","descricao":"Poupança Margarida","valor":160.0,"tipo":"contribuicao","pessoa":"Margarida"},{"id":"m23","data":"2026-10-01","descricao":"Extra Mensalidade Penas","valor":-269.0,"tipo":"despesa","pessoa":"Comum"},{"id":"m24","data":"2026-11-01","descricao":"Poupança Diogo","valor":200.0,"tipo":"contribuicao","pessoa":"Diogo"},{"id":"m25","data":"2026-11-01","descricao":"Poupança Margarida","valor":160.0,"tipo":"contribuicao","pessoa":"Margarida"},{"id":"m26","data":"2026-11-01","descricao":"Extra Mensalidade Penas","valor":-270.0,"tipo":"despesa","pessoa":"Comum"},{"id":"m27","data":"2026-11-25","descricao":"Disneyland","valor":-1985.12,"tipo":"despesa","pessoa":"Comum"},{"id":"m28","data":"2026-12-01","descricao":"Poupança Diogo","valor":200.0,"tipo":"contribuicao","pessoa":"Diogo"},{"id":"m29","data":"2026-12-01","descricao":"Poupança Margarida","valor":160.0,"tipo":"contribuicao","pessoa":"Margarida"},{"id":"m30","data":"2027-01-01","descricao":"Poupança Diogo","valor":200.0,"tipo":"contribuicao","pessoa":"Diogo"},{"id":"m31","data":"2027-01-01","descricao":"Poupança Margarida","valor":160.0,"tipo":"contribuicao","pessoa":"Margarida"},{"id":"m32","data":"2027-02-01","descricao":"Poupança Diogo","valor":200.0,"tipo":"contribuicao","pessoa":"Diogo"},{"id":"m33","data":"2027-02-01","descricao":"Poupança Margarida","valor":160.0,"tipo":"contribuicao","pessoa":"Margarida"},{"id":"m34","data":"2027-03-01","descricao":"Poupança Diogo","valor":200.0,"tipo":"contribuicao","pessoa":"Diogo"},{"id":"m35","data":"2027-03-01","descricao":"Poupança Margarida","valor":160.0,"tipo":"contribuicao","pessoa":"Margarida"},{"id":"m36","data":"2027-04-01","descricao":"Poupança Diogo","valor":200.0,"tipo":"contribuicao","pessoa":"Diogo"},{"id":"m37","data":"2027-04-01","descricao":"Poupança Margarida","valor":160.0,"tipo":"contribuicao","pessoa":"Margarida"},{"id":"m38","data":"2027-05-01","descricao":"Poupança Diogo","valor":200.0,"tipo":"contribuicao","pessoa":"Diogo"},{"id":"m39","data":"2027-05-01","descricao":"Poupança Margarida","valor":160.0,"tipo":"contribuicao","pessoa":"Margarida"},{"id":"m40","data":"2027-06-01","descricao":"Poupança Diogo","valor":200.0,"tipo":"contribuicao","pessoa":"Diogo"},{"id":"m41","data":"2027-06-01","descricao":"Poupança Margarida","valor":160.0,"tipo":"contribuicao","pessoa":"Margarida"},{"id":"m42","data":"2027-07-01","descricao":"Poupança Diogo","valor":200.0,"tipo":"contribuicao","pessoa":"Diogo"},{"id":"m43","data":"2027-07-01","descricao":"Poupança Margarida","valor":160.0,"tipo":"contribuicao","pessoa":"Margarida"},{"id":"m44","data":"2027-08-01","descricao":"Poupança Diogo","valor":200.0,"tipo":"contribuicao","pessoa":"Diogo"},{"id":"m45","data":"2027-08-01","descricao":"Poupança Margarida","valor":160.0,"tipo":"contribuicao","pessoa":"Margarida"}],"penas":[{"id":"p1","data":"2026-06-06","valor":826.0,"obs":"Saldo Edenred"},{"id":"p2","data":"2026-06-30","valor":320.0,"obs":"Carregamento Edenred"},{"id":"p3","data":"2026-06-30","valor":-505.0,"obs":"Mensalidade Penas"},{"id":"p4","data":"2026-07-31","valor":320.0,"obs":"Carregamento Edenred"},{"id":"p5","data":"2026-07-31","valor":-505.0,"obs":"Mensalidade Penas"},{"id":"p6","data":"2026-08-31","valor":320.0,"obs":"Carregamento Edenred"},{"id":"p7","data":"2026-08-31","valor":-505.0,"obs":"Mensalidade Penas"},{"id":"p8","data":"2026-09-30","valor":320.0,"obs":"Carregamento Edenred"},{"id":"p9","data":"2026-09-30","valor":-590.0,"obs":"Mensalidade Penas"},{"id":"p10","data":"2026-09-30","valor":-35.0,"obs":"Seguro Anual"},{"id":"p11","data":"2026-10-31","valor":320.0,"obs":"Carregamento Edenred"},{"id":"p12","data":"2026-10-31","valor":-590.0,"obs":"Mensalidade Penas"},{"id":"p13","data":"2026-11-30","valor":320.0,"obs":"Carregamento Edenred"},{"id":"p14","data":"2026-11-30","valor":-590.0,"obs":"Mensalidade Penas"}]};
-const LS_KEY='planoFinanceiro_v1', LS_TOK='pf_ghtoken', LS_TOKSAVE='pf_ghtoksave';
+const LS_KEY='planoFerias_v2', LS_TOK='pf_ghtoken', LS_TOKSAVE='pf_ghtoksave';
 
 /* ---------- estado ---------- */
-function defConfig(){return{titulo:'Plano Financeiro',subtitulo:'Poupança & despesas — Diogo + Margarida',
+function defConfig(){return{titulo:'Plano de Férias',subtitulo:'Diogo + Margarida',
   saldoInicial:SEED.saldoInicial,dataInicial:SEED.dataInicial,split:{Diogo:55,Margarida:45},buffer:0,
-  github:{owner:'diogoandrefsilva-ghc',repo:'AppDataJSON',path:'plano-financeiro.json',branch:'main'},readonly:false};}
-function freshData(){return{config:defConfig(),
-  movimentos:JSON.parse(JSON.stringify(SEED.movimentos)),
-  penas:JSON.parse(JSON.stringify(SEED.penas))};}
-let DATA, ghToken='', ghSha=null, saveTok=false, RO=false;
-let chS=null, chM=null, editId=null, editPenaId=null;
+  github:{owner:'diogoandrefsilva-ghc',repo:'PlanoFerias',path:'planoferias-data.json',branch:'main'},readonly:false};}
 
-function load(){
-  try{const r=localStorage.getItem(LS_KEY);if(r){const d=JSON.parse(r);d.config=Object.assign(defConfig(),d.config||{});d.config.github=Object.assign(defConfig().github,d.config.github||{});d.config.split=Object.assign({Diogo:55,Margarida:45},d.config.split||{});if(!Array.isArray(d.penas))d.penas=[];return d;}}catch(e){}
-  return freshData();
+function migrate(d){
+  d=d||{}; d.config=Object.assign(defConfig(),d.config||{});
+  d.config.github=Object.assign(defConfig().github,d.config.github||{});
+  d.config.split=Object.assign({Diogo:55,Margarida:45},d.config.split||{});
+  d.movimentos=Array.isArray(d.movimentos)?d.movimentos:[];
+  d.penas=Array.isArray(d.penas)?d.penas:[];
+  d.sims=Array.isArray(d.sims)?d.sims:[];
+  if(!d.config.planoMensal){
+    const rx=/^Poupança (Diogo|Margarida)/;
+    const rec=d.movimentos.filter(m=>rx.test(m.descricao));
+    if(rec.length){
+      const months=[...new Set(rec.map(m=>m.data.slice(0,7)))].sort();
+      const total=rec.reduce((s,m)=>s+m.valor,0);
+      const valorTotal=Math.round(total/months.length);
+      d.config.planoMensal={ativo:true,diaMes:1,ate:months[months.length-1],segmentos:[{desde:months[0],valorTotal}]};
+      d.movimentos=d.movimentos.filter(m=>!rx.test(m.descricao));
+    }else{
+      const mk=new Date().toISOString().slice(0,7);
+      d.config.planoMensal={ativo:false,diaMes:1,ate:mk,segmentos:[{desde:mk,valorTotal:360}]};
+    }
+  }
+  const pm=d.config.planoMensal;
+  if(!pm.segmentos||!pm.segmentos.length)pm.segmentos=[{desde:pm.inicio||'2026-05',valorTotal:pm.valorTotal||360}];
+  pm.segmentos.sort((a,b)=>a.desde<b.desde?-1:1);
+  pm.diaMes=pm.diaMes||1;
+  return d;
 }
+function freshData(){return migrate({config:defConfig(),movimentos:JSON.parse(JSON.stringify(SEED.movimentos)),penas:JSON.parse(JSON.stringify(SEED.penas))});}
+let DATA, ghToken='', ghSha=null, saveTok=false, RO=false;
+let chS=null, chM=null, chSim=null, editId=null, editPenaId=null, showPast=false;
+
+function load(){try{const r=localStorage.getItem(LS_KEY);if(r)return migrate(JSON.parse(r));}catch(e){}return freshData();}
 function persist(){try{localStorage.setItem(LS_KEY,JSON.stringify(DATA));}catch(e){}}
 
 /* ---------- utils ---------- */
 const eur=new Intl.NumberFormat('pt-PT',{style:'currency',currency:'EUR'});
 const fmt=v=>eur.format(v||0);
-const fmtN=v=>new Intl.NumberFormat('pt-PT',{minimumFractionDigits:2,maximumFractionDigits:2}).format(v||0)+' €';
+const r2=v=>Math.round((v||0)*100)/100;
+function mult5up(v){return Math.ceil((v||0)/5)*5;}
+function mult5dn(v){return Math.floor((v||0)/5)*5;}
+function split55(total){const dio=mult5up((total||0)*DATA.config.split.Diogo/100);const marg=mult5dn((total||0)*DATA.config.split.Margarida/100);return{dio:r2(dio),marg:r2(marg),total:r2(dio+marg)};}
 function fmtDate(iso){if(!iso)return'';const[y,m,d]=iso.split('-');return d+'/'+m+'/'+y;}
-function fmtMesAno(iso){const[y,m]=iso.split('-');const ms=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];return ms[+m-1]+'/'+y.slice(2);}
+function fmtDayMonth(iso){if(!iso)return'';const[y,m,d]=iso.split('-');return d+'/'+m;}
+const MS=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+function fmtMesAno(iso){const[y,m]=iso.split('-');return MS[+m-1]+'/'+y.slice(2);}
 function todayISO(){return new Date().toISOString().slice(0,10);}
 const uid=()=>'x'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+function esc(s){return(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 function toast(t){const e=document.getElementById('toast');e.textContent=t;e.classList.add('show');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('show'),2400);}
 
-/* ---------- cálculo do livro ---------- */
-function ledger(){
-  const ms=[...DATA.movimentos].sort((a,b)=>a.data<b.data?-1:a.data>b.data?1:0);
-  let bal=DATA.config.saldoInicial;
-  const out=[];
-  for(const m of ms){bal+=m.valor;out.push(Object.assign({},m,{saldo:Math.round(bal*100)/100}));}
+/* ---------- geração plano + livro ---------- */
+function planSegments(sims){
+  const pm=DATA.config.planoMensal;
+  let segs=(pm.segmentos||[]).map(s=>({desde:s.desde,valorTotal:s.valorTotal}));
+  (sims||[]).filter(s=>s.tipo==='mensal').forEach(s=>segs.push({desde:s.desde,valorTotal:s.valorTotal}));
+  segs.sort((a,b)=>a.desde<b.desde?-1:1);return segs;
+}
+function monthlyValue(mk,segs){let v=0;segs.forEach(s=>{if(s.desde<=mk)v=s.valorTotal;});return v;}
+function genMonthly(sims){
+  const pm=DATA.config.planoMensal;if(!pm.ativo)return[];
+  const segs=planSegments(sims);if(!segs.length)return[];
+  const start=segs[0].desde,end=pm.ate;if(end<start)return[];
+  const dia=String(Math.min(28,Math.max(1,pm.diaMes||1))).padStart(2,'0');
+  let[y,m]=start.split('-').map(Number);const[ey,em]=end.split('-').map(Number);const out=[];
+  while(y<ey||(y===ey&&m<=em)){
+    const mk=y+'-'+String(m).padStart(2,'0');const v=monthlyValue(mk,segs);
+    if(v>0){const tv=split55(v).total;out.push({id:'auto-'+mk,data:mk+'-'+dia,descricao:'Poupança mensal',valor:tv,tipo:'contribuicao',pessoa:'Comum',auto:true});}
+    m++;if(m>12){m=1;y++;}
+  }return out;
+}
+function buildLedger(sims){
+  const concrete=DATA.movimentos.map(m=>Object.assign({},m));
+  const monthly=genMonthly(sims);
+  const deps=(sims||[]).filter(s=>s.tipo==='deposito').map(s=>({id:'sim-'+s.id,data:s.data,descricao:(s.desc||'Depósito extra')+' (sim)',valor:Math.abs(+s.valor),tipo:'contribuicao',pessoa:'Comum',sim:true}));
+  const all=[...concrete,...monthly,...deps].sort((a,b)=>a.data<b.data?-1:a.data>b.data?1:0);
+  let bal=DATA.config.saldoInicial;const out=[];
+  for(const m of all){bal+=m.valor;out.push(Object.assign({},m,{saldo:r2(bal)}));}
   return out;
 }
-function metrics(){
-  const L=ledger(), t=todayISO();
-  let saldoHoje=DATA.config.saldoInicial;
-  L.forEach(m=>{if(m.data<=t)saldoHoje=m.saldo;});
-  const saldoFinal=L.length?L[L.length-1].saldo:DATA.config.saldoInicial;
-  let min={saldo:DATA.config.saldoInicial,data:DATA.config.dataInicial};
-  L.forEach(m=>{if(m.saldo<min.saldo)min={saldo:m.saldo,data:m.data};});
-  let cD=0,cM=0,rec=0,desp=0;
-  DATA.movimentos.forEach(m=>{
-    if(m.tipo==='contribuicao'){if(m.pessoa==='Margarida')cM+=m.valor;else cD+=m.valor;}
-    else if(m.tipo==='receita')rec+=m.valor;
-    else if(m.tipo==='despesa')desp+=m.valor;
-  });
-  return{L,saldoHoje:Math.round(saldoHoje*100)/100,saldoFinal,min,cD,cM,rec,desp};
+function targetDate(L){const h=new Date();const nye=(h.getFullYear()+1)+'-12-31';const last=L.length?L[L.length-1].data:DATA.config.dataInicial;return last<nye?last:nye;}
+function calc(L){
+  const t=todayISO();let saldoHoje=DATA.config.saldoInicial;L.forEach(m=>{if(m.data<=t)saldoHoje=m.saldo;});
+  const td=targetDate(L);let saldoTarget=DATA.config.saldoInicial;L.forEach(m=>{if(m.data<=td)saldoTarget=m.saldo;});
+  const upto=L.filter(m=>m.data<=td);
+  const desp=upto.filter(m=>m.tipo==='despesa');
+  const low=[...desp].sort((a,b)=>a.saldo-b.saldo).slice(0,3);
+  let c=0,r=0,d=0;L.forEach(m=>{if(m.tipo==='contribuicao')c+=m.valor;else if(m.tipo==='receita')r+=m.valor;else if(m.tipo==='despesa')d+=m.valor;});
+  return{L,saldoHoje:r2(saldoHoje),target:td,saldoTarget:r2(saldoTarget),low,c:r2(c),r:r2(r),d:r2(d)};
 }
 
 /* ---------- HERO + RESUMO ---------- */
 function renderHeader(){
-  document.getElementById('appTitle').textContent=DATA.config.titulo||'Plano Financeiro';
-  document.getElementById('appSub').textContent=DATA.config.subtitulo||'';
-  const M=metrics();
+  document.getElementById('appTitle').textContent=DATA.config.titulo||'Plano de Férias';
+  const M=calc(buildLedger());
   document.getElementById('saldoHoje').textContent=fmt(M.saldoHoje);
   document.getElementById('saldoHojeMeta').textContent='Em '+fmtDate(todayISO());
-  document.getElementById('saldoFinal').textContent=fmt(M.saldoFinal);
-  const last=M.L.length?M.L[M.L.length-1].data:DATA.config.dataInicial;
-  document.getElementById('saldoFinalMeta').textContent='Até '+fmtDate(last);
-  document.getElementById('saldoMin').textContent=fmt(M.min.saldo);
-  document.getElementById('saldoMinMeta').textContent='Em '+fmtDate(M.min.data);
-  const buf=DATA.config.buffer||0, flag=document.getElementById('minFlag');
-  if(M.min.saldo<buf){flag.className='warnflag bad';flag.textContent='⚠︎ Abaixo do buffer — ver Reforços';}
-  else if(M.min.saldo<0){flag.className='warnflag bad';flag.textContent='⚠︎ Fica negativo';}
-  else{flag.className='warnflag good';flag.textContent='✓ Sempre positivo';}
+  const mn=M.low[0]||{saldo:M.saldoTarget,data:M.target,descricao:''};
+  document.getElementById('menorSaldo').textContent=fmt(mn.saldo);
+  document.getElementById('menorSaldoMeta').textContent=fmtDate(mn.data)+(mn.descricao?' · '+mn.descricao:'');
 }
 function renderResumo(){
-  const M=metrics();
-  document.getElementById('cDiogo').textContent=fmt(M.cD);
-  document.getElementById('cMarg').textContent=fmt(M.cM);
-  const tot=M.cD+M.cM;
-  const pD=tot?Math.round(M.cD/tot*100):0, pM=tot?100-pD:0;
-  document.getElementById('cDiogoPct').textContent=tot?pD+'% das contribuições':'—';
-  document.getElementById('cMargPct').textContent=tot?pM+'% das contribuições':'—';
-  const sb=document.getElementById('splitBar');
-  sb.innerHTML='<i style="width:'+pD+'%;background:var(--diogo)"></i><i style="width:'+pM+'%;background:var(--marg)"></i>';
-  document.getElementById('splitTxt').innerHTML='Diogo '+fmt(M.cD)+' · Margarida '+fmt(M.cM)+' <span class="muted">(definido p/ reforços: '+DATA.config.split.Diogo+' / '+DATA.config.split.Margarida+')</span>';
-  document.getElementById('totContrib').textContent=fmt(tot);
-  document.getElementById('totReceita').textContent=fmt(M.rec);
-  document.getElementById('totDespesa').textContent=fmt(M.desp);
-  document.getElementById('totLiquido').textContent=fmt(M.saldoFinal-DATA.config.saldoInicial);
+  const M=calc(buildLedger());
+  const t0=todayISO();
+  let cFut=0,dFut=0;M.L.forEach(m=>{if(m.data>=t0){if(m.tipo==='contribuicao'||m.tipo==='receita')cFut+=m.valor;else if(m.tipo==='despesa')dFut+=m.valor;}});
+  const pm=DATA.config.planoMensal;const segs=planSegments();
+  const atualBase=segs.length?(monthlyValue(t0.slice(0,7),segs)||segs[segs.length-1].valorTotal):0;
+  const sp=split55(atualBase);
+  document.getElementById('fxContrib').textContent=fmt(r2(cFut));
+  document.getElementById('fxDespesa').textContent=fmt(r2(dFut));
+  if(pm.ativo){document.getElementById('fxPlano').textContent=fmt(sp.total);document.getElementById('fxPlanoSub').textContent='Diogo '+fmt(sp.dio)+' · Margarida '+fmt(sp.marg)+' · até '+fmtMesAno(pm.ate+'-01');}
+  else{document.getElementById('fxPlano').textContent='—';document.getElementById('fxPlanoSub').textContent='Plano inativo';}
+  // próximas despesas
   const t=todayISO();
   const prox=DATA.movimentos.filter(m=>m.tipo==='despesa'&&m.data>=t).sort((a,b)=>a.data<b.data?-1:1).slice(0,6);
   const box=document.getElementById('proxDespesas');
   if(!prox.length){box.innerHTML='<div class="empty"><div class="ic">✦</div>Sem despesas futuras registadas.</div>';}
-  else{box.innerHTML=prox.map(m=>'<div class="defrow"><div class="t"><b>'+esc(m.descricao)+'</b><span>'+fmtDate(m.data)+'</span></div><span class="val neg num">'+fmt(m.valor)+'</span></div>').join('');}
+  else box.innerHTML=prox.map(m=>'<div class="defrow"><div class="t"><b>'+esc(m.descricao)+'</b><span>'+fmtDate(m.data)+'</span></div><span class="val neg num">'+fmt(m.valor)+'</span></div>').join('');
 }
-function esc(s){return(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 
 /* ---------- MOVIMENTOS ---------- */
 function renderMov(){
-  const L=ledger(), t=todayISO();
+  const L=buildLedger(), t=todayISO(), buf=DATA.config.buffer||0;
+  const C=calc(L);const minSaldo=C.low[0]?C.low[0].saldo:null, minData=C.low[0]?C.low[0].data:null;
   const fs=document.getElementById('mSearch').value.toLowerCase().trim();
-  const ft=document.getElementById('mTipo').value, fp=document.getElementById('mPessoa').value;
-  const minData=metrics().min.data;
-  const rows=L.filter(m=>(!fs||m.descricao.toLowerCase().includes(fs))&&(!ft||m.tipo===ft)&&(!fp||m.pessoa===fp));
+  const ft=document.getElementById('mTipo').value;
+  const pastCount=L.filter(m=>m.data<t).length;
+  const btn=document.getElementById('btnPast');
+  if(btn){btn.style.display=pastCount?'inline-flex':'none';btn.textContent=showPast?'Ocultar anteriores':'Mostrar anteriores ('+pastCount+')';btn.classList.toggle('primary',showPast);}
+  const rows=L.filter(m=>(showPast||m.data>=t)&&(!fs||m.descricao.toLowerCase().includes(fs))&&(!ft||m.tipo===ft));
   const body=document.getElementById('movBody');
-  if(!rows.length){body.innerHTML='<tr><td colspan="7"><div class="empty"><div class="ic">∅</div>Sem movimentos.</div></td></tr>';return;}
-  let html='', lastMonth='';
+  if(!rows.length){body.innerHTML='<tr><td colspan="5"><div class="empty"><div class="ic">∅</div>Sem movimentos.</div></td></tr>';return;}
+  let html='',lastM='';
   rows.forEach(m=>{
     const mo=m.data.slice(0,7);
-    if(mo!==lastMonth){lastMonth=mo;html+='<tr class="divider-month"><td colspan="7">'+fmtMesAno(m.data+'')+'</td></tr>';}
-    const fut=m.data>t, pos=m.valor>=0;
-    const chip=m.tipo==='contribuicao'?(m.pessoa==='Margarida'?'<span class="chip marg">Margarida</span>':'<span class="chip diogo">Diogo</span>')
-      :m.tipo==='receita'?'<span class="chip receita">Receita</span>':'<span class="chip despesa">Despesa</span>';
-    const isMin=m.data===minData&&m.saldo===metrics().min.saldo;
-    html+='<tr class="'+(fut?'future ':'')+(isMin?'minrow':'')+'" data-id="'+m.id+'">'
-      +'<td>'+fmtDate(m.data)+'</td><td><b>'+esc(m.descricao)+'</b></td>'
-      +'<td>'+(m.tipo==='contribuicao'?'<span class="chip comum">Contribuição</span>':chip)+'</td>'
-      +'<td>'+(m.tipo==='contribuicao'?chip:'<span class="chip comum">'+m.pessoa+'</span>')+'</td>'
+    if(mo!==lastM){lastM=mo;html+='<tr class="divider-month"><td colspan="5">'+fmtMesAno(m.data)+'</td></tr>';}
+    const fut=m.data>t,pos=m.valor>=0;
+    const chip=m.tipo==='contribuicao'?'<span class="chip contrib">Contribuição</span>':m.tipo==='receita'?'<span class="chip receita">Receita</span>':'<span class="chip despesa">Despesa</span>';
+    const isMin=m.data===minData&&m.saldo===minSaldo;
+    html+='<tr class="'+(fut?'future ':'')+(isMin?'minrow':'')+'">'
+      +'<td class="datecell">'+fmtDayMonth(m.data)+'<div class="tcell">'+chip+'</div></td>'
+      +'<td><b>'+esc(m.descricao)+'</b>'+(m.auto?'<span class="tag-auto">auto</span>':'')+'</td>'
       +'<td class="r"><span class="val num '+(pos?'pos':'neg')+'">'+fmt(m.valor)+'</span></td>'
-      +'<td class="r"><span class="saldo num '+(m.saldo<(DATA.config.buffer||0)?'low':'')+'">'+fmt(m.saldo)+'</span></td>'
-      +'<td class="r ro-hideable"><div class="rowact"><button class="iconbtn" data-edit="'+m.id+'">✎</button></div></td></tr>';
+      +'<td class="r"><span class="saldo num '+(m.saldo<buf?'low':'')+'">'+fmt(m.saldo)+'</span></td>'
+      +'<td class="r ro-hideable">'+(m.auto?'':'<div class="rowact"><button class="iconbtn" data-edit="'+m.id+'">✎</button></div>')+'</td></tr>';
   });
   body.innerHTML=html;
   body.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>openMov(b.dataset.edit));
@@ -606,102 +744,130 @@ function renderMov(){
 }
 
 /* ---------- MODAL movimento ---------- */
-let mTipo='contribuicao', mPessoa='Diogo';
+let mTipo='contribuicao';
 function openMov(id){
   editId=id||null;
   document.getElementById('movModalTitle').textContent=id?'Editar movimento':'Novo movimento';
   document.getElementById('btnDelMov').style.display=id?'flex':'none';
-  if(id){const m=DATA.movimentos.find(x=>x.id===id);mTipo=m.tipo;mPessoa=m.pessoa==='Margarida'?'Margarida':'Diogo';
-    document.getElementById('fData').value=m.data;document.getElementById('fValor').value=Math.abs(m.valor);
-    document.getElementById('fDesc').value=m.descricao;}
-  else{mTipo='contribuicao';mPessoa='Diogo';document.getElementById('fData').value=todayISO();
-    document.getElementById('fValor').value='';document.getElementById('fDesc').value='';}
-  syncSeg();show('ovMov');
-}
-function syncSeg(){
+  if(id){const m=DATA.movimentos.find(x=>x.id===id);mTipo=m.tipo;
+    document.getElementById('fData').value=m.data;document.getElementById('fValor').value=Math.abs(m.valor);document.getElementById('fDesc').value=m.descricao;}
+  else{mTipo='contribuicao';document.getElementById('fData').value=todayISO();document.getElementById('fValor').value='';document.getElementById('fDesc').value='';}
   document.querySelectorAll('#segTipo button').forEach(b=>b.classList.toggle('on',b.dataset.t===mTipo));
-  document.querySelectorAll('#segPessoa button').forEach(b=>b.classList.toggle('on',b.dataset.p===mPessoa));
-  document.getElementById('fldPessoa').style.display=mTipo==='contribuicao'?'block':'none';
+  show('ovMov');
 }
 function saveMov(){
-  const data=document.getElementById('fData').value;
-  let v=parseFloat(document.getElementById('fValor').value);
+  const data=document.getElementById('fData').value;let v=parseFloat(document.getElementById('fValor').value);
   const desc=document.getElementById('fDesc').value.trim();
   if(!data||isNaN(v)||!desc){toast('Preenche data, valor e descrição');return;}
-  v=Math.abs(v); if(mTipo==='despesa')v=-v;
-  const pessoa=mTipo==='contribuicao'?mPessoa:'Comum';
-  if(editId){const m=DATA.movimentos.find(x=>x.id===editId);Object.assign(m,{data,valor:v,descricao:desc,tipo:mTipo,pessoa});}
-  else{DATA.movimentos.push({id:uid(),data,descricao:desc,valor:v,tipo:mTipo,pessoa});}
+  v=Math.abs(v);if(mTipo==='despesa')v=-v;
+  if(editId){Object.assign(DATA.movimentos.find(x=>x.id===editId),{data,valor:v,descricao:desc,tipo:mTipo,pessoa:'Comum'});}
+  else DATA.movimentos.push({id:uid(),data,descricao:desc,valor:v,tipo:mTipo,pessoa:'Comum'});
   persist();close();renderAll();toast(editId?'Movimento atualizado':'Movimento adicionado');
 }
-function delMov(){if(!editId)return;if(!confirm('Eliminar este movimento?'))return;
-  DATA.movimentos=DATA.movimentos.filter(x=>x.id!==editId);persist();close();renderAll();toast('Eliminado');}
+function delMov(){if(!editId)return;if(!confirm('Eliminar este movimento?'))return;DATA.movimentos=DATA.movimentos.filter(x=>x.id!==editId);persist();close();renderAll();toast('Eliminado');}
 
-/* ---------- GERAR recorrências ---------- */
-let genWho='ambos';
-function openGen(){
-  const d=new Date();document.getElementById('genInicio').value=d.toISOString().slice(0,7);
-  updGenHint();show('ovGen');
+/* ---------- SIMULAÇÃO ---------- */
+let simType='deposito';
+function openSim(type){
+  simType=type;document.querySelectorAll('#segSim button').forEach(b=>b.classList.toggle('on',b.dataset.s===type));
+  document.getElementById('simFldDep').style.display=type==='deposito'?'block':'none';
+  document.getElementById('simFldMen').style.display=type==='mensal'?'block':'none';
+  document.getElementById('sData').value=todayISO();
+  document.getElementById('sDesde').value=todayISO().slice(0,7);
+  document.getElementById('sValor').value='';document.getElementById('sDesc').value='';document.getElementById('sMensal').value='';
+  updSimHint();show('ovSim');
 }
-function updGenHint(){
-  const ini=document.getElementById('genInicio').value, n=+document.getElementById('genN').value||0;
-  if(!ini||!n){document.getElementById('genHint').textContent='';return;}
-  const[y,m]=ini.split('-').map(Number);const end=new Date(y,m-1+n-1,1);
-  document.getElementById('genHint').textContent='Vai criar até '+['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'][end.getMonth()]+'/'+String(end.getFullYear()).slice(2)+'.';
+function updSimHint(){const v=parseFloat(document.getElementById('sMensal').value);const sp=isNaN(v)?null:split55(v);
+  document.getElementById('simMenHint').textContent=sp?('Divisão: Diogo '+fmt(sp.dio)+' · Margarida '+fmt(sp.marg)+' (total '+fmt(sp.total)+')'):'';}
+function saveSim(){
+  if(simType==='deposito'){const data=document.getElementById('sData').value,v=parseFloat(document.getElementById('sValor').value),desc=document.getElementById('sDesc').value.trim();
+    if(!data||isNaN(v)){toast('Indica data e valor');return;}DATA.sims.push({id:uid(),tipo:'deposito',data,valor:Math.abs(v),desc:desc||'Depósito extra'});}
+  else{const desde=document.getElementById('sDesde').value,v=parseFloat(document.getElementById('sMensal').value);
+    if(!desde||isNaN(v)){toast('Indica mês e valor');return;}DATA.sims.push({id:uid(),tipo:'mensal',desde,valorTotal:v});}
+  persist();close();renderSim();toast('Ajuste adicionado ao cenário');
 }
-function doGen(){
-  const ini=document.getElementById('genInicio').value, n=+document.getElementById('genN').value||0;
-  const dia=Math.min(28,Math.max(1,+document.getElementById('genDia').value||1));
-  const vD=parseFloat(document.getElementById('genVD').value)||0, vM=parseFloat(document.getElementById('genVM').value)||0;
-  if(!ini||!n){toast('Define início e nº de meses');return;}
-  const[y,m]=ini.split('-').map(Number);let count=0;
-  for(let i=0;i<n;i++){const dt=new Date(y,m-1+i,dia);const iso=dt.toISOString().slice(0,10);
-    if(genWho!=='Margarida'&&vD>0){DATA.movimentos.push({id:uid(),data:iso,descricao:'Poupança Diogo',valor:vD,tipo:'contribuicao',pessoa:'Diogo'});count++;}
-    if(genWho!=='Diogo'&&vM>0){DATA.movimentos.push({id:uid(),data:iso,descricao:'Poupança Margarida',valor:vM,tipo:'contribuicao',pessoa:'Margarida'});count++;}
-  }
-  persist();close();renderAll();toast(count+' contribuições geradas');
+function renderSim(){
+  const list=document.getElementById('simList'),res=document.getElementById('simResult');
+  if(!DATA.sims.length){list.innerHTML='<div class="empty"><div class="ic">✦</div>Sem ajustes. Adiciona um depósito ou alteração para simular.</div>';res.style.display='none';return;}
+  list.innerHTML='<div class="card" style="padding:2px 4px">'+DATA.sims.map(s=>{
+    const txt=s.tipo==='deposito'?{ic:'dep',t:esc(s.desc),s:fmt(s.valor)+' · '+fmtDate(s.data)}:{ic:'men',t:'Poupança mensal → '+fmt(s.valorTotal),s:'a partir de '+fmtMesAno(s.desde+'-01')};
+    return '<div class="simitem"><div class="ic '+txt.ic+'">'+(s.tipo==='deposito'?'€':'↻')+'</div><div class="t"><b>'+txt.t+'</b><span>'+txt.s+'</span></div>'
+      +(RO?'':'<button class="iconbtn" data-rmsim="'+s.id+'">✕</button>')+'</div>';}).join('')+'</div>';
+  list.querySelectorAll('[data-rmsim]').forEach(b=>b.onclick=()=>{DATA.sims=DATA.sims.filter(x=>x.id!==b.dataset.rmsim);persist();renderSim();});
+  res.style.display='block';
+  const base=calc(buildLedger()), sim=calc(buildLedger(DATA.sims));
+  const dT=sim.saldoTarget-base.saldoTarget, dM=(sim.low[0]?sim.low[0].saldo:0)-(base.low[0]?base.low[0].saldo:0);
+  const dl=(v)=>v===0?'':'<span class="delta '+(v>0?'up':'down')+'">'+(v>0?'+':'')+fmt(v)+'</span>';
+  document.getElementById('simCmp').innerHTML=
+    '<div class="cmpcard"><div class="lbl">Plano atual</div>'
+    +'<div class="cmpline"><span class="k">Saldo previsto</span><span class="vv">'+fmt(base.saldoTarget)+'</span></div>'
+    +'<div class="cmpline"><span class="k">Saldo mínimo</span><span class="vv">'+fmt(base.low[0]?base.low[0].saldo:0)+'</span></div></div>'
+    +'<div class="cmpcard" style="border-color:var(--diogo)"><div class="lbl" style="color:var(--diogo)">Simulado</div>'
+    +'<div class="cmpline"><span class="k">Saldo previsto</span><span class="vv">'+fmt(sim.saldoTarget)+dl(dT)+'</span></div>'
+    +'<div class="cmpline"><span class="k">Saldo mínimo</span><span class="vv">'+fmt(sim.low[0]?sim.low[0].saldo:0)+dl(dM)+'</span></div></div>';
+  renderSimChart(base.L,sim.L);
+  document.getElementById('btnSimAplicar').style.display=RO?'none':'inline-flex';
+}
+function balAt(L,date){let b=DATA.config.saldoInicial;L.forEach(m=>{if(m.data<=date)b=m.saldo;});return r2(b);}
+function renderSimChart(baseL,simL){
+  if(typeof Chart==='undefined')return;
+  const dates=[...new Set([...baseL.map(m=>m.data),...simL.map(m=>m.data)])].sort();
+  const labels=dates.map(fmtDate), bs=dates.map(d=>balAt(baseL,d)), ss=dates.map(d=>balAt(simL,d));
+  if(chSim)chSim.destroy();
+  chSim=new Chart(document.getElementById('chartSim'),{type:'line',data:{labels,datasets:[
+    {label:'Plano atual',data:bs,borderColor:'#7C8A82',borderWidth:2,borderDash:[5,4],pointRadius:0,tension:.2},
+    {label:'Simulado',data:ss,borderColor:'#1C6B79',borderWidth:2.6,pointRadius:0,pointHoverRadius:5,tension:.2,fill:false}]},
+    options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.dataset.label+': '+fmt(c.parsed.y)}}},
+      scales:{x:{ticks:{maxTicksLimit:7,color:'#7C8A82',font:{size:10}},grid:{display:false}},
+        y:{ticks:{color:'#7C8A82',font:{size:11},callback:v=>v+' €'},grid:{color:'rgba(21,48,42,.07)'}}}}});
+}
+function aplicarSim(){
+  if(!DATA.sims.length)return;if(!confirm('Aplicar a simulação ao plano real?'))return;
+  DATA.sims.forEach(s=>{
+    if(s.tipo==='deposito')DATA.movimentos.push({id:uid(),data:s.data,descricao:s.desc||'Depósito extra',valor:Math.abs(s.valor),tipo:'contribuicao',pessoa:'Comum'});
+    else{const segs=DATA.config.planoMensal.segmentos;const ex=segs.find(x=>x.desde===s.desde);if(ex)ex.valorTotal=s.valorTotal;else segs.push({desde:s.desde,valorTotal:s.valorTotal});segs.sort((a,b)=>a.desde<b.desde?-1:1);}
+  });
+  DATA.sims=[];persist();renderAll();renderSim();toast('Simulação aplicada ao plano ✓');
 }
 
 /* ---------- REFORÇOS ---------- */
 function renderReforco(){
   document.getElementById('splitView').value=DATA.config.split.Diogo+'% / '+DATA.config.split.Margarida+'%';
   const buf=parseFloat(document.getElementById('bufInput').value)||0;
-  const M=metrics(), out=document.getElementById('reforcoResult');
-  const need=buf-M.min.saldo;
-  if(need<=0){out.innerHTML='<div class="callout ok">✓ Tudo certo. O saldo previsto nunca desce abaixo de '+fmt(buf)+' (mínimo: '+fmt(M.min.saldo)+' em '+fmtDate(M.min.data)+'). Sem reforço necessário.</div>';return;}
-  const total=Math.ceil(need/10)*10;
-  const d=Math.round(total*DATA.config.split.Diogo)/100, mg=Math.round((total-Math.round(total*DATA.config.split.Diogo)/100)*100)/100;
-  out.innerHTML='<div class="callout warn">⚠︎ O saldo previsto desce até <b>'+fmt(M.min.saldo)+'</b> em '+fmtDate(M.min.data)+'. Para manteres sempre '+fmt(buf)+', precisas de reforçar <b>'+fmt(total)+'</b> antes dessa data.</div>'
+  const M=calc(buildLedger()), out=document.getElementById('reforcoResult');
+  const min=M.low[0]?M.low[0]:{saldo:DATA.config.saldoInicial,data:DATA.config.dataInicial};
+  const need=buf-min.saldo;
+  if(need<=0){out.innerHTML='<div class="callout ok">✓ Tudo certo. O saldo previsto nunca desce abaixo de '+fmt(buf)+' (mínimo: '+fmt(min.saldo)+' em '+fmtDate(min.data)+'). Sem reforço necessário.</div>';return;}
+  const base=Math.ceil(need/10)*10;
+  const sp=split55(base);const total=sp.total,d=sp.dio,mg=sp.marg;
+  out.innerHTML='<div class="callout warn">⚠︎ O saldo previsto desce até <b>'+fmt(min.saldo)+'</b> em '+fmtDate(min.data)+'. Para manteres sempre '+fmt(buf)+', precisas de reforçar <b>'+fmt(total)+'</b> antes dessa data.</div>'
     +'<div class="reforco-out"><div class="pcard diogo"><div class="who">Diogo</div><div class="amt num">'+fmt(d)+'</div><div class="pct">'+DATA.config.split.Diogo+'% do reforço</div></div>'
     +'<div class="pcard marg"><div class="who">Margarida</div><div class="amt num">'+fmt(mg)+'</div><div class="pct">'+DATA.config.split.Margarida+'% do reforço</div></div></div>';
 }
 function renderQuick(){
   const v=parseFloat(document.getElementById('quickRef').value);
-  const out=document.getElementById('quickOut'), btn=document.getElementById('btnAplicarRef');
+  const out=document.getElementById('quickOut'),btn=document.getElementById('btnAplicarRef');
   if(isNaN(v)||v<=0){out.style.display='none';btn.style.display='none';return;}
-  const d=Math.round(v*DATA.config.split.Diogo)/100, mg=Math.round((v-d)*100)/100;
+  const sp=split55(v),d=sp.dio,mg=sp.marg;
   out.style.display='grid';
-  out.innerHTML='<div class="pcard diogo"><div class="who">Diogo</div><div class="amt num">'+fmt(d)+'</div><div class="pct">'+DATA.config.split.Diogo+'%</div></div>'
-    +'<div class="pcard marg"><div class="who">Margarida</div><div class="amt num">'+fmt(mg)+'</div><div class="pct">'+DATA.config.split.Margarida+'%</div></div>';
-  btn.style.display=RO?'none':'inline-flex';btn._v={d,mg};
+  out.innerHTML='<div class="pcard diogo"><div class="who">Diogo</div><div class="amt num">'+fmt(d)+'</div><div class="pct">'+DATA.config.split.Diogo+'% · múlt. de 5</div></div>'
+    +'<div class="pcard marg"><div class="who">Margarida</div><div class="amt num">'+fmt(mg)+'</div><div class="pct">'+DATA.config.split.Margarida+'% · múlt. de 5</div></div>';
+  btn.style.display=RO?'none':'inline-flex';btn._v={total:sp.total,d,mg};
 }
-function aplicarRef(){
-  const btn=document.getElementById('btnAplicarRef');if(!btn._v)return;
-  const t=todayISO();
-  DATA.movimentos.push({id:uid(),data:t,descricao:'Reforço Diogo',valor:btn._v.d,tipo:'contribuicao',pessoa:'Diogo'});
-  DATA.movimentos.push({id:uid(),data:t,descricao:'Reforço Margarida',valor:btn._v.mg,tipo:'contribuicao',pessoa:'Margarida'});
-  persist();renderAll();toast('Reforço registado');document.getElementById('quickRef').value='';renderQuick();
-}
+function aplicarRef(){const btn=document.getElementById('btnAplicarRef');if(!btn._v)return;
+  DATA.movimentos.push({id:uid(),data:todayISO(),descricao:'Reforço (Diogo '+fmt(btn._v.d)+' / Margarida '+fmt(btn._v.mg)+')',valor:btn._v.total,tipo:'contribuicao',pessoa:'Comum'});
+  persist();renderAll();toast('Reforço registado');document.getElementById('quickRef').value='';renderQuick();}
 
 /* ---------- PENAS ---------- */
-function penaLedger(){const ms=[...DATA.penas].sort((a,b)=>a.data<b.data?-1:1);let b=0;return ms.map(m=>{b+=m.valor;return Object.assign({},m,{saldo:Math.round(b*100)/100});});}
+function penaLedger(){const ms=[...DATA.penas].sort((a,b)=>a.data<b.data?-1:1);let b=0;return ms.map(m=>{b+=m.valor;return Object.assign({},m,{saldo:r2(b)});});}
 function renderPenas(){
   const L=penaLedger();let inn=0,out=0;DATA.penas.forEach(m=>m.valor>=0?inn+=m.valor:out+=m.valor);
   document.getElementById('penaSaldo').textContent=fmt(L.length?L[L.length-1].saldo:0);
   document.getElementById('penaIn').textContent=fmt(inn);document.getElementById('penaOut').textContent=fmt(out);
   const body=document.getElementById('penaBody');
   if(!L.length){body.innerHTML='<tr><td colspan="5"><div class="empty"><div class="ic">∅</div>Sem movimentos.</div></td></tr>';return;}
-  body.innerHTML=L.map(m=>'<tr data-id="'+m.id+'"><td>'+fmtDate(m.data)+'</td><td><b>'+esc(m.obs)+'</b></td>'
+  body.innerHTML=L.map(m=>'<tr><td>'+fmtDate(m.data)+'</td><td><b>'+esc(m.obs)+'</b></td>'
     +'<td class="r"><span class="val num '+(m.valor>=0?'pos':'neg')+'">'+fmt(m.valor)+'</span></td>'
     +'<td class="r"><span class="saldo num '+(m.saldo<0?'low':'')+'">'+fmt(m.saldo)+'</span></td>'
     +'<td class="r ro-hideable"><div class="rowact"><button class="iconbtn" data-pe="'+m.id+'">✎</button></div></td></tr>').join('');
@@ -710,49 +876,39 @@ function renderPenas(){
 function openPena(id){editPenaId=id||null;document.getElementById('penaModalTitle').textContent=id?'Editar — Penas':'Movimento — Penas';
   document.getElementById('btnDelPena').style.display=id?'flex':'none';
   if(id){const m=DATA.penas.find(x=>x.id===id);document.getElementById('pData').value=m.data;document.getElementById('pValor').value=m.valor;document.getElementById('pObs').value=m.obs;}
-  else{document.getElementById('pData').value=todayISO();document.getElementById('pValor').value='';document.getElementById('pObs').value='';}
-  show('ovPena');}
+  else{document.getElementById('pData').value=todayISO();document.getElementById('pValor').value='';document.getElementById('pObs').value='';}show('ovPena');}
 function savePena(){const data=document.getElementById('pData').value,v=parseFloat(document.getElementById('pValor').value),o=document.getElementById('pObs').value.trim();
   if(!data||isNaN(v)||!o){toast('Preenche os campos');return;}
-  if(editPenaId){Object.assign(DATA.penas.find(x=>x.id===editPenaId),{data,valor:v,obs:o});}
-  else DATA.penas.push({id:uid(),data,valor:v,obs:o});
+  if(editPenaId)Object.assign(DATA.penas.find(x=>x.id===editPenaId),{data,valor:v,obs:o});else DATA.penas.push({id:uid(),data,valor:v,obs:o});
   persist();close();renderPenas();toast('Guardado');}
 function delPena(){if(!editPenaId)return;if(!confirm('Eliminar?'))return;DATA.penas=DATA.penas.filter(x=>x.id!==editPenaId);persist();close();renderPenas();}
 
 /* ---------- CHARTS ---------- */
 function renderCharts(){
   if(typeof Chart==='undefined')return;
-  const L=ledger(), buf=DATA.config.buffer||0, t=todayISO();
-  const labels=L.map(m=>fmtDate(m.data)), saldos=L.map(m=>m.saldo);
-  const todayIdx=(()=>{let i=-1;L.forEach((m,k)=>{if(m.data<=t)i=k;});return i;})();
+  const L=buildLedger(),buf=DATA.config.buffer||0,t=todayISO();
+  const labels=L.map(m=>fmtDate(m.data)),saldos=L.map(m=>m.saldo);
+  let todayIdx=-1;L.forEach((m,k)=>{if(m.data<=t)todayIdx=k;});
   if(chS)chS.destroy();
-  const ctx=document.getElementById('chartSaldo');
-  chS=new Chart(ctx,{type:'line',data:{labels,datasets:[{label:'Saldo',data:saldos,borderColor:'#1C6B79',
+  chS=new Chart(document.getElementById('chartSaldo'),{type:'line',data:{labels,datasets:[{label:'Saldo',data:saldos,borderColor:'#1C6B79',
     backgroundColor:(c)=>{const a=c.chart.ctx.createLinearGradient(0,0,0,300);a.addColorStop(0,'rgba(28,107,121,.22)');a.addColorStop(1,'rgba(28,107,121,0)');return a;},
-    fill:true,tension:.25,borderWidth:2.4,pointRadius:0,pointHoverRadius:5,pointHoverBackgroundColor:'#1C6B79'}]},
+    fill:true,tension:.25,borderWidth:2.4,pointRadius:0,pointHoverRadius:5}]},
     options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
-      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>fmt(c.parsed.y)}},
-        annotation:false},
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>fmt(c.parsed.y)}}},
       scales:{x:{ticks:{maxTicksLimit:7,color:'#7C8A82',font:{size:10}},grid:{display:false}},
         y:{ticks:{color:'#7C8A82',font:{size:11},callback:v=>v+' €'},grid:{color:'rgba(21,48,42,.07)'}}}},
-    plugins:[{id:'lines',afterDraw(c){const{ctx,chartArea:{top,bottom},scales:{x,y}}=c;
-      // zero/buffer line
+    plugins:[{id:'lines',afterDraw(c){const{ctx,chartArea:{top,bottom,left,right},scales:{x,y}}=c;
       const yb=y.getPixelForValue(buf);ctx.save();ctx.strokeStyle='rgba(189,70,48,.55)';ctx.setLineDash([5,4]);ctx.lineWidth=1.3;
-      ctx.beginPath();ctx.moveTo(c.chartArea.left,yb);ctx.lineTo(c.chartArea.right,yb);ctx.stroke();
-      // today line
+      ctx.beginPath();ctx.moveTo(left,yb);ctx.lineTo(right,yb);ctx.stroke();
       if(todayIdx>=0){const xt=x.getPixelForValue(todayIdx);ctx.strokeStyle='rgba(190,142,58,.8)';ctx.setLineDash([3,3]);
-        ctx.beginPath();ctx.moveTo(xt,top);ctx.lineTo(xt,bottom);ctx.stroke();}
-      ctx.restore();}}]});
-
-  // mensal
+        ctx.beginPath();ctx.moveTo(xt,top);ctx.lineTo(xt,bottom);ctx.stroke();}ctx.restore();}}]});
   const map={};L.forEach(m=>{const k=m.data.slice(0,7);if(!map[k])map[k]={in:0,out:0};if(m.valor>=0)map[k].in+=m.valor;else map[k].out+=m.valor;});
-  const keys=Object.keys(map).sort();const ml=keys.map(fmtMesAno);
-  const ins=keys.map(k=>map[k].in), outs=keys.map(k=>map[k].out), net=keys.map(k=>map[k].in+map[k].out);
+  const keys=Object.keys(map).sort();
   if(chM)chM.destroy();
-  chM=new Chart(document.getElementById('chartMes'),{type:'bar',data:{labels:ml,datasets:[
-    {label:'Entradas',data:ins,backgroundColor:'#2E7D5B',borderRadius:5,stack:'s',maxBarThickness:34},
-    {label:'Saídas',data:outs,backgroundColor:'#BD4630',borderRadius:5,stack:'s',maxBarThickness:34},
-    {label:'Saldo do mês',data:net,type:'line',borderColor:'#15302A',borderWidth:2,pointRadius:2.5,pointBackgroundColor:'#15302A',tension:.2}]},
+  chM=new Chart(document.getElementById('chartMes'),{type:'bar',data:{labels:keys.map(fmtMesAno),datasets:[
+    {label:'Entradas',data:keys.map(k=>r2(map[k].in)),backgroundColor:'#2E7D5B',borderRadius:5,stack:'s',maxBarThickness:34},
+    {label:'Saídas',data:keys.map(k=>r2(map[k].out)),backgroundColor:'#BD4630',borderRadius:5,stack:'s',maxBarThickness:34},
+    {label:'Saldo do mês',data:keys.map(k=>r2(map[k].in+map[k].out)),type:'line',borderColor:'#15302A',borderWidth:2,pointRadius:2.5,tension:.2}]},
     options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
       plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.dataset.label+': '+fmt(c.parsed.y)}}},
       scales:{x:{stacked:true,ticks:{color:'#7C8A82',font:{size:10},maxTicksLimit:9},grid:{display:false}},
@@ -761,7 +917,11 @@ function renderCharts(){
 
 /* ---------- DEFINIÇÕES ---------- */
 function renderDef(){
-  const c=DATA.config;
+  const c=DATA.config,pm=c.planoMensal;
+  document.getElementById('tgPlano').classList.toggle('on',pm.ativo);
+  document.getElementById('planoAte').value=pm.ate;
+  document.getElementById('planoDia').value=pm.diaMes;
+  renderSegs();
   document.getElementById('setTitulo').value=c.titulo||'';
   document.getElementById('setSaldoIni').value=c.saldoInicial;
   document.getElementById('setDataIni').value=c.dataInicial;
@@ -774,14 +934,30 @@ function renderDef(){
   document.getElementById('tgSaveTok').classList.toggle('on',saveTok);
   document.getElementById('tgRO').classList.toggle('on',RO);
 }
+function renderSegs(){
+  const c=DATA.config,segs=c.planoMensal.segmentos;
+  document.getElementById('segList').innerHTML=segs.map((s,i)=>{
+    const sp=split55(s.valorTotal),d=sp.dio,m=sp.marg;
+    return '<div class="segrow"><input type="month" data-seg="'+i+'" data-k="desde" value="'+s.desde+'">'
+      +'<input type="number" step="10" data-seg="'+i+'" data-k="valorTotal" value="'+s.valorTotal+'" style="width:100px">'
+      +'<span class="split">D: <b>'+fmt(d)+'</b> · M: <b>'+fmt(m)+'</b></span>'
+      +(segs.length>1&&!RO?'<button class="iconbtn" data-rmseg="'+i+'">✕</button>':'')+'</div>';}).join('');
+  document.getElementById('segList').querySelectorAll('[data-seg]').forEach(el=>el.addEventListener('change',()=>{
+    const i=+el.dataset.seg,k=el.dataset.k;DATA.config.planoMensal.segmentos[i][k]=k==='valorTotal'?(parseFloat(el.value)||0):el.value;
+    DATA.config.planoMensal.segmentos.sort((a,b)=>a.desde<b.desde?-1:1);persist();renderSegs();renderAll();}));
+  document.getElementById('segList').querySelectorAll('[data-rmseg]').forEach(b=>b.onclick=()=>{DATA.config.planoMensal.segmentos.splice(+b.dataset.rmseg,1);persist();renderSegs();renderAll();});
+  applyRO();
+}
 function saveDef(){
   const c=DATA.config;
-  c.titulo=document.getElementById('setTitulo').value.trim()||'Plano Financeiro';
+  c.titulo=document.getElementById('setTitulo').value.trim()||'Plano de Férias';
   c.saldoInicial=parseFloat(document.getElementById('setSaldoIni').value)||0;
   c.dataInicial=document.getElementById('setDataIni').value||c.dataInicial;
   let d=Math.min(100,Math.max(0,parseFloat(document.getElementById('setSplitD').value)||0));
-  c.split.Diogo=d;c.split.Margarida=Math.round((100-d)*100)/100;
+  c.split.Diogo=d;c.split.Margarida=r2(100-d);
   c.buffer=parseFloat(document.getElementById('setBuffer').value)||0;
+  c.planoMensal.ate=document.getElementById('planoAte').value||c.planoMensal.ate;
+  c.planoMensal.diaMes=Math.min(28,Math.max(1,parseInt(document.getElementById('planoDia').value)||1));
   c.github.owner=document.getElementById('ghOwner').value.trim();
   c.github.repo=document.getElementById('ghRepo').value.trim();
   c.github.path=document.getElementById('ghPath').value.trim();
@@ -799,16 +975,11 @@ async function ghPull(){
   setState('busy','A carregar…');
   try{
     let res;
-    if(ghToken){res=await fetch(ghBase()+'?ref='+g.branch+'&t='+Date.now(),{headers:{Authorization:'Bearer '+ghToken,Accept:'application/vnd.github+json'}});}
-    else{res=await fetch('https://raw.githubusercontent.com/'+g.owner+'/'+g.repo+'/'+g.branch+'/'+g.path+'?t='+Date.now());}
+    if(ghToken)res=await fetch(ghBase()+'?ref='+g.branch+'&t='+Date.now(),{headers:{Authorization:'Bearer '+ghToken,Accept:'application/vnd.github+json'}});
+    else res=await fetch('https://raw.githubusercontent.com/'+g.owner+'/'+g.repo+'/'+g.branch+'/'+g.path+'?t='+Date.now());
     if(!res.ok){if(res.status===404){setState('ok','Sem ficheiro na nuvem');toast('Ainda não existe ficheiro — usa Guardar para criar');return;}throw new Error(res.status);}
-    let obj;
-    if(ghToken){const j=await res.json();ghSha=j.sha;obj=JSON.parse(b64dec(j.content));}
-    else{obj=await res.json();}
-    DATA.config=Object.assign(defConfig(),obj.config||{});DATA.config.github=Object.assign(defConfig().github,obj.config&&obj.config.github||{});
-    DATA.config.split=Object.assign({Diogo:55,Margarida:45},obj.config&&obj.config.split||{});
-    DATA.movimentos=obj.movimentos||[];DATA.penas=obj.penas||[];
-    persist();renderAll();renderDef();setState(ghToken?'ok':'ro',ghToken?'Sincronizado':'Lido (raw)');toast('Dados carregados da nuvem');
+    let obj;if(ghToken){const j=await res.json();ghSha=j.sha;obj=JSON.parse(b64dec(j.content));}else obj=await res.json();
+    DATA=migrate(obj);persist();renderAll();renderDef();renderSim();setState(ghToken?'ok':'ro',ghToken?'Sincronizado':'Lido (raw)');toast('Dados carregados da nuvem');
   }catch(e){setState('err','Erro ao ler');toast('Erro ao carregar: '+e.message);}
 }
 async function ghPush(){
@@ -816,55 +987,53 @@ async function ghPush(){
   if(!g.owner||!g.repo||!g.path){toast('Configura o GitHub');return;}
   setState('busy','A guardar…');
   try{
-    if(ghSha===null){try{const r=await fetch(ghBase()+'?ref='+g.branch,{headers:{Authorization:'Bearer '+ghToken}});if(r.ok){ghSha=(await r.json()).sha;}}catch(e){}}
-    const payload={config:DATA.config,movimentos:DATA.movimentos,penas:DATA.penas,_updated:new Date().toISOString()};
-    const body={message:'Atualizar plano financeiro '+new Date().toISOString(),content:b64enc(JSON.stringify(payload,null,2)),branch:g.branch};
+    if(ghSha===null){try{const r=await fetch(ghBase()+'?ref='+g.branch,{headers:{Authorization:'Bearer '+ghToken}});if(r.ok)ghSha=(await r.json()).sha;}catch(e){}}
+    const payload={config:DATA.config,movimentos:DATA.movimentos,penas:DATA.penas,sims:DATA.sims,_updated:new Date().toISOString()};
+    const body={message:'Atualizar plano de férias '+new Date().toISOString(),content:b64enc(JSON.stringify(payload,null,2)),branch:g.branch};
     if(ghSha)body.sha=ghSha;
     const res=await fetch(ghBase(),{method:'PUT',headers:{Authorization:'Bearer '+ghToken,Accept:'application/vnd.github+json'},body:JSON.stringify(body)});
-    if(!res.ok){const t=await res.text();throw new Error(res.status+' '+t.slice(0,80));}
+    if(!res.ok){const tx=await res.text();throw new Error(res.status+' '+tx.slice(0,80));}
     ghSha=(await res.json()).content.sha;setState('ok','Sincronizado');toast('Guardado na nuvem ✓');
   }catch(e){setState('err','Erro ao guardar');toast('Erro: '+e.message);ghSha=null;}
 }
 
-/* ---------- modais / helpers ---------- */
+/* ---------- helpers ---------- */
 function show(id){document.getElementById(id).classList.add('show');}
 function close(){document.querySelectorAll('.overlay').forEach(o=>o.classList.remove('show'));}
-function applyRO(){document.querySelectorAll('.ro-hideable').forEach(e=>e.classList.toggle('ro-hide',RO));
-  document.getElementById('fab').classList.toggle('ro-hide',RO);}
+function applyRO(){document.querySelectorAll('.ro-hideable').forEach(e=>e.classList.toggle('ro-hide',RO));document.getElementById('fab').classList.toggle('ro-hide',RO);}
 function renderAll(){renderHeader();renderResumo();renderMov();renderPenas();renderReforco();renderCharts();}
 
-/* ---------- init / eventos ---------- */
+/* ---------- init ---------- */
 function init(){
   DATA=load();
   saveTok=localStorage.getItem(LS_TOKSAVE)==='1';
   if(saveTok)ghToken=localStorage.getItem(LS_TOK)||'';
   RO=!!DATA.config.readonly||new URLSearchParams(location.search).get('ro')==='1';
 
-  // tabs
   document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>{
     document.querySelectorAll('#tabs button').forEach(x=>x.classList.remove('active'));b.classList.add('active');
     document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
     document.getElementById('p-'+b.dataset.tab).classList.add('active');
     if(b.dataset.tab==='evolucao')setTimeout(renderCharts,30);
+    if(b.dataset.tab==='simulacao'){renderSim();setTimeout(()=>{if(DATA.sims.length)renderSim();},30);}
   });
 
-  // movimento modal
   document.getElementById('fab').onclick=()=>openMov(null);
   document.querySelectorAll('[data-close]').forEach(b=>b.onclick=close);
   document.querySelectorAll('.overlay').forEach(o=>o.onclick=e=>{if(e.target===o)close();});
-  document.querySelectorAll('#segTipo button').forEach(b=>b.onclick=()=>{mTipo=b.dataset.t;syncSeg();});
-  document.querySelectorAll('#segPessoa button').forEach(b=>b.onclick=()=>{mPessoa=b.dataset.p;syncSeg();});
-  document.getElementById('btnSaveMov').onclick=saveMov;
-  document.getElementById('btnDelMov').onclick=delMov;
+  document.querySelectorAll('#segTipo button').forEach(b=>b.onclick=()=>{mTipo=b.dataset.t;document.querySelectorAll('#segTipo button').forEach(x=>x.classList.toggle('on',x===b));});
+  document.getElementById('btnSaveMov').onclick=saveMov;document.getElementById('btnDelMov').onclick=delMov;
+  ['mSearch','mTipo'].forEach(id=>document.getElementById(id).oninput=renderMov);
+  document.getElementById('btnPast').onclick=()=>{showPast=!showPast;renderMov();};
 
-  // filtros
-  ['mSearch','mTipo','mPessoa'].forEach(id=>document.getElementById(id).oninput=renderMov);
-
-  // gerar
-  document.getElementById('btnGerar').onclick=openGen;
-  document.querySelectorAll('#genPessoa button').forEach(b=>b.onclick=()=>{genWho=b.dataset.p;document.querySelectorAll('#genPessoa button').forEach(x=>x.classList.toggle('on',x===b));});
-  document.getElementById('genN').oninput=updGenHint;document.getElementById('genInicio').oninput=updGenHint;
-  document.getElementById('btnDoGen').onclick=doGen;
+  // sim
+  document.getElementById('btnSimDep').onclick=()=>openSim('deposito');
+  document.getElementById('btnSimMen').onclick=()=>openSim('mensal');
+  document.querySelectorAll('#segSim button').forEach(b=>b.onclick=()=>openSim(b.dataset.s));
+  document.getElementById('sMensal').oninput=updSimHint;
+  document.getElementById('btnSaveSim').onclick=saveSim;
+  document.getElementById('btnSimAplicar').onclick=aplicarSim;
+  document.getElementById('btnSimLimpar').onclick=()=>{if(DATA.sims.length&&confirm('Limpar o cenário?')){DATA.sims=[];persist();renderSim();}};
 
   // reforços
   document.getElementById('bufInput').value=DATA.config.buffer||0;
@@ -874,26 +1043,28 @@ function init(){
 
   // penas
   document.getElementById('btnAddPena').onclick=()=>openPena(null);
-  document.getElementById('btnSavePena').onclick=savePena;
-  document.getElementById('btnDelPena').onclick=delPena;
+  document.getElementById('btnSavePena').onclick=savePena;document.getElementById('btnDelPena').onclick=delPena;
+
+  // plano
+  document.getElementById('tgPlano').onclick=()=>{DATA.config.planoMensal.ativo=!DATA.config.planoMensal.ativo;persist();renderDef();renderAll();};
+  document.getElementById('planoAte').addEventListener('change',saveDef);
+  document.getElementById('planoDia').addEventListener('change',saveDef);
+  document.getElementById('btnAddSeg').onclick=()=>{const segs=DATA.config.planoMensal.segmentos;const last=segs[segs.length-1];const[y,m]=last.desde.split('-').map(Number);const nm=m===12?(y+1)+'-01':y+'-'+String(m+1).padStart(2,'0');segs.push({desde:nm,valorTotal:last.valorTotal});segs.sort((a,b)=>a.desde<b.desde?-1:1);persist();renderSegs();renderAll();};
 
   // definições
-  ['setTitulo','setSaldoIni','setDataIni','setSplitD','setBuffer','ghOwner','ghRepo','ghPath','ghBranch'].forEach(id=>{
-    const el=document.getElementById(id);el.addEventListener('change',saveDef);});
-  document.getElementById('setSplitD').addEventListener('input',()=>{const d=Math.min(100,Math.max(0,parseFloat(document.getElementById('setSplitD').value)||0));document.getElementById('setSplitM').value=Math.round((100-d)*100)/100;});
+  ['setTitulo','setSaldoIni','setDataIni','setSplitD','setBuffer','ghOwner','ghRepo','ghPath','ghBranch'].forEach(id=>document.getElementById(id).addEventListener('change',saveDef));
+  document.getElementById('setSplitD').addEventListener('input',()=>{const d=Math.min(100,Math.max(0,parseFloat(document.getElementById('setSplitD').value)||0));document.getElementById('setSplitM').value=r2(100-d);});
   document.getElementById('ghToken').addEventListener('input',e=>{ghToken=e.target.value.trim();ghSha=null;if(saveTok)localStorage.setItem(LS_TOK,ghToken);});
   document.getElementById('tgSaveTok').onclick=()=>{saveTok=!saveTok;localStorage.setItem(LS_TOKSAVE,saveTok?'1':'0');if(saveTok)localStorage.setItem(LS_TOK,ghToken);else localStorage.removeItem(LS_TOK);renderDef();};
-  document.getElementById('tgRO').onclick=()=>{RO=!RO;DATA.config.readonly=RO;persist();applyRO();renderDef();renderAll();};
-  document.getElementById('btnPush').onclick=ghPush;
-  document.getElementById('btnPull').onclick=ghPull;
-  document.getElementById('btnExport').onclick=()=>{const blob=new Blob([JSON.stringify({config:DATA.config,movimentos:DATA.movimentos,penas:DATA.penas},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=(DATA.config.github.path||'plano-financeiro.json').split('/').pop();a.click();};
+  document.getElementById('tgRO').onclick=()=>{RO=!RO;DATA.config.readonly=RO;persist();applyRO();renderDef();renderAll();renderSim();};
+  document.getElementById('btnPush').onclick=ghPush;document.getElementById('btnPull').onclick=ghPull;
+  document.getElementById('btnExport').onclick=()=>{const blob=new Blob([JSON.stringify({config:DATA.config,movimentos:DATA.movimentos,penas:DATA.penas,sims:DATA.sims},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=(DATA.config.github.path||'planoferias-data.json').split('/').pop();a.click();};
   document.getElementById('btnImport').onclick=()=>document.getElementById('fileInput').click();
-  document.getElementById('fileInput').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const o=JSON.parse(r.result);DATA.config=Object.assign(defConfig(),o.config||{});DATA.config.github=Object.assign(defConfig().github,o.config&&o.config.github||{});DATA.config.split=Object.assign({Diogo:55,Margarida:45},o.config&&o.config.split||{});DATA.movimentos=o.movimentos||[];DATA.penas=o.penas||[];persist();renderAll();renderDef();toast('Importado');}catch(err){toast('Ficheiro inválido');}};r.readAsText(f);};
-  document.getElementById('btnReset').onclick=()=>{if(confirm('Repor os dados de exemplo? Perdes as alterações locais.')){DATA=freshData();persist();renderAll();renderDef();toast('Dados repostos');}};
+  document.getElementById('fileInput').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{DATA=migrate(JSON.parse(r.result));persist();renderAll();renderDef();renderSim();toast('Importado');}catch(err){toast('Ficheiro inválido');}};r.readAsText(f);};
+  document.getElementById('btnReset').onclick=()=>{if(confirm('Repor os dados de exemplo? Perdes as alterações locais.')){DATA=freshData();persist();renderAll();renderDef();renderSim();toast('Dados repostos');}};
 
-  renderAll();renderDef();applyRO();
+  renderAll();renderDef();renderSim();applyRO();
   setState(RO?'ro':'','Local'+(RO?' · só-leitura':''));
-  // auto-pull se token guardado
   if(ghToken)ghPull();
 }
 document.addEventListener('DOMContentLoaded',init);
