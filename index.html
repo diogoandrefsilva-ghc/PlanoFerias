@@ -104,16 +104,32 @@ nav.tabs button.active{background:var(--card);color:var(--ink);box-shadow:var(--
 .toolbar input[type=search],.toolbar select{font-family:inherit;font-size:13.5px;padding:8px 12px;border:1px solid var(--line);
   border-radius:10px;background:var(--card);color:var(--ink)}
 .toolbar input[type=search]{min-width:170px;flex:1}
-.tablewrap{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--line);background:var(--card);box-shadow:var(--shadow)}
-table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:520px}
-th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink3);font-weight:700;
-  padding:12px 14px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--card);z-index:1}
-td{padding:11px 14px;border-bottom:1px solid var(--line2);vertical-align:middle}
+.tablewrap{overflow:hidden;border-radius:var(--radius);border:1px solid var(--line);background:var(--card);box-shadow:var(--shadow)}
+table{width:100%;border-collapse:collapse;font-size:13px;min-width:0}
+th{text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink3);font-weight:700;
+  padding:10px 12px;border-bottom:1px solid var(--line);background:var(--card)}
+td{padding:9px 12px;border-bottom:1px solid var(--line2);vertical-align:top}
 tr:last-child td{border-bottom:none}
 td.r,th.r{text-align:right}
 tr.future td{color:var(--ink2)} tr.future td:first-child{position:relative}
 tr.future td:first-child::before{content:'';position:absolute;left:0;top:8px;bottom:8px;width:3px;border-radius:9px;background:var(--gold);opacity:.55}
 tr.minrow{background:var(--negBg)}
+tr.autorow td{background:rgba(190,142,58,.06)}
+tbody tr[data-edit],tbody tr[data-pe]{cursor:pointer;transition:background .12s}
+tbody tr[data-edit]:hover,tbody tr[data-pe]:hover{background:var(--paper2)}
+td.desccell{line-height:1.3;word-break:break-word}
+td.desccell b{font-weight:600}
+td.valcell{white-space:nowrap;width:1%}
+td.valcell .val{display:block}
+td.valcell .saldo{display:block;font-size:11px;color:var(--ink3);font-weight:500;margin-top:1px}
+.psub{font-size:11px;color:var(--ink3);font-weight:500;margin-top:2px}
+/* próximas despesas compactas */
+.prox{padding:2px 4px}
+.proxrow{display:flex;align-items:center;gap:12px;padding:8px 14px;border-bottom:1px solid var(--line2)}
+.proxrow:last-child{border-bottom:none}
+.proxrow .d{font-variant-numeric:tabular-nums;font-size:12px;color:var(--ink3);white-space:nowrap;width:46px;flex:none}
+.proxrow .n{flex:1;font-weight:600;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.proxrow .v{font-weight:600;font-family:'Fraunces',serif;color:var(--neg);white-space:nowrap}
 .val{font-weight:600;font-family:'Fraunces',serif}
 .val.pos{color:var(--pos)} .val.neg{color:var(--neg)}
 .saldo{font-family:'Fraunces',serif;font-weight:500}
@@ -127,9 +143,9 @@ tr.minrow{background:var(--negBg)}
 .iconbtn:hover{background:var(--paper2);color:var(--ink)}
 .divider-month td{background:var(--paper2);font-weight:700;font-size:11.5px;text-transform:uppercase;letter-spacing:.06em;
   color:var(--ink2);padding:6px 14px}
-td.datecell{white-space:nowrap;font-variant-numeric:tabular-nums;vertical-align:top;width:1%}
-.tcell{margin-top:5px}
-.tcell .chip{font-size:10px;padding:2px 7px}
+td.datecell{white-space:nowrap;font-variant-numeric:tabular-nums;width:1%;font-weight:600;font-size:12.5px}
+.tcell{margin-top:4px}
+.tcell .chip{font-size:9.5px;padding:2px 6px}
 
 /* BUTTONS */
 .btn{display:inline-flex;align-items:center;gap:7px;font-size:13.5px;font-weight:600;padding:9px 15px;border-radius:11px;
@@ -319,7 +335,7 @@ td.datecell{white-space:nowrap;font-variant-numeric:tabular-nums;vertical-align:
     <button data-tab="evolucao">Evolução</button>
     <button data-tab="simulacao">Simulação</button>
     <button data-tab="reforcos">Reforços</button>
-    <button data-tab="penas">Penas</button>
+    <button data-tab="penas">Edenred Penas</button>
     <button data-tab="definicoes">Definições</button>
   </nav>
 
@@ -330,15 +346,8 @@ td.datecell{white-space:nowrap;font-variant-numeric:tabular-nums;vertical-align:
       <div class="hcard"><div class="lbl">Menor saldo previsto</div><div class="big num" id="menorSaldo">—</div><div class="meta" id="menorSaldoMeta"></div></div>
     </div>
 
-    <div class="section-title"><h2>Fluxos previstos</h2><div class="ln"></div></div>
-    <div class="grid g3">
-      <div class="card stat"><div class="lbl">Plano poupança mensal</div><div class="v num" id="fxPlano">—</div><div class="s" id="fxPlanoSub"></div></div>
-      <div class="card stat"><div class="lbl">Contribuições previstas</div><div class="v num" id="fxContrib">—</div><div class="s">De hoje em diante</div></div>
-      <div class="card stat"><div class="lbl">Despesas previstas</div><div class="v num" id="fxDespesa">—</div><div class="s">De hoje em diante</div></div>
-    </div>
-
     <div class="section-title"><h2>Próximas despesas</h2><div class="ln"></div></div>
-    <div class="card" id="proxDespesas" style="padding:6px 4px"></div>
+    <div class="card prox" id="proxDespesas"></div>
   </section>
 
   <!-- MOVIMENTOS -->
@@ -356,13 +365,12 @@ td.datecell{white-space:nowrap;font-variant-numeric:tabular-nums;vertical-align:
     <div class="tablewrap">
       <table id="movTable">
         <thead><tr>
-          <th>Data</th><th>Descrição</th>
-          <th class="r">Valor</th><th class="r">Saldo</th><th class="r ro-hideable"></th>
+          <th>Data</th><th>Descrição</th><th class="r">Valor / Saldo</th>
         </tr></thead>
         <tbody id="movBody"></tbody>
       </table>
     </div>
-    <p class="hint" style="margin:10px 4px">As linhas marcadas <span class="tag-auto">auto</span> vêm do plano de poupança mensal (editas em Definições).</p>
+    <p class="hint" style="margin:10px 4px">Toca num movimento para o editar ou eliminar. As linhas <span class="tag-auto">auto</span> vêm do plano de poupança mensal e da parte dos pagamentos do Edenred Penas afetada a esta conta.</p>
   </section>
 
   <!-- EVOLUÇÃO -->
@@ -444,19 +452,18 @@ td.datecell{white-space:nowrap;font-variant-numeric:tabular-nums;vertical-align:
     </div>
   </section>
 
-  <!-- PENAS -->
+  <!-- EDENRED PENAS -->
   <section class="panel" id="p-penas">
-    <div class="section-title"><h2>Sub-conta: Penas</h2><div class="ln"></div>
+    <div class="section-title"><h2>Edenred Penas</h2><div class="ln"></div>
       <button class="btn sm ro-hideable" id="btnAddPena">+ Movimento</button></div>
-    <div class="grid g3" style="margin-bottom:14px">
-      <div class="card stat"><div class="lbl">Saldo atual</div><div class="v num" id="penaSaldo">—</div></div>
-      <div class="card stat"><div class="lbl">Entradas</div><div class="v num" id="penaIn">—</div></div>
-      <div class="card stat"><div class="lbl">Saídas</div><div class="v num" id="penaOut">—</div></div>
+    <div class="toolbar">
+      <button class="btn sm" id="btnPastPena">Mostrar anteriores</button>
     </div>
     <div class="tablewrap">
-      <table><thead><tr><th>Data</th><th>Descrição</th><th class="r">Valor</th><th class="r">Saldo</th><th class="r ro-hideable"></th></tr></thead>
+      <table><thead><tr><th>Data</th><th>Descrição</th><th class="r">Valor / Saldo</th></tr></thead>
       <tbody id="penaBody"></tbody></table>
     </div>
+    <p class="hint" style="margin:10px 4px">Toca num movimento para o editar ou eliminar. Numa saída, parte sai do Edenred e o restante da conta de férias (gera lá uma despesa automática). O Edenred nunca fica negativo e a app evita parcelas inferiores a 10 € de qualquer dos lados.</p>
   </section>
 
   <!-- DEFINIÇÕES -->
@@ -569,12 +576,17 @@ td.datecell{white-space:nowrap;font-variant-numeric:tabular-nums;vertical-align:
 
 <!-- MODAL PENA -->
 <div class="overlay" id="ovPena"><div class="modal">
-  <div class="mh"><h3 id="penaModalTitle">Movimento — Penas</h3><button class="x" data-close>×</button></div>
+  <div class="mh"><h3 id="penaModalTitle">Movimento — Edenred Penas</h3><button class="x" data-close>×</button></div>
   <div class="row2">
     <div class="field"><label>Data</label><input type="date" id="pData"></div>
-    <div class="field"><label>Valor (€)</label><input type="number" step="0.01" id="pValor" placeholder="negativo p/ saída"></div>
+    <div class="field"><label>Valor total (€)</label><input type="number" step="0.01" id="pValor" placeholder="negativo p/ saída"></div>
   </div>
   <div class="field"><label>Descrição</label><input type="text" id="pObs" placeholder="ex.: Mensalidade Penas"></div>
+  <div class="field" id="pFeriasWrap">
+    <label>Pago pela conta de férias (€)</label>
+    <input type="number" step="0.01" id="pFerias" placeholder="0">
+    <p class="hint" id="pSplitHint"></p>
+  </div>
   <div class="row2" style="margin-top:4px">
     <button class="btn ghost full" data-close>Cancelar</button>
     <button class="btn primary full" id="btnSavePena">Guardar</button>
@@ -585,7 +597,7 @@ td.datecell{white-space:nowrap;font-variant-numeric:tabular-nums;vertical-align:
 <div class="toast" id="toast"></div>
 
 <script>
-const SEED = {"saldoInicial":2900,"dataInicial":"2026-04-04","movimentos":[{"id":"m1","data":"2026-04-23","descricao":"Reembolso IRS","valor":1136.2,"tipo":"receita","pessoa":"Comum"},{"id":"m2","data":"2026-04-23","descricao":"Voos Paris","valor":-513.99,"tipo":"despesa","pessoa":"Comum"},{"id":"m3","data":"2026-04-23","descricao":"Depósito Disney","valor":-344.46,"tipo":"despesa","pessoa":"Comum"},{"id":"m4","data":"2026-04-23","descricao":"Sinal Altura","valor":-450.0,"tipo":"despesa","pessoa":"Comum"},{"id":"m5","data":"2026-05-03","descricao":"Poupança Diogo","valor":200.0,"tipo":"contribuicao","pessoa":"Diogo"},{"id":"m6","data":"2026-05-04","descricao":"Poupança Margarida","valor":160.0,"tipo":"contribuicao","pessoa":"Margarida"},{"id":"m7","data":"2026-05-26","descricao":"Santa Eulália","valor":-1375.89,"tipo":"despesa","pessoa":"Comum"},{"id":"m8","data":"2026-06-01","descricao":"Poupança Diogo","valor":200.0,"tipo":"contribuicao","pessoa":"Diogo"},{"id":"m9","data":"2026-06-01","descricao":"Poupança Margarida","valor":160.0,"tipo":"contribuicao","pessoa":"Margarida"},{"id":"m10","data":"2026-06-29","descricao":"Depósito Férias Diogo","valor":825.0,"tipo":"contribuicao","pessoa":"Diogo"},{"id":"m11","data":"2026-06-29","descricao":"Depósito Férias Margarida","valor":675.0,"tipo":"contribuicao","pessoa":"Margarida"},{"id":"m12","data":"2026-07-01","descricao":"Poupança Diogo","valor":200.0,"tipo":"contribuicao","pessoa":"Diogo"},{"id":"m13","data":"2026-07-01","descricao":"Poupança Margarida","valor":160.0,"tipo":"contribuicao","pessoa":"Margarida"},{"id":"m14","data":"2026-07-01","descricao":"Adriana","valor":-1685.0,"tipo":"despesa","pessoa":"Comum"},{"id":"m15","data":"2026-08-01","descricao":"Poupança Diogo","valor":200.0,"tipo":"contribuicao","pessoa":"Diogo"},{"id":"m16","data":"2026-08-01","descricao":"Poupança Margarida","valor":160.0,"tipo":"contribuicao","pessoa":"Margarida"},{"id":"m17","data":"2026-08-01","descricao":"Altura","valor":-950.0,"tipo":"despesa","pessoa":"Comum"},{"id":"m18","data":"2026-09-01","descricao":"Poupança Diogo","valor":200.0,"tipo":"contribuicao","pessoa":"Diogo"},{"id":"m19","data":"2026-09-01","descricao":"Poupança Margarida","valor":160.0,"tipo":"contribuicao","pessoa":"Margarida"},{"id":"m20","data":"2026-09-01","descricao":"Seguro Penas","valor":-35.0,"tipo":"despesa","pessoa":"Comum"},{"id":"m21","data":"2026-10-01","descricao":"Poupança Diogo","valor":200.0,"tipo":"contribuicao","pessoa":"Diogo"},{"id":"m22","data":"2026-10-01","descricao":"Poupança Margarida","valor":160.0,"tipo":"contribuicao","pessoa":"Margarida"},{"id":"m23","data":"2026-10-01","descricao":"Extra Mensalidade Penas","valor":-269.0,"tipo":"despesa","pessoa":"Comum"},{"id":"m24","data":"2026-11-01","descricao":"Poupança Diogo","valor":200.0,"tipo":"contribuicao","pessoa":"Diogo"},{"id":"m25","data":"2026-11-01","descricao":"Poupança Margarida","valor":160.0,"tipo":"contribuicao","pessoa":"Margarida"},{"id":"m26","data":"2026-11-01","descricao":"Extra Mensalidade Penas","valor":-270.0,"tipo":"despesa","pessoa":"Comum"},{"id":"m27","data":"2026-11-25","descricao":"Disneyland","valor":-1985.12,"tipo":"despesa","pessoa":"Comum"},{"id":"m28","data":"2026-12-01","descricao":"Poupança Diogo","valor":200.0,"tipo":"contribuicao","pessoa":"Diogo"},{"id":"m29","data":"2026-12-01","descricao":"Poupança Margarida","valor":160.0,"tipo":"contribuicao","pessoa":"Margarida"},{"id":"m30","data":"2027-01-01","descricao":"Poupança Diogo","valor":200.0,"tipo":"contribuicao","pessoa":"Diogo"},{"id":"m31","data":"2027-01-01","descricao":"Poupança Margarida","valor":160.0,"tipo":"contribuicao","pessoa":"Margarida"},{"id":"m32","data":"2027-02-01","descricao":"Poupança Diogo","valor":200.0,"tipo":"contribuicao","pessoa":"Diogo"},{"id":"m33","data":"2027-02-01","descricao":"Poupança Margarida","valor":160.0,"tipo":"contribuicao","pessoa":"Margarida"},{"id":"m34","data":"2027-03-01","descricao":"Poupança Diogo","valor":200.0,"tipo":"contribuicao","pessoa":"Diogo"},{"id":"m35","data":"2027-03-01","descricao":"Poupança Margarida","valor":160.0,"tipo":"contribuicao","pessoa":"Margarida"},{"id":"m36","data":"2027-04-01","descricao":"Poupança Diogo","valor":200.0,"tipo":"contribuicao","pessoa":"Diogo"},{"id":"m37","data":"2027-04-01","descricao":"Poupança Margarida","valor":160.0,"tipo":"contribuicao","pessoa":"Margarida"},{"id":"m38","data":"2027-05-01","descricao":"Poupança Diogo","valor":200.0,"tipo":"contribuicao","pessoa":"Diogo"},{"id":"m39","data":"2027-05-01","descricao":"Poupança Margarida","valor":160.0,"tipo":"contribuicao","pessoa":"Margarida"},{"id":"m40","data":"2027-06-01","descricao":"Poupança Diogo","valor":200.0,"tipo":"contribuicao","pessoa":"Diogo"},{"id":"m41","data":"2027-06-01","descricao":"Poupança Margarida","valor":160.0,"tipo":"contribuicao","pessoa":"Margarida"},{"id":"m42","data":"2027-07-01","descricao":"Poupança Diogo","valor":200.0,"tipo":"contribuicao","pessoa":"Diogo"},{"id":"m43","data":"2027-07-01","descricao":"Poupança Margarida","valor":160.0,"tipo":"contribuicao","pessoa":"Margarida"},{"id":"m44","data":"2027-08-01","descricao":"Poupança Diogo","valor":200.0,"tipo":"contribuicao","pessoa":"Diogo"},{"id":"m45","data":"2027-08-01","descricao":"Poupança Margarida","valor":160.0,"tipo":"contribuicao","pessoa":"Margarida"}],"penas":[{"id":"p1","data":"2026-06-06","valor":826.0,"obs":"Saldo Edenred"},{"id":"p2","data":"2026-06-30","valor":320.0,"obs":"Carregamento Edenred"},{"id":"p3","data":"2026-06-30","valor":-505.0,"obs":"Mensalidade Penas"},{"id":"p4","data":"2026-07-31","valor":320.0,"obs":"Carregamento Edenred"},{"id":"p5","data":"2026-07-31","valor":-505.0,"obs":"Mensalidade Penas"},{"id":"p6","data":"2026-08-31","valor":320.0,"obs":"Carregamento Edenred"},{"id":"p7","data":"2026-08-31","valor":-505.0,"obs":"Mensalidade Penas"},{"id":"p8","data":"2026-09-30","valor":320.0,"obs":"Carregamento Edenred"},{"id":"p9","data":"2026-09-30","valor":-590.0,"obs":"Mensalidade Penas"},{"id":"p10","data":"2026-09-30","valor":-35.0,"obs":"Seguro Anual"},{"id":"p11","data":"2026-10-31","valor":320.0,"obs":"Carregamento Edenred"},{"id":"p12","data":"2026-10-31","valor":-590.0,"obs":"Mensalidade Penas"},{"id":"p13","data":"2026-11-30","valor":320.0,"obs":"Carregamento Edenred"},{"id":"p14","data":"2026-11-30","valor":-590.0,"obs":"Mensalidade Penas"}]};
+const SEED = {"saldoInicial":2900,"dataInicial":"2026-04-04","movimentos":[{"id":"m1","data":"2026-04-23","descricao":"Reembolso IRS","valor":1136.2,"tipo":"receita","pessoa":"Comum"},{"id":"m2","data":"2026-04-23","descricao":"Voos Paris","valor":-513.99,"tipo":"despesa","pessoa":"Comum"},{"id":"m3","data":"2026-04-23","descricao":"Depósito Disney","valor":-344.46,"tipo":"despesa","pessoa":"Comum"},{"id":"m4","data":"2026-04-23","descricao":"Sinal Altura","valor":-450.0,"tipo":"despesa","pessoa":"Comum"},{"id":"m5","data":"2026-05-03","descricao":"Poupança Diogo","valor":200.0,"tipo":"contribuicao","pessoa":"Diogo"},{"id":"m6","data":"2026-05-04","descricao":"Poupança Margarida","valor":160.0,"tipo":"contribuicao","pessoa":"Margarida"},{"id":"m7","data":"2026-05-26","descricao":"Santa Eulália","valor":-1375.89,"tipo":"despesa","pessoa":"Comum"},{"id":"m8","data":"2026-06-01","descricao":"Poupança Diogo","valor":200.0,"tipo":"contribuicao","pessoa":"Diogo"},{"id":"m9","data":"2026-06-01","descricao":"Poupança Margarida","valor":160.0,"tipo":"contribuicao","pessoa":"Margarida"},{"id":"m10","data":"2026-06-29","descricao":"Depósito Férias Diogo","valor":825.0,"tipo":"contribuicao","pessoa":"Diogo"},{"id":"m11","data":"2026-06-29","descricao":"Depósito Férias Margarida","valor":675.0,"tipo":"contribuicao","pessoa":"Margarida"},{"id":"m12","data":"2026-07-01","descricao":"Poupança Diogo","valor":200.0,"tipo":"contribuicao","pessoa":"Diogo"},{"id":"m13","data":"2026-07-01","descricao":"Poupança Margarida","valor":160.0,"tipo":"contribuicao","pessoa":"Margarida"},{"id":"m14","data":"2026-07-01","descricao":"Adriana","valor":-1685.0,"tipo":"despesa","pessoa":"Comum"},{"id":"m15","data":"2026-08-01","descricao":"Poupança Diogo","valor":200.0,"tipo":"contribuicao","pessoa":"Diogo"},{"id":"m16","data":"2026-08-01","descricao":"Poupança Margarida","valor":160.0,"tipo":"contribuicao","pessoa":"Margarida"},{"id":"m17","data":"2026-08-01","descricao":"Altura","valor":-950.0,"tipo":"despesa","pessoa":"Comum"},{"id":"m18","data":"2026-09-01","descricao":"Poupança Diogo","valor":200.0,"tipo":"contribuicao","pessoa":"Diogo"},{"id":"m19","data":"2026-09-01","descricao":"Poupança Margarida","valor":160.0,"tipo":"contribuicao","pessoa":"Margarida"},{"id":"m21","data":"2026-10-01","descricao":"Poupança Diogo","valor":200.0,"tipo":"contribuicao","pessoa":"Diogo"},{"id":"m22","data":"2026-10-01","descricao":"Poupança Margarida","valor":160.0,"tipo":"contribuicao","pessoa":"Margarida"},{"id":"m24","data":"2026-11-01","descricao":"Poupança Diogo","valor":200.0,"tipo":"contribuicao","pessoa":"Diogo"},{"id":"m25","data":"2026-11-01","descricao":"Poupança Margarida","valor":160.0,"tipo":"contribuicao","pessoa":"Margarida"},{"id":"m27","data":"2026-11-25","descricao":"Disneyland","valor":-1985.12,"tipo":"despesa","pessoa":"Comum"},{"id":"m28","data":"2026-12-01","descricao":"Poupança Diogo","valor":200.0,"tipo":"contribuicao","pessoa":"Diogo"},{"id":"m29","data":"2026-12-01","descricao":"Poupança Margarida","valor":160.0,"tipo":"contribuicao","pessoa":"Margarida"},{"id":"m30","data":"2027-01-01","descricao":"Poupança Diogo","valor":200.0,"tipo":"contribuicao","pessoa":"Diogo"},{"id":"m31","data":"2027-01-01","descricao":"Poupança Margarida","valor":160.0,"tipo":"contribuicao","pessoa":"Margarida"},{"id":"m32","data":"2027-02-01","descricao":"Poupança Diogo","valor":200.0,"tipo":"contribuicao","pessoa":"Diogo"},{"id":"m33","data":"2027-02-01","descricao":"Poupança Margarida","valor":160.0,"tipo":"contribuicao","pessoa":"Margarida"},{"id":"m34","data":"2027-03-01","descricao":"Poupança Diogo","valor":200.0,"tipo":"contribuicao","pessoa":"Diogo"},{"id":"m35","data":"2027-03-01","descricao":"Poupança Margarida","valor":160.0,"tipo":"contribuicao","pessoa":"Margarida"},{"id":"m36","data":"2027-04-01","descricao":"Poupança Diogo","valor":200.0,"tipo":"contribuicao","pessoa":"Diogo"},{"id":"m37","data":"2027-04-01","descricao":"Poupança Margarida","valor":160.0,"tipo":"contribuicao","pessoa":"Margarida"},{"id":"m38","data":"2027-05-01","descricao":"Poupança Diogo","valor":200.0,"tipo":"contribuicao","pessoa":"Diogo"},{"id":"m39","data":"2027-05-01","descricao":"Poupança Margarida","valor":160.0,"tipo":"contribuicao","pessoa":"Margarida"},{"id":"m40","data":"2027-06-01","descricao":"Poupança Diogo","valor":200.0,"tipo":"contribuicao","pessoa":"Diogo"},{"id":"m41","data":"2027-06-01","descricao":"Poupança Margarida","valor":160.0,"tipo":"contribuicao","pessoa":"Margarida"},{"id":"m42","data":"2027-07-01","descricao":"Poupança Diogo","valor":200.0,"tipo":"contribuicao","pessoa":"Diogo"},{"id":"m43","data":"2027-07-01","descricao":"Poupança Margarida","valor":160.0,"tipo":"contribuicao","pessoa":"Margarida"},{"id":"m44","data":"2027-08-01","descricao":"Poupança Diogo","valor":200.0,"tipo":"contribuicao","pessoa":"Diogo"},{"id":"m45","data":"2027-08-01","descricao":"Poupança Margarida","valor":160.0,"tipo":"contribuicao","pessoa":"Margarida"}],"penas":[{"id":"p1","data":"2026-06-06","valor":826.0,"obs":"Saldo Edenred"},{"id":"p2","data":"2026-06-30","valor":320.0,"obs":"Carregamento Edenred"},{"id":"p3","data":"2026-06-30","valor":-505.0,"obs":"Mensalidade Penas"},{"id":"p4","data":"2026-07-31","valor":320.0,"obs":"Carregamento Edenred"},{"id":"p5","data":"2026-07-31","valor":-505.0,"obs":"Mensalidade Penas"},{"id":"p6","data":"2026-08-31","valor":320.0,"obs":"Carregamento Edenred"},{"id":"p7","data":"2026-08-31","valor":-505.0,"obs":"Mensalidade Penas"},{"id":"p8","data":"2026-09-30","valor":320.0,"obs":"Carregamento Edenred"},{"id":"p9","data":"2026-09-30","valor":-590.0,"obs":"Mensalidade Penas"},{"id":"p10","data":"2026-09-30","valor":-35.0,"obs":"Seguro Anual","ferias":35},{"id":"p11","data":"2026-10-31","valor":320.0,"obs":"Carregamento Edenred"},{"id":"p12","data":"2026-10-31","valor":-590.0,"obs":"Mensalidade Penas","ferias":269},{"id":"p13","data":"2026-11-30","valor":320.0,"obs":"Carregamento Edenred"},{"id":"p14","data":"2026-11-30","valor":-590.0,"obs":"Mensalidade Penas","ferias":270}]};
 const LS_KEY='planoFerias_v2', LS_TOK='pf_ghtoken', LS_TOKSAVE='pf_ghtoksave';
 
 /* ---------- estado ---------- */
@@ -599,6 +611,7 @@ function migrate(d){
   d.config.split=Object.assign({Diogo:55,Margarida:45},d.config.split||{});
   d.movimentos=Array.isArray(d.movimentos)?d.movimentos:[];
   d.penas=Array.isArray(d.penas)?d.penas:[];
+  d.penas.forEach(m=>{if(typeof m.ferias!=='number')m.ferias=0;});
   d.sims=Array.isArray(d.sims)?d.sims:[];
   if(!d.config.planoMensal){
     const rx=/^Poupança (Diogo|Margarida)/;
@@ -622,7 +635,7 @@ function migrate(d){
 }
 function freshData(){return migrate({config:defConfig(),movimentos:JSON.parse(JSON.stringify(SEED.movimentos)),penas:JSON.parse(JSON.stringify(SEED.penas))});}
 let DATA, ghToken='', ghSha=null, saveTok=false, RO=false;
-let chS=null, chM=null, chSim=null, editId=null, editPenaId=null, showPast=false;
+let chS=null, chM=null, chSim=null, editId=null, editPenaId=null, showPast=false, showPastPena=false, penaLastSug=null;
 
 function load(){try{const r=localStorage.getItem(LS_KEY);if(r)return migrate(JSON.parse(r));}catch(e){}return freshData();}
 function persist(){try{localStorage.setItem(LS_KEY,JSON.stringify(DATA));}catch(e){}}
@@ -667,7 +680,9 @@ function buildLedger(sims){
   const concrete=DATA.movimentos.map(m=>Object.assign({},m));
   const monthly=genMonthly(sims);
   const deps=(sims||[]).filter(s=>s.tipo==='deposito').map(s=>({id:'sim-'+s.id,data:s.data,descricao:(s.desc||'Depósito extra')+' (sim)',valor:Math.abs(+s.valor),tipo:'contribuicao',pessoa:'Comum',sim:true}));
-  const all=[...concrete,...monthly,...deps].sort((a,b)=>a.data<b.data?-1:a.data>b.data?1:0);
+  // parte de cada pagamento do Penas afetada à conta de férias -> despesa automática
+  const penaTops=penaCompute().tops.map(t=>({id:'penas-'+t.id,data:t.data,descricao:'Penas: '+t.obs,valor:-t.valor,tipo:'despesa',pessoa:'Comum',auto:true}));
+  const all=[...concrete,...monthly,...deps,...penaTops].sort((a,b)=>a.data<b.data?-1:a.data>b.data?1:0);
   let bal=DATA.config.saldoInicial;const out=[];
   for(const m of all){bal+=m.valor;out.push(Object.assign({},m,{saldo:r2(bal)}));}
   return out;
@@ -694,22 +709,11 @@ function renderHeader(){
   document.getElementById('menorSaldoMeta').textContent=fmtDate(mn.data)+(mn.descricao?' · '+mn.descricao:'');
 }
 function renderResumo(){
-  const M=calc(buildLedger());
-  const t0=todayISO();
-  let cFut=0,dFut=0;M.L.forEach(m=>{if(m.data>=t0){if(m.tipo==='contribuicao'||m.tipo==='receita')cFut+=m.valor;else if(m.tipo==='despesa')dFut+=m.valor;}});
-  const pm=DATA.config.planoMensal;const segs=planSegments();
-  const atualBase=segs.length?(monthlyValue(t0.slice(0,7),segs)||segs[segs.length-1].valorTotal):0;
-  const sp=split55(atualBase);
-  document.getElementById('fxContrib').textContent=fmt(r2(cFut));
-  document.getElementById('fxDespesa').textContent=fmt(r2(dFut));
-  if(pm.ativo){document.getElementById('fxPlano').textContent=fmt(sp.total);document.getElementById('fxPlanoSub').textContent='Diogo '+fmt(sp.dio)+' · Margarida '+fmt(sp.marg)+' · até '+fmtMesAno(pm.ate+'-01');}
-  else{document.getElementById('fxPlano').textContent='—';document.getElementById('fxPlanoSub').textContent='Plano inativo';}
-  // próximas despesas
   const t=todayISO();
-  const prox=DATA.movimentos.filter(m=>m.tipo==='despesa'&&m.data>=t).sort((a,b)=>a.data<b.data?-1:1).slice(0,6);
+  const prox=buildLedger().filter(m=>m.tipo==='despesa'&&m.data>=t).sort((a,b)=>a.data<b.data?-1:1).slice(0,6);
   const box=document.getElementById('proxDespesas');
   if(!prox.length){box.innerHTML='<div class="empty"><div class="ic">✦</div>Sem despesas futuras registadas.</div>';}
-  else box.innerHTML=prox.map(m=>'<div class="defrow"><div class="t"><b>'+esc(m.descricao)+'</b><span>'+fmtDate(m.data)+'</span></div><span class="val neg num">'+fmt(m.valor)+'</span></div>').join('');
+  else box.innerHTML=prox.map(m=>'<div class="proxrow"><span class="d num">'+fmtDayMonth(m.data)+'</span><span class="n">'+esc(m.descricao)+'</span><span class="v num">'+fmt(m.valor)+'</span></div>').join('');
 }
 
 /* ---------- MOVIMENTOS ---------- */
@@ -723,23 +727,23 @@ function renderMov(){
   if(btn){btn.style.display=pastCount?'inline-flex':'none';btn.textContent=showPast?'Ocultar anteriores':'Mostrar anteriores ('+pastCount+')';btn.classList.toggle('primary',showPast);}
   const rows=L.filter(m=>(showPast||m.data>=t)&&(!fs||m.descricao.toLowerCase().includes(fs))&&(!ft||m.tipo===ft));
   const body=document.getElementById('movBody');
-  if(!rows.length){body.innerHTML='<tr><td colspan="5"><div class="empty"><div class="ic">∅</div>Sem movimentos.</div></td></tr>';return;}
+  if(!rows.length){body.innerHTML='<tr><td colspan="3"><div class="empty"><div class="ic">∅</div>Sem movimentos.</div></td></tr>';return;}
   let html='',lastM='';
   rows.forEach(m=>{
     const mo=m.data.slice(0,7);
-    if(mo!==lastM){lastM=mo;html+='<tr class="divider-month"><td colspan="5">'+fmtMesAno(m.data)+'</td></tr>';}
+    if(mo!==lastM){lastM=mo;html+='<tr class="divider-month"><td colspan="3">'+fmtMesAno(m.data)+'</td></tr>';}
     const fut=m.data>t,pos=m.valor>=0;
-    const chip=m.tipo==='contribuicao'?'<span class="chip contrib">Contribuição</span>':m.tipo==='receita'?'<span class="chip receita">Receita</span>':'<span class="chip despesa">Despesa</span>';
+    const chip=m.tipo==='contribuicao'?'<span class="chip contrib">Contrib.</span>':m.tipo==='receita'?'<span class="chip receita">Receita</span>':'<span class="chip despesa">Despesa</span>';
     const isMin=m.data===minData&&m.saldo===minSaldo;
-    html+='<tr class="'+(fut?'future ':'')+(isMin?'minrow':'')+'">'
+    const editable=!m.auto&&!RO;
+    html+='<tr class="'+(fut?'future ':'')+(isMin?'minrow ':'')+(m.auto?'autorow ':'')+'"'+(editable?' data-edit="'+m.id+'"':'')+'>'
       +'<td class="datecell">'+fmtDayMonth(m.data)+'<div class="tcell">'+chip+'</div></td>'
-      +'<td><b>'+esc(m.descricao)+'</b>'+(m.auto?'<span class="tag-auto">auto</span>':'')+'</td>'
-      +'<td class="r"><span class="val num '+(pos?'pos':'neg')+'">'+fmt(m.valor)+'</span></td>'
-      +'<td class="r"><span class="saldo num '+(m.saldo<buf?'low':'')+'">'+fmt(m.saldo)+'</span></td>'
-      +'<td class="r ro-hideable">'+(m.auto?'':'<div class="rowact"><button class="iconbtn" data-edit="'+m.id+'">✎</button></div>')+'</td></tr>';
+      +'<td class="desccell"><b>'+esc(m.descricao)+(m.auto?' <span class="tag-auto">auto</span>':'')+'</b></td>'
+      +'<td class="r valcell"><span class="val num '+(pos?'pos':'neg')+'">'+fmt(m.valor)+'</span>'
+      +'<span class="saldo num '+(m.saldo<buf?'low':'')+'">'+fmt(m.saldo)+'</span></td></tr>';
   });
   body.innerHTML=html;
-  body.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>openMov(b.dataset.edit));
+  body.querySelectorAll('tr[data-edit]').forEach(tr=>tr.onclick=()=>openMov(tr.dataset.edit));
   applyRO();
 }
 
@@ -859,29 +863,112 @@ function aplicarRef(){const btn=document.getElementById('btnAplicarRef');if(!btn
   DATA.movimentos.push({id:uid(),data:todayISO(),descricao:'Reforço (Diogo '+fmt(btn._v.d)+' / Margarida '+fmt(btn._v.mg)+')',valor:btn._v.total,tipo:'contribuicao',pessoa:'Comum'});
   persist();renderAll();toast('Reforço registado');document.getElementById('quickRef').value='';renderQuick();}
 
-/* ---------- PENAS ---------- */
-function penaLedger(){const ms=[...DATA.penas].sort((a,b)=>a.data<b.data?-1:1);let b=0;return ms.map(m=>{b+=m.valor;return Object.assign({},m,{saldo:r2(b)});});}
-function renderPenas(){
-  const L=penaLedger();let inn=0,out=0;DATA.penas.forEach(m=>m.valor>=0?inn+=m.valor:out+=m.valor);
-  document.getElementById('penaSaldo').textContent=fmt(L.length?L[L.length-1].saldo:0);
-  document.getElementById('penaIn').textContent=fmt(inn);document.getElementById('penaOut').textContent=fmt(out);
-  const body=document.getElementById('penaBody');
-  if(!L.length){body.innerHTML='<tr><td colspan="5"><div class="empty"><div class="ic">∅</div>Sem movimentos.</div></td></tr>';return;}
-  body.innerHTML=L.map(m=>'<tr><td>'+fmtDate(m.data)+'</td><td><b>'+esc(m.obs)+'</b></td>'
-    +'<td class="r"><span class="val num '+(m.valor>=0?'pos':'neg')+'">'+fmt(m.valor)+'</span></td>'
-    +'<td class="r"><span class="saldo num '+(m.saldo<0?'low':'')+'">'+fmt(m.saldo)+'</span></td>'
-    +'<td class="r ro-hideable"><div class="rowact"><button class="iconbtn" data-pe="'+m.id+'">✎</button></div></td></tr>').join('');
-  body.querySelectorAll('[data-pe]').forEach(b=>b.onclick=()=>openPena(b.dataset.pe));applyRO();
+/* ---------- EDENRED PENAS ---------- */
+// Calcula o livro do Edenred Penas. A Edenred não pode ser reforçada: só
+// entra dinheiro pelos carregamentos. Numa saída, parte do pagamento pode
+// ser afetada à conta de férias (campo 'ferias'): essa parte NÃO sai do
+// Edenred — sai diretamente da conta de férias. O que sai do Edenred é
+// (valor + ferias). Os 'tops' são depois lançados como despesa na conta
+// de férias. O saldo do Edenred pode ficar negativo se a divisão não
+// chegar — fica a vermelho como aviso.
+function penaCompute(){
+  const ms=[...DATA.penas].sort((a,b)=>a.data<b.data?-1:a.data>b.data?1:0);
+  let bal=0;const ledger=[],tops=[];
+  for(const m of ms){
+    const fer=m.valor<0?Math.max(0,Math.min(Math.abs(m.valor),+m.ferias||0)):0;
+    const edenred=r2(m.valor+fer);
+    bal=r2(bal+edenred);
+    ledger.push(Object.assign({},m,{ferias:fer,edenred,saldo:bal}));
+    if(fer>0.005)tops.push({id:m.id,data:m.data,valor:fer,obs:m.obs});
+  }
+  return{ledger,tops};
 }
-function openPena(id){editPenaId=id||null;document.getElementById('penaModalTitle').textContent=id?'Editar — Penas':'Movimento — Penas';
+function penaLedger(){return penaCompute().ledger;}
+function penaBalBefore(dateISO,excludeId){
+  let bal=0;
+  [...DATA.penas].filter(m=>m.id!==excludeId).sort((a,b)=>a.data<b.data?-1:a.data>b.data?1:0)
+    .forEach(m=>{if(m.data<=dateISO){const fer=m.valor<0?Math.max(0,+m.ferias||0):0;bal=r2(bal+m.valor+fer);}});
+  return bal;
+}
+function renderPenas(){
+  const L=penaLedger(),t=todayISO();
+  const pastCount=L.filter(m=>m.data<t).length;
+  const pbtn=document.getElementById('btnPastPena');
+  if(pbtn){pbtn.style.display=pastCount?'inline-flex':'none';pbtn.textContent=showPastPena?'Ocultar anteriores':'Mostrar anteriores ('+pastCount+')';pbtn.classList.toggle('primary',showPastPena);}
+  const rows=L.filter(m=>showPastPena||m.data>=t);
+  const body=document.getElementById('penaBody');
+  if(!rows.length){body.innerHTML='<tr><td colspan="3"><div class="empty"><div class="ic">∅</div>Sem movimentos.</div></td></tr>';return;}
+  let html='',lastM='';
+  rows.forEach(m=>{
+    const mo=m.data.slice(0,7);
+    if(mo!==lastM){lastM=mo;html+='<tr class="divider-month"><td colspan="3">'+fmtMesAno(m.data)+'</td></tr>';}
+    const pos=m.edenred>=0,fut=m.data>t;
+    const chip=m.valor>=0?'<span class="chip receita">Entrada</span>':'<span class="chip despesa">Saída</span>';
+    const split=m.ferias>0.005?'<div class="psub">Total '+fmt(Math.abs(m.valor))+' · '+fmt(m.ferias)+' pela conta de férias</div>':'';
+    const editable=!RO;
+    html+='<tr class="'+(fut?'future ':'')+(m.saldo<-0.005?'minrow ':'')+'"'+(editable?' data-pe="'+m.id+'"':'')+'>'
+      +'<td class="datecell">'+fmtDayMonth(m.data)+'<div class="tcell">'+chip+'</div></td>'
+      +'<td class="desccell"><b>'+esc(m.obs)+'</b>'+split+'</td>'
+      +'<td class="r valcell"><span class="val num '+(pos?'pos':'neg')+'">'+fmt(m.edenred)+'</span>'
+      +'<span class="saldo num '+(m.saldo<-0.005?'low':'')+'">'+fmt(m.saldo)+'</span></td></tr>';
+  });
+  body.innerHTML=html;
+  body.querySelectorAll('tr[data-pe]').forEach(tr=>tr.onclick=()=>openPena(tr.dataset.pe));applyRO();
+}
+// Regra de divisão sugerida (o Edenred NUNCA pode ficar negativo):
+// - parte do Edenred ficaria < 50 € -> paga-se tudo pela conta de férias
+// - sobra para a conta de férias < 10 € -> a conta de férias paga 10 € e o
+//   Edenred paga o resto (continua positivo). Nunca há parcelas < 10 €.
+function penaSuggestFerias(total,available){
+  available=Math.max(0,available);
+  if(available>=total)return 0;            // Edenred cobre tudo
+  const overflow=r2(total-available);
+  if(available<50)return r2(total);        // Edenred só daria <50 € -> tudo pela conta de férias
+  if(overflow<10)return 10;                // sobra <10 € p/ férias -> férias paga 10 €, Edenred paga total-10 (fica positivo)
+  return overflow;                         // divisão normal: Edenred fica a 0
+}
+function updPenaSplit(){
+  const valRaw=parseFloat(document.getElementById('pValor').value);
+  const data=document.getElementById('pData').value||todayISO();
+  const ferEl=document.getElementById('pFerias'),wrap=document.getElementById('pFeriasWrap'),hint=document.getElementById('pSplitHint');
+  if(isNaN(valRaw)||valRaw>=0){
+    ferEl.value='';ferEl.disabled=true;wrap.style.opacity='.5';penaLastSug=null;
+    hint.textContent=(!isNaN(valRaw)&&valRaw>=0)?'Carregamentos entram totalmente no Edenred — sem divisão.':'Valor negativo = pagamento (saída). Aí divide-se com a conta de férias.';
+    return;
+  }
+  ferEl.disabled=false;wrap.style.opacity='1';
+  const total=Math.abs(valRaw),avail=Math.max(0,penaBalBefore(data,editPenaId));
+  const sug=penaSuggestFerias(total,avail),minF=r2(Math.max(0,total-avail));
+  // auto-preenche a sugestão enquanto o utilizador não mexer manualmente no campo
+  const cur=parseFloat(ferEl.value);
+  if(ferEl.value===''||(penaLastSug!==null&&Math.abs((isNaN(cur)?0:cur)-penaLastSug)<0.005))ferEl.value=sug>0.005?r2(sug):'';
+  penaLastSug=sug;
+  let fer=parseFloat(ferEl.value);if(isNaN(fer)||fer<0)fer=0;if(fer>total)fer=total;
+  const edenred=r2(total-fer);
+  let msg='Edenred paga '+fmt(edenred)+' · conta de férias paga '+fmt(fer)+'. Disponível no Edenred: '+fmt(avail)+'.';
+  const warn=fer<minF-0.005?' <b style="color:var(--neg)">O Edenred não pode ficar negativo — a conta de férias tem de cobrir ≥ '+fmt(minF)+'.</b>':'';
+  if(Math.abs(fer-sug)>0.005){
+    hint.innerHTML=msg+warn+' <button type="button" class="btn sm" id="pFerSug" style="margin-top:8px">↺ Usar sugestão (férias '+fmt(sug)+')</button>';
+    document.getElementById('pFerSug').onclick=()=>{document.getElementById('pFerias').value=sug>0.005?r2(sug):'';penaLastSug=sug;updPenaSplit();};
+    return;
+  }
+  hint.textContent=msg;
+}
+function openPena(id){editPenaId=id||null;document.getElementById('penaModalTitle').textContent=id?'Editar — Edenred Penas':'Movimento — Edenred Penas';
   document.getElementById('btnDelPena').style.display=id?'flex':'none';
-  if(id){const m=DATA.penas.find(x=>x.id===id);document.getElementById('pData').value=m.data;document.getElementById('pValor').value=m.valor;document.getElementById('pObs').value=m.obs;}
-  else{document.getElementById('pData').value=todayISO();document.getElementById('pValor').value='';document.getElementById('pObs').value='';}show('ovPena');}
+  if(id){const m=DATA.penas.find(x=>x.id===id);document.getElementById('pData').value=m.data;document.getElementById('pValor').value=m.valor;document.getElementById('pObs').value=m.obs;document.getElementById('pFerias').value=(m.ferias>0?m.ferias:'');}
+  else{document.getElementById('pData').value=todayISO();document.getElementById('pValor').value='';document.getElementById('pObs').value='';document.getElementById('pFerias').value='';}
+  penaLastSug=null;updPenaSplit();show('ovPena');}
 function savePena(){const data=document.getElementById('pData').value,v=parseFloat(document.getElementById('pValor').value),o=document.getElementById('pObs').value.trim();
   if(!data||isNaN(v)||!o){toast('Preenche os campos');return;}
-  if(editPenaId)Object.assign(DATA.penas.find(x=>x.id===editPenaId),{data,valor:v,obs:o});else DATA.penas.push({id:uid(),data,valor:v,obs:o});
-  persist();close();renderPenas();toast('Guardado');}
-function delPena(){if(!editPenaId)return;if(!confirm('Eliminar?'))return;DATA.penas=DATA.penas.filter(x=>x.id!==editPenaId);persist();close();renderPenas();}
+  let fer=parseFloat(document.getElementById('pFerias').value);if(isNaN(fer)||fer<0)fer=0;let adj=false;
+  if(v<0){const total=Math.abs(v);fer=Math.min(fer,total);
+    const avail=Math.max(0,penaBalBefore(data,editPenaId)),minF=r2(Math.max(0,total-avail));
+    if(fer<minF-0.005){fer=minF;adj=true;}}
+  else fer=0;
+  if(editPenaId)Object.assign(DATA.penas.find(x=>x.id===editPenaId),{data,valor:v,obs:o,ferias:r2(fer)});else DATA.penas.push({id:uid(),data,valor:v,obs:o,ferias:r2(fer)});
+  persist();close();renderAll();toast(adj?'Guardado — divisão ajustada (o Edenred não pode ficar negativo)':'Guardado');}
+function delPena(){if(!editPenaId)return;if(!confirm('Eliminar?'))return;DATA.penas=DATA.penas.filter(x=>x.id!==editPenaId);persist();close();renderAll();}
 
 /* ---------- CHARTS ---------- */
 function renderCharts(){
@@ -1043,7 +1130,9 @@ function init(){
 
   // penas
   document.getElementById('btnAddPena').onclick=()=>openPena(null);
+  document.getElementById('btnPastPena').onclick=()=>{showPastPena=!showPastPena;renderPenas();};
   document.getElementById('btnSavePena').onclick=savePena;document.getElementById('btnDelPena').onclick=delPena;
+  ['pValor','pFerias','pData'].forEach(id=>document.getElementById(id).addEventListener('input',updPenaSplit));
 
   // plano
   document.getElementById('tgPlano').onclick=()=>{DATA.config.planoMensal.ativo=!DATA.config.planoMensal.ativo;persist();renderDef();renderAll();};
