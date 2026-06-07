@@ -130,7 +130,10 @@ td.valcell .saldo{display:block;font-size:11px;color:var(--ink3);font-weight:500
 .proxrow:last-child{border-bottom:none}
 .proxrow .d{font-variant-numeric:tabular-nums;font-size:12px;color:var(--ink3);white-space:nowrap;width:46px;flex:none}
 .proxrow .n{flex:1;font-weight:600;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.proxrow .vbox{display:flex;flex-direction:column;align-items:flex-end;line-height:1.15;flex:none}
 .proxrow .v{font-weight:600;font-family:'Fraunces',serif;color:var(--neg);white-space:nowrap}
+.proxrow .s{font-size:11px;color:var(--ink3);font-weight:500;white-space:nowrap;margin-top:1px}
+.proxrow .s.low{color:var(--neg)}
 .val{font-weight:600;font-family:'Fraunces',serif}
 .val.pos{color:var(--pos)} .val.neg{color:var(--neg)}
 .saldo{font-family:'Fraunces',serif;font-weight:500}
@@ -264,6 +267,12 @@ td.datecell{white-space:nowrap;font-variant-numeric:tabular-nums;width:1%;font-w
   .brand h1{font-size:17px}.big{font-size:21px}
 }
 @media(max-width:480px){.g3,.g4{grid-template-columns:1fr}}
+@media(max-width:430px){
+  .lbl{letter-spacing:.02em}
+  .field label{letter-spacing:.02em}
+  .lbl,.field label,.stat .lbl,.pcard .who{text-wrap:balance}
+  .row2.stack{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
@@ -441,7 +450,7 @@ td.datecell{white-space:nowrap;font-variant-numeric:tabular-nums;width:1%;font-w
     <div class="card" style="padding:20px">
       <h2 style="font-size:19px">Precisamos de reforçar?</h2>
       <p class="muted" style="font-size:13.5px;margin-top:6px">Define o saldo de segurança que queres manter sempre disponível. A app calcula o reforço necessário para o saldo previsto nunca descer abaixo desse valor, dividido na proporção 55/45.</p>
-      <div class="row2" style="margin-top:16px;max-width:420px">
+      <div class="row2 stack" style="margin-top:16px;max-width:420px">
         <div class="field" style="margin:0">
           <label>Saldo de segurança (€)</label>
           <input type="number" id="bufInput" step="50" value="0">
@@ -728,11 +737,11 @@ function renderHeader(){
   document.getElementById('menorSaldoMeta').textContent=fmtDate(mn.data)+(mn.descricao?' · '+mn.descricao:'');
 }
 function renderResumo(){
-  const t=todayISO();
+  const t=todayISO(), buf=DATA.config.buffer||0;
   const prox=buildLedger().filter(m=>m.tipo==='despesa'&&m.data>=t).sort((a,b)=>a.data<b.data?-1:1).slice(0,6);
   const box=document.getElementById('proxDespesas');
   if(!prox.length){box.innerHTML='<div class="empty"><div class="ic">✦</div>Sem despesas futuras registadas.</div>';}
-  else box.innerHTML=prox.map(m=>'<div class="proxrow"><span class="d num">'+fmtDayMonth(m.data)+'</span><span class="n">'+esc(m.descricao)+'</span><span class="v num">'+fmt(m.valor)+'</span></div>').join('');
+  else box.innerHTML=prox.map(m=>'<div class="proxrow"><span class="d num">'+fmtDayMonth(m.data)+'</span><span class="n">'+esc(m.descricao)+'</span><span class="vbox"><span class="v num">'+fmt(m.valor)+'</span><span class="s num'+(m.saldo<buf?' low':'')+'">'+fmt(m.saldo)+'</span></span></div>').join('');
 }
 
 /* ---------- MOVIMENTOS ---------- */
