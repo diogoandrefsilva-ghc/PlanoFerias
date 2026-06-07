@@ -700,7 +700,9 @@ function genMonthly(sims){
   let[y,m]=start.split('-').map(Number);const[ey,em]=end.split('-').map(Number);const out=[];
   while(y<ey||(y===ey&&m<=em)){
     const mk=y+'-'+String(m).padStart(2,'0');const v=monthlyValue(mk,segs);
-    if(v>0){const tv=split55(v).total;out.push({id:'auto-'+mk,data:mk+'-'+dia,descricao:'Poupança mensal',valor:tv,tipo:'contribuicao',pessoa:'Comum',auto:true});}
+    if(v>0){const sp=split55(v);
+      out.push({id:'auto-'+mk+'-d',data:mk+'-'+dia,descricao:'Poupança Diogo',valor:sp.dio,tipo:'contribuicao',pessoa:'Diogo',auto:true});
+      out.push({id:'auto-'+mk+'-m',data:mk+'-'+dia,descricao:'Poupança Margarida',valor:sp.marg,tipo:'contribuicao',pessoa:'Margarida',auto:true});}
     m++;if(m>12){m=1;y++;}
   }return out;
 }
@@ -857,7 +859,9 @@ function renderSimChart(baseL,simL){
 function aplicarSim(){
   if(!DATA.sims.length)return;if(!confirm('Aplicar a simulação ao plano real?'))return;
   DATA.sims.forEach(s=>{
-    if(s.tipo==='deposito')DATA.movimentos.push({id:uid(),data:s.data,descricao:s.desc||'Depósito extra',valor:Math.abs(s.valor),tipo:'contribuicao',pessoa:'Comum'});
+    if(s.tipo==='deposito'){const base=s.desc||'Depósito extra';const tot=Math.abs(s.valor);const dio=split55(tot).dio;const marg=r2(tot-dio);
+      DATA.movimentos.push({id:uid(),data:s.data,descricao:base+' (Diogo)',valor:dio,tipo:'contribuicao',pessoa:'Diogo'});
+      DATA.movimentos.push({id:uid(),data:s.data,descricao:base+' (Margarida)',valor:marg,tipo:'contribuicao',pessoa:'Margarida'});}
     else{const segs=DATA.config.planoMensal.segmentos;const ex=segs.find(x=>x.desde===s.desde);if(ex)ex.valorTotal=s.valorTotal;else segs.push({desde:s.desde,valorTotal:s.valorTotal});segs.sort((a,b)=>a.desde<b.desde?-1:1);}
   });
   DATA.sims=[];persist();renderAll();renderSim();toast('Simulação aplicada ao plano ✓');
@@ -888,12 +892,10 @@ function renderQuick(){
   btn.style.display=RO?'none':'inline-flex';btn._v={total:sp.total,d,mg};
 }
 function aplicarRef(){const btn=document.getElementById('btnAplicarRef');if(!btn._v)return;
-  const v=btn._v;
-  openMov(null);
-  mTipo='contribuicao';document.querySelectorAll('#segTipo button').forEach(b=>b.classList.toggle('on',b.dataset.t===mTipo));
-  document.getElementById('fValor').value=v.total;
-  document.getElementById('fDesc').value='Reforço (Diogo '+fmt(v.d)+' / Margarida '+fmt(v.mg)+')';
-  document.getElementById('quickRef').value='';renderQuick();}
+  const v=btn._v,t=todayISO();
+  DATA.movimentos.push({id:uid(),data:t,descricao:'Reforço Diogo',valor:v.d,tipo:'contribuicao',pessoa:'Diogo'});
+  DATA.movimentos.push({id:uid(),data:t,descricao:'Reforço Margarida',valor:v.mg,tipo:'contribuicao',pessoa:'Margarida'});
+  persist();document.getElementById('quickRef').value='';renderQuick();renderAll();toast('Reforço registado ✓');}
 
 /* ---------- EDENRED PENAS ---------- */
 // Calcula o livro do Edenred Penas. A Edenred não pode ser reforçada: só
