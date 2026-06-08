@@ -9,6 +9,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="Férias">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Schibsted+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -1267,6 +1268,18 @@ function init(){
   if(ghToken)ghPull();
 }
 document.addEventListener('DOMContentLoaded',init);
+</script>
+<script>
+if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("/sw.js", { scope: "/" })
+        .then((reg) => {
+            setInterval(() => reg.update().catch(() => {}), 60000);
+        })
+        .catch((err) => console.log("[SW] Registration failed:", err));
+    navigator.serviceWorker.addEventListener("message", (e) => {
+        if (e.data </body></body> e.data.type === "RELOAD") window.location.reload();
+    });
+}
 </script>
 </body>
 </html>
