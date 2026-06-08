@@ -1272,7 +1272,7 @@ document.addEventListener('DOMContentLoaded',init);
 
 <script>
 if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js', { scope: '/' })
+    navigator.serviceWorker.register('/PlanoFerias/sw.js', { scope: '/PlanoFerias/' })
         .then((reg) => { setInterval(() => reg.update().catch(() => {}), 60000); })
         .catch((err) => console.log('[SW] Registration failed:', err));
 }
