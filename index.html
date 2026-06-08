@@ -210,6 +210,20 @@ td.datecell{white-space:nowrap;font-variant-numeric:tabular-nums;width:1%;font-w
 .segrow input[type=month],.segrow input[type=number]{font-family:inherit;font-size:14px;padding:8px 11px;border:1px solid var(--line);border-radius:10px;background:var(--card)}
 .segrow .split{font-size:12px;color:var(--ink3);flex:1;min-width:130px}
 .segrow .split b{color:var(--ink2)}
+.segcard{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:16px;margin-bottom:12px}
+.segcard .seghead{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.segcard .period{font-family:'Fraunces',serif;font-weight:600;font-size:16px;color:var(--ink);line-height:1.2}
+.segcard .seghead .iconbtn{margin-left:auto}
+.segfields{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.segfields label{display:flex;flex-direction:column;gap:5px;font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--ink3)}
+.segfields input{font-family:inherit;font-size:15px;padding:9px 11px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink)}
+.segfields input:focus{outline:none;border-color:var(--diogo)}
+.segsplit{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.segsplit .pill{flex:1;min-width:150px;font-size:13px;font-weight:600;padding:10px 14px;border-radius:12px}
+.segsplit .pill b{font-family:'Fraunces',serif;font-size:15px;margin:0 3px}
+.segsplit .pill.diogo{background:var(--diogoBg);color:var(--diogo)}
+.segsplit .pill.marg{background:var(--margBg);color:var(--marg)}
+@media(max-width:560px){.segfields{grid-template-columns:1fr 1fr}.segfields label:first-child{grid-column:1/-1}}
 
 /* REFORÇO / SIM PCARDS */
 .reforco-out{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
@@ -355,6 +369,7 @@ td.datecell{white-space:nowrap;font-variant-numeric:tabular-nums;width:1%;font-w
   <nav class="tabs" id="tabs">
     <button data-tab="resumo" class="active">Resumo</button>
     <button data-tab="movimentos">Movimentos</button>
+    <button data-tab="poupanca">Poupança</button>
     <button data-tab="penas">Edenred Penas</button>
     <button data-tab="evolucao">Evolução</button>
     <button data-tab="simulacao">Simulação</button>
@@ -448,22 +463,6 @@ td.datecell{white-space:nowrap;font-variant-numeric:tabular-nums;width:1%;font-w
   <!-- REFORÇOS -->
   <section class="panel" id="p-reforcos">
     <div class="card" style="padding:20px">
-      <h2 style="font-size:19px">Precisamos de reforçar?</h2>
-      <p class="muted" style="font-size:13.5px;margin-top:6px">Define o saldo de segurança que queres manter sempre disponível. A app calcula o reforço necessário para o saldo previsto nunca descer abaixo desse valor, dividido na proporção 55/45.</p>
-      <div class="row2 stack" style="margin-top:16px;max-width:420px">
-        <div class="field" style="margin:0">
-          <label>Saldo de segurança (€)</label>
-          <input type="number" id="bufInput" step="50" value="0">
-        </div>
-        <div class="field" style="margin:0">
-          <label>Proporção D / M</label>
-          <input type="text" id="splitView" disabled>
-        </div>
-      </div>
-      <div id="reforcoResult"></div>
-    </div>
-
-    <div class="card" style="padding:20px;margin-top:14px">
       <h2 style="font-size:19px">Calculadora rápida</h2>
       <p class="muted" style="font-size:13.5px;margin-top:6px">Quanto fica para cada um num reforço de…</p>
       <div class="field" style="max-width:240px;margin-top:12px">
@@ -472,7 +471,40 @@ td.datecell{white-space:nowrap;font-variant-numeric:tabular-nums;width:1%;font-w
       </div>
       <div class="reforco-out" id="quickOut" style="display:none"></div>
       <button class="btn primary ro-hideable" id="btnAplicarRef" style="margin-top:16px;display:none">+ Registar este reforço</button>
+      <p class="hint" id="quickRatioHint" style="margin-top:10px"></p>
     </div>
+
+    <div class="card" style="padding:20px;margin-top:14px">
+      <h2 style="font-size:19px">Precisamos de reforçar?</h2>
+      <p class="muted" style="font-size:13.5px;margin-top:6px">Define o saldo de segurança que queres manter sempre disponível. A app calcula o reforço necessário para o saldo previsto nunca descer abaixo desse valor, dividido pela proporção em vigor.</p>
+      <div class="row2 stack" style="margin-top:16px;max-width:420px">
+        <div class="field" style="margin:0">
+          <label>Saldo de segurança (€)</label>
+          <input type="number" id="bufInput" step="50" value="0">
+        </div>
+        <div class="field" style="margin:0">
+          <label>Proporção D / M (hoje)</label>
+          <input type="text" id="splitView" disabled>
+        </div>
+      </div>
+      <div id="reforcoResult"></div>
+    </div>
+  </section>
+
+  <!-- POUPANÇA -->
+  <section class="panel" id="p-poupanca">
+    <div class="card deflist" style="margin-top:4px">
+      <div class="defrow"><div class="t"><b>Plano ativo</b><span>Gera as contribuições mensais no forecast</span></div>
+        <div class="tg" id="tgPlano"></div></div>
+      <div class="defrow"><div class="t"><b>Prolongar até</b><span>Último mês com poupança mensal</span></div>
+        <input type="month" class="miniinput" id="planoAte"></div>
+      <div class="defrow"><div class="t"><b>Dia do mês</b><span>Dia em que entra a poupança</span></div>
+        <input type="number" min="1" max="28" class="miniinput" style="width:80px" id="planoDia"></div>
+    </div>
+    <div class="section-title"><h2>Intervalos de poupança</h2><div class="ln"></div>
+      <button class="btn sm ro-hideable" id="btnAddSeg">+ Intervalo</button></div>
+    <div id="segList"></div>
+    <p class="hint" style="margin:8px 4px">Cada intervalo define o valor mensal total e o rácio Diogo / Margarida em vigor a partir do mês indicado. Os reforços e depósitos usam o rácio em vigor à sua data.</p>
   </section>
 
   <!-- EDENRED PENAS -->
@@ -492,22 +524,6 @@ td.datecell{white-space:nowrap;font-variant-numeric:tabular-nums;width:1%;font-w
   <!-- DEFINIÇÕES -->
   <section class="panel" id="p-definicoes">
 
-    <div class="acc-hdr" id="acc-poupanca"><h2>Poupança mensal</h2><div class="ln"></div><span class="arr">▾</span></div>
-    <div class="acc-body" id="accb-poupanca">
-      <div class="card deflist" style="margin-top:12px">
-        <div class="defrow"><div class="t"><b>Plano ativo</b><span>Gera contribuições mensais no forecast</span></div>
-          <div class="tg" id="tgPlano"></div></div>
-        <div class="defrow"><div class="t"><b>Prolongar até</b><span>Último mês com poupança mensal</span></div>
-          <input type="month" class="miniinput" id="planoAte"></div>
-        <div class="defrow"><div class="t"><b>Dia do mês</b><span>Dia em que entra a poupança</span></div>
-          <input type="number" min="1" max="28" class="miniinput" style="width:80px" id="planoDia"></div>
-      </div>
-      <div class="section-title" style="margin-top:14px"><h3 style="font-size:15px">Valores (55 / 45)</h3><div class="ln"></div>
-        <button class="btn sm ro-hideable" id="btnAddSeg">+ Alteração</button></div>
-      <div class="card" id="segList" style="padding:2px 4px"></div>
-      <p class="hint" style="margin:8px 4px">Cada linha define o valor mensal total a partir de um mês. O total é dividido 55% Diogo / 45% Margarida.</p>
-    </div>
-
     <div class="acc-hdr" id="acc-conta"><h2>Conta</h2><div class="ln"></div><span class="arr">▾</span></div>
     <div class="acc-body" id="accb-conta">
       <div class="card deflist" style="margin-top:12px">
@@ -516,8 +532,6 @@ td.datecell{white-space:nowrap;font-variant-numeric:tabular-nums;width:1%;font-w
           <input type="number" step="0.01" class="miniinput" style="width:120px" id="setSaldoIni"></div>
         <div class="defrow"><div class="t"><b>Data inicial</b></div>
           <input type="date" class="miniinput" id="setDataIni"></div>
-        <div class="defrow"><div class="t"><b>Proporção de reforço</b><span>Diogo / Margarida</span></div>
-          <div class="splitline"><input type="number" class="miniinput" id="setSplitD" min="0" max="100"><span class="muted">/</span><input type="number" class="miniinput" id="setSplitM" min="0" max="100" disabled></div></div>
         <div class="defrow"><div class="t"><b>Saldo de segurança</b><span>Buffer mínimo por defeito</span></div>
           <input type="number" step="50" class="miniinput" style="width:120px" id="setBuffer"></div>
       </div>
@@ -657,13 +671,15 @@ function migrate(d){
   }
   const pm=d.config.planoMensal;
   if(!pm.segmentos||!pm.segmentos.length)pm.segmentos=[{desde:pm.inicio||'2026-05',valorTotal:pm.valorTotal||360}];
+  const defPct=(d.config.split&&d.config.split.Diogo)||55;
+  pm.segmentos.forEach(s=>{if(typeof s.diogoPct!=='number')s.diogoPct=defPct;});
   pm.segmentos.sort((a,b)=>a.desde<b.desde?-1:1);
   pm.diaMes=pm.diaMes||1;
   return d;
 }
 function freshData(){return migrate({config:defConfig(),movimentos:JSON.parse(JSON.stringify(SEED.movimentos)),penas:JSON.parse(JSON.stringify(SEED.penas))});}
 let DATA, ghToken='', ghSha=null, saveTok=false, RO=false;
-let chS=null, chM=null, chSim=null, editId=null, editPenaId=null, showPast=false, showPastPena=false, penaLastSug=null;
+let chS=null, chM=null, chSim=null, editId=null, editPenaId=null, showPast=false, showPastPena=false, penaLastSug=null, reforcoMode=false;
 
 function load(){try{const r=localStorage.getItem(LS_KEY);if(r)return migrate(JSON.parse(r));}catch(e){}return freshData();}
 function persist(){try{localStorage.setItem(LS_KEY,JSON.stringify(DATA));}catch(e){}}
@@ -674,7 +690,11 @@ const fmt=v=>eur.format(v||0);
 const r2=v=>Math.round((v||0)*100)/100;
 function mult5up(v){return Math.ceil((v||0)/5)*5;}
 function mult5dn(v){return Math.floor((v||0)/5)*5;}
-function split55(total){const dio=mult5up((total||0)*DATA.config.split.Diogo/100);const marg=mult5dn((total||0)*DATA.config.split.Margarida/100);return{dio:r2(dio),marg:r2(marg),total:r2(dio+marg)};}
+function splitBy(total,p){const dp=(typeof p==='number'?p:55);const dio=mult5up((total||0)*dp/100);const marg=mult5dn((total||0)*(100-dp)/100);return{dio:r2(dio),marg:r2(marg),total:r2(dio+marg)};}
+function defPct(){return(DATA.config.split&&DATA.config.split.Diogo)||55;}
+function split55(total){return splitBy(total,defPct());}
+function segAt(mk,segs){let cur=null;segs.forEach(s=>{if(s.desde<=mk)cur=s;});return cur;}
+function ratioForDate(dateISO,sims){const segs=planSegments(sims);const mk=(dateISO||'').slice(0,7);let cur=segAt(mk,segs)||segs[0];return cur&&typeof cur.diogoPct==='number'?cur.diogoPct:defPct();}
 function fmtDate(iso){if(!iso)return'';const[y,m,d]=iso.split('-');return d+'/'+m+'/'+y;}
 function fmtDayMonth(iso){if(!iso)return'';const[y,m,d]=iso.split('-');return d+'/'+m;}
 const MS=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
@@ -686,9 +706,12 @@ function toast(t){const e=document.getElementById('toast');e.textContent=t;e.cla
 
 /* ---------- geração plano + livro ---------- */
 function planSegments(sims){
-  const pm=DATA.config.planoMensal;
-  let segs=(pm.segmentos||[]).map(s=>({desde:s.desde,valorTotal:s.valorTotal}));
-  (sims||[]).filter(s=>s.tipo==='mensal').forEach(s=>segs.push({desde:s.desde,valorTotal:s.valorTotal}));
+  const pm=DATA.config.planoMensal;const dp=defPct();
+  let segs=(pm.segmentos||[]).map(s=>({desde:s.desde,valorTotal:s.valorTotal,diogoPct:typeof s.diogoPct==='number'?s.diogoPct:dp}));
+  (sims||[]).filter(s=>s.tipo==='mensal').forEach(s=>{
+    let p=s.diogoPct;if(typeof p!=='number'){let cur=null;segs.forEach(x=>{if(x.desde<=s.desde)cur=x;});p=cur?cur.diogoPct:dp;}
+    segs.push({desde:s.desde,valorTotal:s.valorTotal,diogoPct:p});
+  });
   segs.sort((a,b)=>a.desde<b.desde?-1:1);return segs;
 }
 function monthlyValue(mk,segs){let v=0;segs.forEach(s=>{if(s.desde<=mk)v=s.valorTotal;});return v;}
@@ -699,8 +722,8 @@ function genMonthly(sims){
   const dia=String(Math.min(28,Math.max(1,pm.diaMes||1))).padStart(2,'0');
   let[y,m]=start.split('-').map(Number);const[ey,em]=end.split('-').map(Number);const out=[];
   while(y<ey||(y===ey&&m<=em)){
-    const mk=y+'-'+String(m).padStart(2,'0');const v=monthlyValue(mk,segs);
-    if(v>0){const sp=split55(v);
+    const mk=y+'-'+String(m).padStart(2,'0');const seg=segAt(mk,segs);const v=seg?seg.valorTotal:0;
+    if(v>0){const sp=splitBy(v,seg.diogoPct);
       out.push({id:'auto-'+mk+'-d',data:mk+'-'+dia,descricao:'Poupança Diogo',valor:sp.dio,tipo:'contribuicao',pessoa:'Diogo',auto:true});
       out.push({id:'auto-'+mk+'-m',data:mk+'-'+dia,descricao:'Poupança Margarida',valor:sp.marg,tipo:'contribuicao',pessoa:'Margarida',auto:true});}
     m++;if(m>12){m=1;y++;}
@@ -780,6 +803,7 @@ function renderMov(){
 /* ---------- MODAL movimento ---------- */
 let mTipo='contribuicao';
 function openMov(id){
+  reforcoMode=false;
   editId=id||null;
   document.getElementById('movModalTitle').textContent=id?'Editar movimento':'Novo movimento';
   document.getElementById('btnDelMov').style.display=id?'flex':'none';
@@ -789,11 +813,29 @@ function openMov(id){
   document.querySelectorAll('#segTipo button').forEach(b=>b.classList.toggle('on',b.dataset.t===mTipo));
   show('ovMov');
 }
+function openReforcoMov(total){
+  reforcoMode=true;editId=null;mTipo='contribuicao';
+  document.getElementById('movModalTitle').textContent='Registar reforço';
+  document.getElementById('btnDelMov').style.display='none';
+  document.getElementById('fData').value=todayISO();
+  document.getElementById('fValor').value=total;
+  document.getElementById('fDesc').value='Reforço';
+  document.querySelectorAll('#segTipo button').forEach(b=>b.classList.toggle('on',b.dataset.t===mTipo));
+  show('ovMov');
+}
 function saveMov(){
   const data=document.getElementById('fData').value;let v=parseFloat(document.getElementById('fValor').value);
   const desc=document.getElementById('fDesc').value.trim();
   if(!data||isNaN(v)||!desc){toast('Preenche data, valor e descrição');return;}
-  v=Math.abs(v);if(mTipo==='despesa')v=-v;
+  v=Math.abs(v);
+  if(reforcoMode&&mTipo==='contribuicao'){
+    const sp=splitBy(v,ratioForDate(data,null));reforcoMode=false;
+    DATA.movimentos.push({id:uid(),data,descricao:desc+' Diogo',valor:sp.dio,tipo:'contribuicao',pessoa:'Diogo'});
+    DATA.movimentos.push({id:uid(),data,descricao:desc+' Margarida',valor:sp.marg,tipo:'contribuicao',pessoa:'Margarida'});
+    persist();close();renderAll();toast('Reforço registado ✓ (2 movimentos)');return;
+  }
+  reforcoMode=false;
+  if(mTipo==='despesa')v=-v;
   if(editId){Object.assign(DATA.movimentos.find(x=>x.id===editId),{data,valor:v,descricao:desc,tipo:mTipo,pessoa:'Comum'});}
   else DATA.movimentos.push({id:uid(),data,descricao:desc,valor:v,tipo:mTipo,pessoa:'Comum'});
   persist();close();renderAll();toast(editId?'Movimento atualizado':'Movimento adicionado');
@@ -859,7 +901,7 @@ function renderSimChart(baseL,simL){
 function aplicarSim(){
   if(!DATA.sims.length)return;if(!confirm('Aplicar a simulação ao plano real?'))return;
   DATA.sims.forEach(s=>{
-    if(s.tipo==='deposito'){const base=s.desc||'Depósito extra';const tot=Math.abs(s.valor);const dio=split55(tot).dio;const marg=r2(tot-dio);
+    if(s.tipo==='deposito'){const base=s.desc||'Depósito extra';const tot=Math.abs(s.valor);const dio=splitBy(tot,ratioForDate(s.data,null)).dio;const marg=r2(tot-dio);
       DATA.movimentos.push({id:uid(),data:s.data,descricao:base+' (Diogo)',valor:dio,tipo:'contribuicao',pessoa:'Diogo'});
       DATA.movimentos.push({id:uid(),data:s.data,descricao:base+' (Margarida)',valor:marg,tipo:'contribuicao',pessoa:'Margarida'});}
     else{const segs=DATA.config.planoMensal.segmentos;const ex=segs.find(x=>x.desde===s.desde);if(ex)ex.valorTotal=s.valorTotal;else segs.push({desde:s.desde,valorTotal:s.valorTotal});segs.sort((a,b)=>a.desde<b.desde?-1:1);}
@@ -869,33 +911,31 @@ function aplicarSim(){
 
 /* ---------- REFORÇOS ---------- */
 function renderReforco(){
-  document.getElementById('splitView').value=DATA.config.split.Diogo+'% / '+DATA.config.split.Margarida+'%';
+  const pToday=ratioForDate(todayISO(),null);
+  document.getElementById('splitView').value=pToday+'% / '+r2(100-pToday)+'%';
   const buf=parseFloat(document.getElementById('bufInput').value)||0;
   const M=calc(buildLedger()), out=document.getElementById('reforcoResult');
   const min=M.low[0]?M.low[0]:{saldo:DATA.config.saldoInicial,data:DATA.config.dataInicial};
   const need=buf-min.saldo;
   if(need<=0){out.innerHTML='<div class="callout ok">✓ Tudo certo. O saldo previsto nunca desce abaixo de '+fmt(buf)+' (mínimo: '+fmt(min.saldo)+' em '+fmtDate(min.data)+'). Sem reforço necessário.</div>';return;}
   const base=Math.ceil(need/10)*10;
-  const sp=split55(base);const total=sp.total,d=sp.dio,mg=sp.marg;
+  const sp=splitBy(base,pToday);const total=sp.total,d=sp.dio,mg=sp.marg;
   out.innerHTML='<div class="callout warn">⚠︎ O saldo previsto desce até <b>'+fmt(min.saldo)+'</b> em '+fmtDate(min.data)+'. Para manteres sempre '+fmt(buf)+', precisas de reforçar <b>'+fmt(total)+'</b> antes dessa data.</div>'
-    +'<div class="reforco-out"><div class="pcard diogo"><div class="who">Diogo</div><div class="amt num">'+fmt(d)+'</div><div class="pct">'+DATA.config.split.Diogo+'% do reforço</div></div>'
-    +'<div class="pcard marg"><div class="who">Margarida</div><div class="amt num">'+fmt(mg)+'</div><div class="pct">'+DATA.config.split.Margarida+'% do reforço</div></div></div>';
+    +'<div class="reforco-out"><div class="pcard diogo"><div class="who">Diogo</div><div class="amt num">'+fmt(d)+'</div><div class="pct">'+pToday+'% do reforço</div></div>'
+    +'<div class="pcard marg"><div class="who">Margarida</div><div class="amt num">'+fmt(mg)+'</div><div class="pct">'+r2(100-pToday)+'% do reforço</div></div></div>';
 }
 function renderQuick(){
   const v=parseFloat(document.getElementById('quickRef').value);
-  const out=document.getElementById('quickOut'),btn=document.getElementById('btnAplicarRef');
-  if(isNaN(v)||v<=0){out.style.display='none';btn.style.display='none';return;}
-  const sp=split55(v),d=sp.dio,mg=sp.marg;
+  const out=document.getElementById('quickOut'),btn=document.getElementById('btnAplicarRef'),hint=document.getElementById('quickRatioHint');
+  if(isNaN(v)||v<=0){out.style.display='none';btn.style.display='none';if(hint)hint.textContent='';return;}
+  const p=ratioForDate(todayISO(),null),sp=splitBy(v,p),d=sp.dio,mg=sp.marg;
   out.style.display='grid';
-  out.innerHTML='<div class="pcard diogo"><div class="who">Diogo</div><div class="amt num">'+fmt(d)+'</div><div class="pct">'+DATA.config.split.Diogo+'% · múlt. de 5</div></div>'
-    +'<div class="pcard marg"><div class="who">Margarida</div><div class="amt num">'+fmt(mg)+'</div><div class="pct">'+DATA.config.split.Margarida+'% · múlt. de 5</div></div>';
-  btn.style.display=RO?'none':'inline-flex';btn._v={total:sp.total,d,mg};
+  out.innerHTML='<div class="pcard diogo"><div class="who">Diogo</div><div class="amt num">'+fmt(d)+'</div><div class="pct">'+p+'% · múlt. de 5</div></div>'
+    +'<div class="pcard marg"><div class="who">Margarida</div><div class="amt num">'+fmt(mg)+'</div><div class="pct">'+r2(100-p)+'% · múlt. de 5</div></div>';
+  if(hint)hint.textContent='Pré-visualização com o rácio de hoje ('+p+'/'+r2(100-p)+'). Ao registar, podes escolher a data — a divisão usa o rácio em vigor nessa data.';
+  btn.style.display=RO?'none':'inline-flex';btn._v={total:v};
 }
-function aplicarRef(){const btn=document.getElementById('btnAplicarRef');if(!btn._v)return;
-  const v=btn._v,t=todayISO();
-  DATA.movimentos.push({id:uid(),data:t,descricao:'Reforço Diogo',valor:v.d,tipo:'contribuicao',pessoa:'Diogo'});
-  DATA.movimentos.push({id:uid(),data:t,descricao:'Reforço Margarida',valor:v.mg,tipo:'contribuicao',pessoa:'Margarida'});
-  persist();document.getElementById('quickRef').value='';renderQuick();renderAll();toast('Reforço registado ✓');}
+function aplicarRef(){const btn=document.getElementById('btnAplicarRef');if(!btn._v)return;openReforcoMov(btn._v.total);}
 
 /* ---------- EDENRED PENAS ---------- */
 // Calcula o livro do Edenred Penas. A Edenred não pode ser reforçada: só
@@ -1038,16 +1078,11 @@ function renderCharts(){
 
 /* ---------- DEFINIÇÕES ---------- */
 function renderDef(){
-  const c=DATA.config,pm=c.planoMensal;
-  document.getElementById('tgPlano').classList.toggle('on',pm.ativo);
-  document.getElementById('planoAte').value=pm.ate;
-  document.getElementById('planoDia').value=pm.diaMes;
-  renderSegs();
+  const c=DATA.config;
   document.getElementById('setTitulo').value=c.titulo||'';
   document.getElementById('setSaldoIni').value=c.saldoInicial;
   document.getElementById('setDataIni').value=c.dataInicial;
   document.getElementById('setDataInfo').textContent='Aberto em '+fmtDate(c.dataInicial);
-  document.getElementById('setSplitD').value=c.split.Diogo;document.getElementById('setSplitM').value=c.split.Margarida;
   document.getElementById('setBuffer').value=c.buffer||0;
   document.getElementById('ghOwner').value=c.github.owner;document.getElementById('ghRepo').value=c.github.repo;
   document.getElementById('ghPath').value=c.github.path;document.getElementById('ghBranch').value=c.github.branch;
@@ -1055,18 +1090,38 @@ function renderDef(){
   document.getElementById('tgSaveTok').classList.toggle('on',saveTok);
   document.getElementById('tgRO').classList.toggle('on',RO);
 }
-function renderSegs(){
-  const c=DATA.config,segs=c.planoMensal.segmentos;
-  document.getElementById('segList').innerHTML=segs.map((s,i)=>{
-    const sp=split55(s.valorTotal),d=sp.dio,m=sp.marg;
-    return '<div class="segrow"><input type="month" data-seg="'+i+'" data-k="desde" value="'+s.desde+'">'
-      +'<input type="number" step="10" data-seg="'+i+'" data-k="valorTotal" value="'+s.valorTotal+'" style="width:100px">'
-      +'<span class="split">D: <b>'+fmt(d)+'</b> · M: <b>'+fmt(m)+'</b></span>'
-      +(segs.length>1&&!RO?'<button class="iconbtn" data-rmseg="'+i+'">✕</button>':'')+'</div>';}).join('');
-  document.getElementById('segList').querySelectorAll('[data-seg]').forEach(el=>el.addEventListener('change',()=>{
-    const i=+el.dataset.seg,k=el.dataset.k;DATA.config.planoMensal.segmentos[i][k]=k==='valorTotal'?(parseFloat(el.value)||0):el.value;
-    DATA.config.planoMensal.segmentos.sort((a,b)=>a.desde<b.desde?-1:1);persist();renderSegs();renderAll();}));
-  document.getElementById('segList').querySelectorAll('[data-rmseg]').forEach(b=>b.onclick=()=>{DATA.config.planoMensal.segmentos.splice(+b.dataset.rmseg,1);persist();renderSegs();renderAll();});
+function prevMonthLabel(mk){let[y,m]=mk.split('-').map(Number);m--;if(m<1){m=12;y--;}return fmtMesAno(y+'-'+String(m).padStart(2,'0')+'-01');}
+function renderPoupanca(){
+  const pm=DATA.config.planoMensal;
+  document.getElementById('tgPlano').classList.toggle('on',pm.ativo);
+  document.getElementById('planoAte').value=pm.ate;
+  document.getElementById('planoDia').value=pm.diaMes;
+  const segs=pm.segmentos,host=document.getElementById('segList');
+  host.innerHTML=segs.map((s,i)=>{
+    const p=typeof s.diogoPct==='number'?s.diogoPct:defPct();const sp=splitBy(s.valorTotal,p);
+    const next=segs[i+1];
+    const fim=next?prevMonthLabel(next.desde):(pm.ate?('em diante (até '+fmtMesAno(pm.ate+'-01')+')'):'em diante');
+    return '<div class="segcard">'
+      +'<div class="seghead"><span class="period">'+fmtMesAno(s.desde+'-01')+' → '+fim+'</span>'
+      +(segs.length>1&&!RO?'<button class="iconbtn" data-rmseg="'+i+'">✕</button>':'')+'</div>'
+      +'<div class="segfields">'
+        +'<label>Desde<input type="month" data-seg="'+i+'" data-k="desde" value="'+s.desde+'"></label>'
+        +'<label>Valor mensal (€)<input type="number" step="10" data-seg="'+i+'" data-k="valorTotal" value="'+s.valorTotal+'"></label>'
+        +'<label>Rácio Diogo (%)<input type="number" min="0" max="100" step="1" data-seg="'+i+'" data-k="diogoPct" value="'+p+'"></label>'
+      +'</div>'
+      +'<div class="segsplit"><span class="pill diogo">Diogo <b>'+fmt(sp.dio)+'</b>· '+p+'%</span>'
+        +'<span class="pill marg">Margarida <b>'+fmt(sp.marg)+'</b>· '+r2(100-p)+'%</span></div>'
+    +'</div>';
+  }).join('');
+  host.querySelectorAll('[data-seg]').forEach(el=>el.addEventListener('change',()=>{
+    const i=+el.dataset.seg,k=el.dataset.k;let val=el.value;
+    if(k==='valorTotal')val=parseFloat(el.value)||0;
+    else if(k==='diogoPct')val=Math.min(100,Math.max(0,parseInt(el.value)||0));
+    DATA.config.planoMensal.segmentos[i][k]=val;
+    DATA.config.planoMensal.segmentos.sort((a,b)=>a.desde<b.desde?-1:1);
+    persist();renderPoupanca();renderAll();
+  }));
+  host.querySelectorAll('[data-rmseg]').forEach(b=>b.onclick=()=>{DATA.config.planoMensal.segmentos.splice(+b.dataset.rmseg,1);persist();renderPoupanca();renderAll();});
   applyRO();
 }
 function saveDef(){
@@ -1074,8 +1129,6 @@ function saveDef(){
   c.titulo=document.getElementById('setTitulo').value.trim()||'Plano de Férias';
   c.saldoInicial=parseFloat(document.getElementById('setSaldoIni').value)||0;
   c.dataInicial=document.getElementById('setDataIni').value||c.dataInicial;
-  let d=Math.min(100,Math.max(0,parseFloat(document.getElementById('setSplitD').value)||0));
-  c.split.Diogo=d;c.split.Margarida=r2(100-d);
   c.buffer=parseFloat(document.getElementById('setBuffer').value)||0;
   c.planoMensal.ate=document.getElementById('planoAte').value||c.planoMensal.ate;
   c.planoMensal.diaMes=Math.min(28,Math.max(1,parseInt(document.getElementById('planoDia').value)||1));
@@ -1122,7 +1175,7 @@ async function ghPush(){
 function show(id){document.getElementById(id).classList.add('show');}
 function close(){document.querySelectorAll('.overlay').forEach(o=>o.classList.remove('show'));}
 function applyRO(){document.querySelectorAll('.ro-hideable').forEach(e=>e.classList.toggle('ro-hide',RO));document.getElementById('fab').classList.toggle('ro-hide',RO);}
-function renderAll(){renderHeader();renderResumo();renderMov();renderPenas();renderReforco();renderCharts();}
+function renderAll(){renderHeader();renderResumo();renderMov();renderPoupanca();renderPenas();renderReforco();renderCharts();}
 
 /* ---------- init ---------- */
 function init(){
@@ -1169,14 +1222,13 @@ function init(){
   ['pValor','pFerias','pData'].forEach(id=>document.getElementById(id).addEventListener('input',updPenaSplit));
 
   // plano
-  document.getElementById('tgPlano').onclick=()=>{DATA.config.planoMensal.ativo=!DATA.config.planoMensal.ativo;persist();renderDef();renderAll();};
+  document.getElementById('tgPlano').onclick=()=>{DATA.config.planoMensal.ativo=!DATA.config.planoMensal.ativo;persist();renderPoupanca();renderAll();};
   document.getElementById('planoAte').addEventListener('change',saveDef);
   document.getElementById('planoDia').addEventListener('change',saveDef);
-  document.getElementById('btnAddSeg').onclick=()=>{const segs=DATA.config.planoMensal.segmentos;const last=segs[segs.length-1];const[y,m]=last.desde.split('-').map(Number);const nm=m===12?(y+1)+'-01':y+'-'+String(m+1).padStart(2,'0');segs.push({desde:nm,valorTotal:last.valorTotal});segs.sort((a,b)=>a.desde<b.desde?-1:1);persist();renderSegs();renderAll();};
+  document.getElementById('btnAddSeg').onclick=()=>{const segs=DATA.config.planoMensal.segmentos;const last=segs[segs.length-1];const[y,m]=last.desde.split('-').map(Number);const nm=m===12?(y+1)+'-01':y+'-'+String(m+1).padStart(2,'0');segs.push({desde:nm,valorTotal:last.valorTotal,diogoPct:typeof last.diogoPct==='number'?last.diogoPct:defPct()});segs.sort((a,b)=>a.desde<b.desde?-1:1);persist();renderPoupanca();renderAll();};
 
   // definições
-  ['setTitulo','setSaldoIni','setDataIni','setSplitD','setBuffer','ghOwner','ghRepo','ghPath','ghBranch'].forEach(id=>document.getElementById(id).addEventListener('change',saveDef));
-  document.getElementById('setSplitD').addEventListener('input',()=>{const d=Math.min(100,Math.max(0,parseFloat(document.getElementById('setSplitD').value)||0));document.getElementById('setSplitM').value=r2(100-d);});
+  ['setTitulo','setSaldoIni','setDataIni','setBuffer','ghOwner','ghRepo','ghPath','ghBranch'].forEach(id=>document.getElementById(id).addEventListener('change',saveDef));
   document.getElementById('ghToken').addEventListener('input',e=>{ghToken=e.target.value.trim();ghSha=null;if(saveTok)localStorage.setItem(LS_TOK,ghToken);});
   document.getElementById('tgSaveTok').onclick=()=>{saveTok=!saveTok;localStorage.setItem(LS_TOKSAVE,saveTok?'1':'0');if(saveTok)localStorage.setItem(LS_TOK,ghToken);else localStorage.removeItem(LS_TOK);renderDef();};
   document.getElementById('tgRO').onclick=()=>{RO=!RO;DATA.config.readonly=RO;persist();applyRO();renderDef();renderAll();renderSim();};
@@ -1187,7 +1239,7 @@ function init(){
   document.getElementById('btnReset').onclick=()=>{if(confirm('Repor os dados de exemplo? Perdes as alterações locais.')){DATA=freshData();persist();renderAll();renderDef();renderSim();toast('Dados repostos');}};
 
   // accordions definições
-  ['poupanca','conta','github'].forEach(id=>{
+  ['conta','github'].forEach(id=>{
     const hdr=document.getElementById('acc-'+id),body=document.getElementById('accb-'+id);
     hdr.onclick=()=>{hdr.classList.toggle('open');body.classList.toggle('open');};
   });
