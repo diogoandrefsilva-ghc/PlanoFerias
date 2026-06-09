@@ -138,6 +138,7 @@ td.valcell .saldo{display:block;font-size:11px;color:var(--ink3);font-weight:500
 .proxrow .n{flex:1;font-weight:600;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .proxrow .vbox{display:flex;flex-direction:column;align-items:flex-end;line-height:1.15;flex:none}
 .proxrow .v{font-weight:600;font-family:'Fraunces',serif;color:var(--neg);white-space:nowrap}
+.proxrow .v.pos{color:var(--pos)}
 .proxrow .s{font-size:11px;color:var(--ink3);font-weight:500;white-space:nowrap;margin-top:1px}
 .proxrow .s.low{color:var(--neg)}
 .val{font-weight:600;font-family:'Fraunces',serif}
@@ -395,6 +396,9 @@ td.datecell{white-space:nowrap;font-variant-numeric:tabular-nums;width:1%;font-w
       <div class="hcard"><div class="lbl">Saldo hoje</div><div class="big num" id="saldoHoje">—</div><div class="meta" id="saldoHojeMeta"></div></div>
       <div class="hcard"><div class="lbl">Menor saldo previsto</div><div class="big num" id="menorSaldo">—</div><div class="meta" id="menorSaldoMeta"></div></div>
     </div>
+
+    <div class="section-title"><h2>Próximos reforços extraordinários</h2><div class="ln"></div></div>
+    <div class="card prox" id="proxReforcos"></div>
 
     <div class="section-title"><h2>Próximas despesas</h2><div class="ln"></div></div>
     <div class="card prox" id="proxDespesas"></div>
@@ -774,8 +778,14 @@ function renderHeader(){
   document.getElementById('menorSaldoMeta').textContent=fmtDate(mn.data)+(mn.descricao?' · '+mn.descricao:'');
 }
 function renderResumo(){
-  const t=todayISO(), buf=DATA.config.buffer||0;
-  const prox=buildLedger().filter(m=>m.tipo==='despesa'&&m.data>=t).sort((a,b)=>a.data<b.data?-1:1).slice(0,6);
+  const t=todayISO(), buf=DATA.config.buffer||0, L=buildLedger();
+  // próximos reforços extraordinários: créditos que não vêm do plano automático
+  const ref=L.filter(m=>m.tipo==='contribuicao'&&!m.auto&&m.data>=t).sort((a,b)=>a.data<b.data?-1:1).slice(0,6);
+  const rbox=document.getElementById('proxReforcos');
+  if(!ref.length){rbox.innerHTML='<div class="empty"><div class="ic">✦</div>Sem reforços extraordinários previstos.</div>';}
+  else rbox.innerHTML=ref.map(m=>'<div class="proxrow"><span class="d num">'+fmtDayMonth(m.data)+'</span><span class="n">'+esc(m.descricao)+'</span><span class="vbox"><span class="v num pos">+'+fmt(m.valor)+'</span></span></div>').join('');
+  // próximas despesas
+  const prox=L.filter(m=>m.tipo==='despesa'&&m.data>=t).sort((a,b)=>a.data<b.data?-1:1).slice(0,6);
   const box=document.getElementById('proxDespesas');
   if(!prox.length){box.innerHTML='<div class="empty"><div class="ic">✦</div>Sem despesas futuras registadas.</div>';}
   else box.innerHTML=prox.map(m=>'<div class="proxrow"><span class="d num">'+fmtDayMonth(m.data)+'</span><span class="n">'+esc(m.descricao)+'</span><span class="vbox"><span class="v num">'+fmt(m.valor)+'</span><span class="s num'+(m.saldo<buf?' low':'')+'">'+fmt(m.saldo)+'</span></span></div>').join('');
