@@ -678,7 +678,8 @@ function migrate(d){
   d.config.split=Object.assign({Diogo:55,Margarida:45},d.config.split||{});
   d.movimentos=Array.isArray(d.movimentos)?d.movimentos:[];
   d.penas=Array.isArray(d.penas)?d.penas:[];
-  d.penas.forEach(m=>{if(typeof m.ferias!=='number')m.ferias=0;});
+  d.penas.forEach(m=>{if(typeof m.ferias!=='number')m.ferias=+m.ferias||0;});
+  penaNormalize(d.penas);
   d.sims=Array.isArray(d.sims)?d.sims:[];
   if(!d.config.planoMensal){
     const rx=/^Poupança (Diogo|Margarida)/;
@@ -1032,6 +1033,27 @@ function penaSuggestFerias(total,available){
   if(overflow<10)return 10;                // sobra <10 € p/ férias -> férias paga 10 €, Edenred paga total-10 (fica positivo)
   return overflow;                         // divisão normal: Edenred fica a 0
 }
+// Reequilibra os splits em cadeia. Sempre que um movimento é criado, editado
+// ou eliminado, o saldo Edenred disponível nos movimentos seguintes muda —
+// e os splits guardados ficariam desatualizados (Edenred a negativo).
+// Splits automáticos seguem sempre a regra de sugestão; splits manuais
+// (feriasManual) mantêm-se, mas sobem ao mínimo se o Edenred fosse ficar negativo.
+function penaNormalize(arr){
+  const ms=[...(arr||DATA.penas)].sort((a,b)=>a.data<b.data?-1:a.data>b.data?1:0);
+  let bal=0,changed=false;
+  for(const m of ms){
+    if(m.valor<0){
+      const total=Math.abs(m.valor),avail=Math.max(0,bal);
+      let fer=m.feriasManual?Math.max(0,+m.ferias||0):penaSuggestFerias(total,avail);
+      const minF=r2(Math.max(0,total-avail));
+      if(fer<minF-0.005)fer=minF;
+      fer=r2(Math.min(fer,total));
+      if(Math.abs(fer-(+m.ferias||0))>0.005){m.ferias=fer;changed=true;}
+      bal=r2(bal+m.valor+fer);
+    }else bal=r2(bal+m.valor);
+  }
+  return changed;
+}
 function updPenaSplit(){
   const mag=parseFloat(document.getElementById('pValor').value);
   const isCred=penaSign>0;
@@ -1070,14 +1092,16 @@ function openPena(id){editPenaId=id||null;document.getElementById('penaModalTitl
 function savePena(){const data=document.getElementById('pData').value,mag=parseFloat(document.getElementById('pValor').value),o=document.getElementById('pObs').value.trim();
   if(!data||isNaN(mag)||!o){toast('Preenche os campos');return;}
   const v=penaSign>0?Math.abs(mag):-Math.abs(mag);
-  let fer=parseFloat(document.getElementById('pFerias').value);if(isNaN(fer)||fer<0)fer=0;let adj=false;
+  let fer=parseFloat(document.getElementById('pFerias').value);if(isNaN(fer)||fer<0)fer=0;let adj=false,manual=false;
   if(v<0){const total=Math.abs(v);fer=Math.min(fer,total);
     const avail=Math.max(0,penaBalBefore(data,editPenaId)),minF=r2(Math.max(0,total-avail));
+    manual=Math.abs(fer-penaSuggestFerias(total,avail))>0.005;
     if(fer<minF-0.005){fer=minF;adj=true;}}
   else fer=0;
-  if(editPenaId)Object.assign(DATA.penas.find(x=>x.id===editPenaId),{data,valor:v,obs:o,ferias:r2(fer)});else DATA.penas.push({id:uid(),data,valor:v,obs:o,ferias:r2(fer)});
-  persist();close();renderAll();toast(adj?'Guardado — divisão ajustada (o Edenred não pode ficar negativo)':'Guardado');}
-function delPena(){if(!editPenaId)return;if(!confirm('Eliminar?'))return;DATA.penas=DATA.penas.filter(x=>x.id!==editPenaId);persist();close();renderAll();}
+  if(editPenaId)Object.assign(DATA.penas.find(x=>x.id===editPenaId),{data,valor:v,obs:o,ferias:r2(fer),feriasManual:manual});else DATA.penas.push({id:uid(),data,valor:v,obs:o,ferias:r2(fer),feriasManual:manual});
+  const reb=penaNormalize();
+  persist();close();renderAll();toast(adj?'Guardado — divisão ajustada (o Edenred não pode ficar negativo)':reb?'Guardado — divisões seguintes reequilibradas':'Guardado');}
+function delPena(){if(!editPenaId)return;if(!confirm('Eliminar?'))return;DATA.penas=DATA.penas.filter(x=>x.id!==editPenaId);penaNormalize();persist();close();renderAll();}
 
 /* ---------- CHARTS ---------- */
 function renderCharts(){
