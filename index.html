@@ -2,7 +2,7 @@
 <html lang="pt-PT">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Plano de Férias</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -15,6 +15,10 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Schibsted+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <style>
+/* Bloqueia pinch-zoom e double-tap zoom (iOS PWA) */
+*{touch-action:manipulation}
+html,body{touch-action:pan-x pan-y}
+
 :root{
   --paper:#F6F1E7; --paper2:#EFE8DA; --card:#FFFDF8; --ink:#15302A; --ink2:#46594F;
   --ink3:#7C8A82; --line:rgba(21,48,42,.12); --line2:rgba(21,48,42,.07);
