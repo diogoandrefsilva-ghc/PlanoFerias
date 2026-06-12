@@ -192,6 +192,9 @@ td.datecell{white-space:nowrap;font-variant-numeric:tabular-nums;width:1%;font-w
 .modal .x:hover{background:var(--paper2)}
 .field{margin-bottom:14px}
 .field label{display:block;font-size:12px;font-weight:600;color:var(--ink2);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em}
+.pitem-row{display:grid;grid-template-columns:minmax(0,1fr) 104px 38px;gap:6px;margin-bottom:6px;align-items:center}
+.pitem-row input{min-width:0;height:44px;font-size:14.5px}
+.pitem-row .pi-x{height:44px;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--neg);font-size:18px;cursor:pointer}
 .field input,.field select,.field textarea{width:100%;font-family:inherit;font-size:16px;height:50px;line-height:1.2;
   padding:0 14px;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);
   box-sizing:border-box;-webkit-appearance:none;appearance:none;text-align:left;margin:0;display:block;vertical-align:top}
@@ -649,6 +652,12 @@ td.datecell{white-space:nowrap;font-variant-numeric:tabular-nums;width:1%;font-w
     <div class="field"><label>Valor (€)</label><input type="number" step="0.01" min="0" id="pValor" placeholder="0,00"></div>
   </div>
   <div class="field"><label>Descrição</label><input type="text" id="pObs" placeholder="ex.: Mensalidade Penas"></div>
+  <div class="field" id="pItensWrap">
+    <label>Extras / descontos</label>
+    <div id="pItens"></div>
+    <button type="button" class="btn sm" id="btnAddItem">＋ Item (seguro, desconto…)</button>
+    <p class="hint" id="pItensHint"></p>
+  </div>
   <div class="field" id="pFeriasWrap">
     <label>Pago pela conta de férias (€)</label>
     <input type="number" step="0.01" id="pFerias" placeholder="0">
@@ -1010,11 +1019,17 @@ function renderPenas(){
     if(mo!==lastM){lastM=mo;html+='<tr class="divider-month"><td colspan="3">'+fmtMesAno(m.data)+'</td></tr>';}
     const pos=m.edenred>=0,fut=m.data>t;
     const chip=m.valor>=0?'<span class="chip receita">Entrada</span>':'<span class="chip despesa">Saída</span>';
+    const its=Array.isArray(m.itens)?m.itens:[];
+    let brk='';
+    if(its.length){
+      const base=typeof m.base==='number'?m.base:r2(Math.abs(m.valor)-its.reduce((s,i)=>s+i.v,0));
+      brk='<div class="psub">'+fmt(base)+its.map(i=>(i.v<0?' − ':' + ')+esc(i.d)+' '+fmt(Math.abs(i.v))).join('')+'</div>';
+    }
     const split=m.ferias>0.005?'<div class="psub">Total '+fmt(Math.abs(m.valor))+' · '+fmt(m.ferias)+' pela conta de férias</div>':'';
     const editable=!RO;
     html+='<tr class="'+(fut?'future ':'')+(m.saldo<-0.005?'minrow ':'')+'"'+(editable?' data-pe="'+m.id+'"':'')+'>'
       +'<td class="datecell">'+fmtDayMonth(m.data)+'</td>'
-      +'<td class="desccell"><b>'+esc(m.obs)+'</b><div class="tcell">'+chip+'</div>'+split+'</td>'
+      +'<td class="desccell"><b>'+esc(m.obs)+'</b><div class="tcell">'+chip+'</div>'+brk+split+'</td>'
       +'<td class="r valcell"><span class="val num '+(pos?'pos':'neg')+'">'+fmt(m.edenred)+'</span>'
       +'<span class="saldo num '+(m.saldo<-0.005?'low':'')+'">'+fmt(m.saldo)+'</span></td></tr>';
   });
@@ -1060,13 +1075,17 @@ function updPenaSplit(){
   const valRaw=isNaN(mag)?NaN:(isCred?Math.abs(mag):-Math.abs(mag));
   const data=document.getElementById('pData').value||todayISO();
   const ferEl=document.getElementById('pFerias'),wrap=document.getElementById('pFeriasWrap'),hint=document.getElementById('pSplitHint');
+  const itWrap=document.getElementById('pItensWrap'),itHint=document.getElementById('pItensHint');
+  itWrap.style.display=isCred?'none':'block';
   if(isCred||isNaN(valRaw)){
-    ferEl.value='';ferEl.disabled=true;wrap.style.opacity='.5';penaLastSug=null;
+    ferEl.value='';ferEl.disabled=true;wrap.style.opacity='.5';penaLastSug=null;if(itHint)itHint.textContent='';
     hint.textContent=isCred?'Carregamento — entra totalmente no Edenred, sem divisão.':'Indica o valor do pagamento. A divisão com a conta de férias aparece aqui.';
     return;
   }
   ferEl.disabled=false;wrap.style.opacity='1';
-  const total=Math.abs(valRaw),avail=Math.max(0,penaBalBefore(data,editPenaId));
+  const itens=penaItemsRead(),base=Math.abs(valRaw),total=Math.max(0,penaTotalFromForm(base));
+  if(itHint)itHint.textContent=itens.length?'Total do pagamento: '+fmt(total)+' ('+fmt(base)+(itens.reduce((s,i)=>s+i.v,0)>=0?' + ':' − ')+fmt(Math.abs(r2(total-base)))+' de itens)':'';
+  const avail=Math.max(0,penaBalBefore(data,editPenaId));
   const sug=penaSuggestFerias(total,avail),minF=r2(Math.max(0,total-avail));
   // auto-preenche a sugestão enquanto o utilizador não mexer manualmente no campo
   const cur=parseFloat(ferEl.value);
@@ -1084,21 +1103,46 @@ function updPenaSplit(){
   hint.textContent=msg;
 }
 function setPenaSignUI(){document.querySelectorAll('#segPenaSinal button').forEach(b=>b.classList.toggle('on',(+b.dataset.ps)===penaSign));}
+/* sub-itens (extras / descontos) de um pagamento */
+function penaItemRow(d,v){
+  const row=document.createElement('div');row.className='pitem-row';
+  row.innerHTML='<input type="text" class="pi-d" placeholder="ex.: Seguro anual"><input type="number" step="0.01" class="pi-v" placeholder="+/− €"><button type="button" class="pi-x" title="Remover">×</button>';
+  row.querySelector('.pi-d').value=d||'';
+  row.querySelector('.pi-v').value=(v!=null&&v!=='')?v:'';
+  row.querySelector('.pi-x').onclick=()=>{row.remove();updPenaSplit();};
+  row.querySelectorAll('input').forEach(i=>i.addEventListener('input',updPenaSplit));
+  document.getElementById('pItens').appendChild(row);
+}
+function penaItemsRead(){
+  return[...document.querySelectorAll('#pItens .pitem-row')].map(r=>({d:r.querySelector('.pi-d').value.trim(),v:parseFloat(r.querySelector('.pi-v').value)}))
+    .filter(i=>i.d&&!isNaN(i.v)&&Math.abs(i.v)>0.005).map(i=>({d:i.d,v:r2(i.v)}));
+}
+function penaTotalFromForm(base){return r2(base+penaItemsRead().reduce((s,i)=>s+i.v,0));}
 function openPena(id){editPenaId=id||null;document.getElementById('penaModalTitle').textContent=id?'Editar — Edenred Penas':'Movimento — Edenred Penas';
   document.getElementById('btnDelPena').style.display=id?'flex':'none';
-  if(id){const m=DATA.penas.find(x=>x.id===id);penaSign=m.valor<0?-1:1;document.getElementById('pData').value=m.data;document.getElementById('pValor').value=Math.abs(m.valor);document.getElementById('pObs').value=m.obs;document.getElementById('pFerias').value=(m.ferias>0?m.ferias:'');}
+  document.getElementById('pItens').innerHTML='';
+  if(id){const m=DATA.penas.find(x=>x.id===id);penaSign=m.valor<0?-1:1;document.getElementById('pData').value=m.data;
+    const its=Array.isArray(m.itens)?m.itens:[];
+    const base=its.length?(typeof m.base==='number'?m.base:r2(Math.abs(m.valor)-its.reduce((s,i)=>s+i.v,0))):Math.abs(m.valor);
+    document.getElementById('pValor').value=base;its.forEach(i=>penaItemRow(i.d,i.v));
+    document.getElementById('pObs').value=m.obs;document.getElementById('pFerias').value=(m.ferias>0?m.ferias:'');}
   else{penaSign=-1;document.getElementById('pData').value=todayISO();document.getElementById('pValor').value='';document.getElementById('pObs').value='';document.getElementById('pFerias').value='';}
   setPenaSignUI();penaLastSug=null;updPenaSplit();show('ovPena');}
 function savePena(){const data=document.getElementById('pData').value,mag=parseFloat(document.getElementById('pValor').value),o=document.getElementById('pObs').value.trim();
   if(!data||isNaN(mag)||!o){toast('Preenche os campos');return;}
-  const v=penaSign>0?Math.abs(mag):-Math.abs(mag);
+  const base=Math.abs(mag),itens=penaSign<0?penaItemsRead():[];
+  const totalAbs=penaSign<0?penaTotalFromForm(base):base;
+  if(penaSign<0&&totalAbs<=0.005){toast('O total do pagamento tem de ser positivo (os descontos excedem o valor)');return;}
+  const v=penaSign>0?base:-totalAbs;
   let fer=parseFloat(document.getElementById('pFerias').value);if(isNaN(fer)||fer<0)fer=0;let adj=false,manual=false;
   if(v<0){const total=Math.abs(v);fer=Math.min(fer,total);
     const avail=Math.max(0,penaBalBefore(data,editPenaId)),minF=r2(Math.max(0,total-avail));
     manual=Math.abs(fer-penaSuggestFerias(total,avail))>0.005;
     if(fer<minF-0.005){fer=minF;adj=true;}}
   else fer=0;
-  if(editPenaId)Object.assign(DATA.penas.find(x=>x.id===editPenaId),{data,valor:v,obs:o,ferias:r2(fer),feriasManual:manual});else DATA.penas.push({id:uid(),data,valor:v,obs:o,ferias:r2(fer),feriasManual:manual});
+  const rec={data,valor:r2(v),obs:o,ferias:r2(fer),feriasManual:manual};
+  if(itens.length){rec.base=r2(base);rec.itens=itens;}
+  if(editPenaId){const m=DATA.penas.find(x=>x.id===editPenaId);delete m.base;delete m.itens;Object.assign(m,rec);}else DATA.penas.push(Object.assign({id:uid()},rec));
   const reb=penaNormalize();
   persist();close();renderAll();toast(adj?'Guardado — divisão ajustada (o Edenred não pode ficar negativo)':reb?'Guardado — divisões seguintes reequilibradas':'Guardado');}
 function delPena(){if(!editPenaId)return;if(!confirm('Eliminar?'))return;DATA.penas=DATA.penas.filter(x=>x.id!==editPenaId);penaNormalize();persist();close();renderAll();}
@@ -1287,6 +1331,7 @@ function init(){
   document.getElementById('btnPastPena').onclick=()=>{showPastPena=!showPastPena;renderPenas();};
   document.getElementById('btnSavePena').onclick=savePena;document.getElementById('btnDelPena').onclick=delPena;
   ['pValor','pFerias','pData'].forEach(id=>document.getElementById(id).addEventListener('input',updPenaSplit));
+  document.getElementById('btnAddItem').onclick=()=>{penaItemRow('','');updPenaSplit();};
 
   // plano
   document.getElementById('tgPlano').onclick=()=>{DATA.config.planoMensal.ativo=!DATA.config.planoMensal.ativo;persist();renderPoupanca();renderAll();};
