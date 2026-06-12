@@ -717,7 +717,17 @@ let DATA, ghToken='', ghSha=null, saveTok=false, RO=false;
 let chS=null, chM=null, chSim=null, editId=null, editPenaId=null, showPast=false, showPastPena=false, penaLastSug=null, reforcoMode=false, penaSign=-1;
 
 function load(){try{const r=localStorage.getItem(LS_KEY);if(r)return migrate(JSON.parse(r));}catch(e){}return freshData();}
-function persist(){try{localStorage.setItem(LS_KEY,JSON.stringify(DATA));}catch(e){}}
+let _autoT=null,_pushRunning=false,_pushQueued=false;const AUTOSAVE_DELAY=3000;
+function persist(noSync){try{localStorage.setItem(LS_KEY,JSON.stringify(DATA));}catch(e){}if(!noSync)ghAutoSave();}
+// Auto-save para o GitHub com debounce (mesmo padrão da app Goals).
+// Só dispara se houver token; sem token, o pill avisa que há alterações locais.
+function ghAutoSave(){
+  if(RO)return;
+  if(!ghToken){setState('','Local — por guardar na nuvem');return;}
+  clearTimeout(_autoT);
+  _autoT=setTimeout(()=>{_autoT=null;ghPush(true);},AUTOSAVE_DELAY);
+}
+window.addEventListener('beforeunload',()=>{if(_autoT){clearTimeout(_autoT);_autoT=null;ghPush(true);}});
 
 /* ---------- utils ---------- */
 const eur=new Intl.NumberFormat('pt-PT',{style:'currency',currency:'EUR'});
@@ -1263,12 +1273,14 @@ async function ghPull(){
     else res=await fetch('https://raw.githubusercontent.com/'+g.owner+'/'+g.repo+'/'+g.branch+'/'+g.path+'?t='+Date.now());
     if(!res.ok){if(res.status===404){setState('ok','Sem ficheiro na nuvem');toast('Ainda não existe ficheiro — usa Guardar para criar');return;}throw new Error(res.status);}
     let obj;if(ghToken){const j=await res.json();ghSha=j.sha;obj=JSON.parse(b64dec(j.content));}else obj=await res.json();
-    DATA=migrate(obj);persist();renderAll();renderDef();renderSim();setState(ghToken?'ok':'ro',ghToken?'Sincronizado':'Lido (raw)');toast('Dados carregados da nuvem');
+    DATA=migrate(obj);persist(true);renderAll();renderDef();renderSim();setState(ghToken?'ok':'ro',ghToken?'Sincronizado':'Lido (raw)');toast('Dados carregados da nuvem');
   }catch(e){setState('err','Erro ao ler');toast('Erro ao carregar: '+e.message);}
 }
-async function ghPush(){
-  const g=DATA.config.github;if(!ghToken){toast('Precisas de um token para guardar');return;}
-  if(!g.owner||!g.repo||!g.path){toast('Configura o GitHub');return;}
+async function ghPush(silent){
+  const g=DATA.config.github;if(!ghToken){if(!silent)toast('Precisas de um token para guardar');return;}
+  if(!g.owner||!g.repo||!g.path){if(!silent)toast('Configura o GitHub');return;}
+  if(_pushRunning){_pushQueued=true;return;}
+  _pushRunning=true;
   setState('busy','A guardar…');
   try{
     if(ghSha===null){try{const r=await fetch(ghBase()+'?ref='+g.branch,{headers:{Authorization:'Bearer '+ghToken}});if(r.ok)ghSha=(await r.json()).sha;}catch(e){}}
@@ -1277,8 +1289,9 @@ async function ghPush(){
     if(ghSha)body.sha=ghSha;
     const res=await fetch(ghBase(),{method:'PUT',headers:{Authorization:'Bearer '+ghToken,Accept:'application/vnd.github+json'},body:JSON.stringify(body)});
     if(!res.ok){const tx=await res.text();throw new Error(res.status+' '+tx.slice(0,80));}
-    ghSha=(await res.json()).content.sha;setState('ok','Sincronizado');toast('Guardado na nuvem ✓');
-  }catch(e){setState('err','Erro ao guardar');toast('Erro: '+e.message);ghSha=null;}
+    ghSha=(await res.json()).content.sha;setState('ok','Sincronizado');if(!silent)toast('Guardado na nuvem ✓');
+  }catch(e){setState('err','Erro ao guardar');toast('Erro ao guardar na nuvem: '+e.message);ghSha=null;}
+  finally{_pushRunning=false;if(_pushQueued){_pushQueued=false;ghPush(true);}}
 }
 
 /* ---------- helpers ---------- */
@@ -1344,7 +1357,7 @@ function init(){
   document.getElementById('ghToken').addEventListener('input',e=>{ghToken=e.target.value.trim();ghSha=null;if(saveTok)localStorage.setItem(LS_TOK,ghToken);});
   document.getElementById('tgSaveTok').onclick=()=>{saveTok=!saveTok;localStorage.setItem(LS_TOKSAVE,saveTok?'1':'0');if(saveTok)localStorage.setItem(LS_TOK,ghToken);else localStorage.removeItem(LS_TOK);renderDef();};
   document.getElementById('tgRO').onclick=()=>{RO=!RO;DATA.config.readonly=RO;persist();applyRO();renderDef();renderAll();renderSim();};
-  document.getElementById('btnPush').onclick=ghPush;document.getElementById('btnPull').onclick=ghPull;
+  document.getElementById('btnPush').onclick=()=>ghPush(false);document.getElementById('btnPull').onclick=ghPull;
   document.getElementById('btnExport').onclick=()=>{const blob=new Blob([JSON.stringify({config:DATA.config,movimentos:DATA.movimentos,penas:DATA.penas,sims:DATA.sims},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=(DATA.config.github.path||'planoferias-data.json').split('/').pop();a.click();};
   document.getElementById('btnImport').onclick=()=>document.getElementById('fileInput').click();
   document.getElementById('fileInput').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{DATA=migrate(JSON.parse(r.result));persist();renderAll();renderDef();renderSim();toast('Importado');}catch(err){toast('Ficheiro inválido');}};r.readAsText(f);};
