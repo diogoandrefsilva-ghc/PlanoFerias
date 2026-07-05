@@ -8,6 +8,7 @@
 
 import { API } from "./api.js";
 import { IS_CONFIGURED } from "./config.js";
+import { LOAD_ERROR } from "./supabase.js";
 
 /* ---------- estado ---------- */
 let DATA = null, myProfile = null, eventsBound = false;
@@ -617,6 +618,10 @@ function showScreen(name) {
     document.getElementById(id).style.display = id === name ? "block" : "none";
   });
 }
+function showConfigError(msg) {
+  document.querySelector("#configScreen p").textContent = msg;
+  showScreen("configScreen");
+}
 
 /* ---------- ligação de eventos (uma vez, depois do 1º login) ---------- */
 function bindEvents() {
@@ -743,10 +748,11 @@ async function boot() {
   document.getElementById("btnLogout2").onclick = async () => { await API.signOut(); showScreen("loginScreen"); };
 
   if (!IS_CONFIGURED) { showScreen("configScreen"); return; }
+  if (LOAD_ERROR) { showConfigError("Não foi possível carregar a biblioteca do Supabase: " + LOAD_ERROR.message); return; }
 
   let session;
   try { session = await API.getSession(); }
-  catch (e) { showScreen("configScreen"); return; }
+  catch (e) { showConfigError("Não foi possível ligar ao Supabase: " + e.message); return; }
 
   API.onAuthStateChange((_event, newSession) => { establishSession(newSession); });
   await establishSession(session);
