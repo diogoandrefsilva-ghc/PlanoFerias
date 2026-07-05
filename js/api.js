@@ -44,7 +44,7 @@ const penaFromRow = (r) => ({
 
 const simFromRow = (r) => ({
   id: r.id, tipo: r.tipo, data: r.data, valor: r.valor == null ? undefined : Number(r.valor),
-  desc: r.desc == null ? undefined : r.desc,
+  desc: r.descricao == null ? undefined : r.descricao,
   desde: r.desde == null ? undefined : r.desde,
   valorTotal: r.valor_total == null ? undefined : Number(r.valor_total),
   diogoPct: r.diogo_pct == null ? undefined : r.diogo_pct,
@@ -204,7 +204,7 @@ export const API = {
   },
   async insertSim(s) {
     const row = { tipo: s.tipo };
-    if (s.tipo === "deposito") { row.data = s.data; row.valor = s.valor; row.desc = s.desc; }
+    if (s.tipo === "deposito") { row.data = s.data; row.valor = s.valor; row.descricao = s.desc; }
     else { row.desde = s.desde; row.valor_total = s.valorTotal; }
     const { data, error } = await must().from("sims").insert(row).select().single();
     throwErr(error, "Não foi possível adicionar o ajuste");

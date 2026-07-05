@@ -99,7 +99,7 @@ CREATE TABLE planoferias.sims (
   tipo        text NOT NULL,
   data        date,
   valor       numeric,
-  desc        text,
+  descricao   text,
   desde       text,
   valor_total numeric,
   diogo_pct   int,
