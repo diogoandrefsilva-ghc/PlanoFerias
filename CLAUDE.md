@@ -9,7 +9,14 @@ GitHub nem `localStorage` como fonte de dados.
 - `index.html` — markup + CSS + ecrãs de login/sem-acesso/configuração. Carrega `js/app.js`
   como módulo (`<script type="module">`).
 - `js/config.js` — credenciais do Supabase (URL + anon key, públicas por design).
-- `js/supabase.js` — cliente `supabase-js` (singleton, schema `planoferias`).
+- `js/vendor/supabase.umd.js` — bundle UMD do `supabase-js` **vendorizado** (não vem de CDN
+  nenhum). Carregado como `<script>` clássico no `index.html`, antes do `js/app.js`. Já causou
+  uma página em branco sem erro nenhum quando dependia de `esm.sh` e a rede do utilizador
+  bloqueava/atrasava esse pedido indefinidamente — por isso passou a viver no repo. Para
+  atualizar a versão: `npm pack @supabase/supabase-js@<versão>` nalgum sítio e copiar
+  `dist/umd/supabase.js` para cá.
+- `js/supabase.js` — cliente `supabase-js` (singleton, schema `planoferias`), a partir do
+  global `window.supabase` (do vendor acima).
 - `js/api.js` — camada de dados: todas as queries/CRUD ao Supabase + auth (Google OAuth).
 - `js/app.js` — lógica de negócio (ledger, poupança, Edenred Penas, simulação) + rendering +
   ligação de eventos. Sem `localStorage`/GitHub — os dados só existem no Supabase.

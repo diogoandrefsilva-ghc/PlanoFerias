@@ -729,7 +729,12 @@ async function afterLogin() {
   renderAll(); renderDef(); renderSim();
   setState("ok", "Sincronizado");
 }
-let currentUid = null;
+// `undefined` (não `null`) até à 1ª verificação: um visitante sem sessão
+// nenhuma também produz uid === null, e isso não pode ser confundido com
+// "já processado" — senão a 1ª chamada (sem sessão) fica a fazer nada e o
+// ecrã de login nunca aparece (foi exatamente este bug que deixou a app
+// em branco para quem visita pela 1ª vez / sem sessão guardada).
+let currentUid;
 /* Chamada no boot e sempre que o Supabase dispara onAuthStateChange
    (INITIAL_SESSION, TOKEN_REFRESHED, SIGNED_IN, SIGNED_OUT, ...).
    Só re-processa quando o utilizador muda de facto (login/logout) —
