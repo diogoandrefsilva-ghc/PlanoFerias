@@ -1,22 +1,42 @@
 # PlanoFerias — guia para o assistente
 
-App pessoal de plano de férias.
-**Sem build, sem npm.** Site estático (GitHub Pages), PWA. `localStorage` + sincronização opcional via **GitHub** (não tem Supabase).
+App pessoal de plano de férias, só para 2 pessoas (Diogo + Margarida).
+**Sem build, sem npm.** Site estático (GitHub Pages), PWA. Dados e login vivem no **Supabase**
+(schema `planoferias`, no mesmo projeto partilhado do Bet4Fun). Já não há sincronização via
+GitHub nem `localStorage` como fonte de dados.
 
 ## Estrutura
-- `index.html` — **ficheiro único** (~1387 linhas): markup + CSS + JS tudo dentro. (Ainda NÃO dividido como o SplitBill/FestasBV.)
+- `index.html` — markup + CSS + ecrãs de login/sem-acesso/configuração. Carrega `js/app.js`
+  como módulo (`<script type="module">`).
+- `js/config.js` — credenciais do Supabase (URL + anon key, públicas por design).
+- `js/supabase.js` — cliente `supabase-js` (singleton, schema `planoferias`).
+- `js/api.js` — camada de dados: todas as queries/CRUD ao Supabase + auth (Google OAuth).
+- `js/app.js` — lógica de negócio (ledger, poupança, Edenred Penas, simulação) + rendering +
+  ligação de eventos. Sem `localStorage`/GitHub — os dados só existem no Supabase.
+- `db/` — SQL do Supabase (`schema.sql`, `functions.sql`, `policies.sql`, `seed_migration.sql`)
+  + `db/README.md` com os passos de setup.
 - `sw.js` — service worker (cache PWA).
 - Não mexer: `apple-touch-icon.png`, `manifest.json`.
 
 ## Como NÃO gastar tokens à toa
-- Lê só o troço relevante do `index.html`, não o ficheiro todo. Para localizar um botão/campo, procura o `id` no markup e salta para o handler no `<script>`.
-- Faz **edições cirúrgicas** (diffs pequenos). **Nunca reescrevas o ficheiro inteiro.**
-- Se crescer, vale a pena dividir em `index.html` + `app.js` + `style.css` (como já fiz no SplitBill e FestasBV).
+- Cada ficheiro tem uma responsabilidade (config/cliente/dados/lógica). Para localizar algo,
+  procura primeiro o `id` no `index.html`, depois o handler equivalente em `js/app.js`.
+- Faz **edições cirúrgicas** (diffs pequenos) dentro de cada ficheiro — não precisas de tocar
+  nos outros só porque um mudou.
 
 ## Regras técnicas (não partir a app)
-- O JS está inline e há handlers `onclick="…"` → as funções têm de ser **globais** (não converter para module).
-- **PWA/cache:** se alterares o HTML/CSS/JS, **sobe a versão do CACHE no `sw.js`**.
-- **Sync GitHub:** o token é **introduzido pelo utilizador em runtime** (guardado em `localStorage`) — **não está no código, nunca o coloques hardcoded**. Os dados vão para `diogoandrefsilva-ghc/AppDataJSON` → `planoferias-data.json`. ⚠️ Esse repo é **público**.
+- `js/app.js` é um **módulo ES** (`import`/`export`) — os handlers são ligados via
+  `addEventListener`/`.onclick =` em `bindEvents()` (chamado uma vez, após o 1º login), não há
+  `onclick="…"` inline no HTML.
+- **PWA/cache:** se alterares o HTML/CSS/JS, **sobe a versão do CACHE em `sw.js`**.
+- **Supabase:** toda a leitura/escrita passa por `js/api.js`. As tabelas vivem no schema
+  `planoferias` (RLS restringe a leitura/escrita aos 2 membros autorizados — ver
+  `db/functions.sql`, `ensure_profile()`). Se mudares o modelo de dados, atualiza sempre
+  `db/schema.sql` primeiro e corre a migração no Supabase antes/depois de alterar o código.
+- Os 2 emails autorizados estão fixos em `db/functions.sql` (`ensure_profile`). Não há
+  admin/aprovação como no Bet4Fun — quem tem perfil tem acesso total.
+- `js/config.js` reaproveita o mesmo `SUPABASE_URL`/anon key do Bet4Fun (projeto Supabase
+  partilhado, schema próprio). A anon key é pública por design.
 
 ## Deploy
 GitHub Pages a partir de `main`. Um push para `main` publica.
