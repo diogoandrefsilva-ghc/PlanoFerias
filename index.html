@@ -52,7 +52,7 @@ header{padding:10px 0 4px}
   background:var(--card);border:1px solid var(--line);padding:6px 12px;border-radius:999px;color:var(--ink2)}
 .statepill .led{width:8px;height:8px;border-radius:50%;background:var(--ink3)}
 .statepill.ok .led{background:var(--pos)} .statepill.busy .led{background:var(--gold);animation:pulse 1s infinite}
-.statepill.err .led{background:var(--neg)} .statepill.ro .led{background:var(--diogo)}
+.statepill.err .led{background:var(--neg)}
 @keyframes pulse{50%{opacity:.3}}
 
 /* SCENE */
@@ -295,7 +295,9 @@ td.datecell{white-space:nowrap;font-variant-numeric:tabular-nums;width:1%;font-w
   padding:11px 18px;border-radius:12px;font-size:13.5px;font-weight:500;box-shadow:var(--shadow);opacity:0;pointer-events:none;
   transition:.25s;z-index:80;max-width:90vw;text-align:center}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-.ro-hide{display:none!important}
+.gatecard{max-width:420px;margin:14vh auto 0;padding:32px 26px;text-align:center}
+.gatecard h1{font-size:22px;margin-bottom:8px}
+.gatecard p{font-size:13.5px;color:var(--ink3);margin-bottom:22px}
 @media(max-width:720px){
   .g3,.g4{grid-template-columns:1fr 1fr}.reforco-out,.cmp{grid-template-columns:1fr}
   .brand h1{font-size:17px}.big{font-size:21px}
@@ -310,7 +312,30 @@ td.datecell{white-space:nowrap;font-variant-numeric:tabular-nums;width:1%;font-w
 </style>
 </head>
 <body>
-<div class="wrap">
+<div class="wrap" id="loginScreen" style="display:none">
+  <div class="card gatecard">
+    <h1>Plano de Férias</h1>
+    <p>Acesso restrito a Diogo e Margarida.</p>
+    <button class="btn primary full" id="btnLogin">Entrar com o Google</button>
+  </div>
+</div>
+
+<div class="wrap" id="notAuthScreen" style="display:none">
+  <div class="card gatecard">
+    <h1>Sem acesso</h1>
+    <p id="notAuthMsg">Esta conta não está autorizada a aceder ao Plano de Férias.</p>
+    <button class="btn full" id="btnLogout2">Tentar com outra conta</button>
+  </div>
+</div>
+
+<div class="wrap" id="configScreen" style="display:none">
+  <div class="card gatecard">
+    <h1>Configuração necessária</h1>
+    <p>Preenche <code>js/config.js</code> com o SUPABASE_URL e a anon key do projeto Supabase.</p>
+  </div>
+</div>
+
+<div class="wrap" id="appRoot" style="display:none">
   <header>
     <div class="scene">
       <svg viewBox="0 0 800 130" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
@@ -461,7 +486,7 @@ td.datecell{white-space:nowrap;font-variant-numeric:tabular-nums;width:1%;font-w
     <div class="card" style="padding:20px">
       <h2 style="font-size:19px">Simulação de cenários</h2>
       <p class="muted" style="font-size:13.5px;margin-top:6px">Testa um depósito extra ou uma alteração da poupança mensal a partir de uma data. Vês logo o impacto no plano, sem mexer nos dados reais — só aplicas se quiseres.</p>
-      <div class="grid g2 ro-hideable" style="margin-top:14px">
+      <div class="grid g2" style="margin-top:14px">
         <button class="btn full" id="btnSimDep">+ Depósito extra</button>
         <button class="btn full" id="btnSimMen">+ Alterar poupança mensal</button>
       </div>
@@ -477,7 +502,7 @@ td.datecell{white-space:nowrap;font-variant-numeric:tabular-nums;width:1%;font-w
         <div class="cwrap"><canvas id="chartSim"></canvas></div>
       </div>
       <div class="grid g2" style="margin-top:14px">
-        <button class="btn primary full ro-hideable" id="btnSimAplicar">✓ Aplicar ao plano</button>
+        <button class="btn primary full" id="btnSimAplicar">✓ Aplicar ao plano</button>
         <button class="btn full" id="btnSimLimpar">Limpar simulação</button>
       </div>
     </div>
@@ -493,7 +518,7 @@ td.datecell{white-space:nowrap;font-variant-numeric:tabular-nums;width:1%;font-w
         <input type="number" id="quickRef" step="50" placeholder="ex.: 1000">
       </div>
       <div class="reforco-out" id="quickOut" style="display:none"></div>
-      <button class="btn primary ro-hideable" id="btnAplicarRef" style="margin-top:16px;display:none">+ Registar este reforço</button>
+      <button class="btn primary" id="btnAplicarRef" style="margin-top:16px;display:none">+ Registar este reforço</button>
       <p class="hint" id="quickRatioHint" style="margin-top:10px"></p>
     </div>
 
@@ -525,7 +550,7 @@ td.datecell{white-space:nowrap;font-variant-numeric:tabular-nums;width:1%;font-w
         <input type="number" min="1" max="28" class="miniinput" style="width:80px" id="planoDia"></div>
     </div>
     <div class="section-title"><h2>Intervalos de poupança</h2><div class="ln"></div>
-      <button class="btn sm ro-hideable" id="btnAddSeg">+ Intervalo</button></div>
+      <button class="btn sm" id="btnAddSeg">+ Intervalo</button></div>
     <div id="segList"></div>
     <p class="hint" style="margin:8px 4px">Cada intervalo define o valor mensal total e o rácio Diogo / Margarida em vigor a partir do mês indicado. Os reforços e depósitos usam o rácio em vigor à sua data.</p>
   </section>
@@ -533,7 +558,7 @@ td.datecell{white-space:nowrap;font-variant-numeric:tabular-nums;width:1%;font-w
   <!-- EDENRED PENAS -->
   <section class="panel" id="p-penas">
     <div class="section-title"><h2>Edenred Penas</h2><div class="ln"></div>
-      <button class="btn sm ro-hideable" id="btnAddPena">+ Movimento</button></div>
+      <button class="btn sm" id="btnAddPena">+ Movimento</button></div>
     <div class="toolbar">
       <button class="btn sm" id="btnPastPena">Mostrar anteriores</button>
     </div>
@@ -560,35 +585,20 @@ td.datecell{white-space:nowrap;font-variant-numeric:tabular-nums;width:1%;font-w
       </div>
     </div>
 
-    <div class="acc-hdr" id="acc-github"><h2>Sincronização (GitHub)</h2><div class="ln"></div><span class="arr">▾</span></div>
-    <div class="acc-body" id="accb-github">
+    <div class="acc-hdr" id="acc-sessao"><h2>Sessão</h2><div class="ln"></div><span class="arr">▾</span></div>
+    <div class="acc-body" id="accb-sessao">
       <div class="card deflist" style="margin-top:12px">
-        <div class="defrow"><div class="t"><b>Owner</b></div><input class="miniinput" style="width:200px" id="ghOwner"></div>
-        <div class="defrow"><div class="t"><b>Repositório</b></div><input class="miniinput" style="width:200px" id="ghRepo"></div>
-        <div class="defrow"><div class="t"><b>Ficheiro (path)</b></div><input class="miniinput" style="width:200px" id="ghPath"></div>
-        <div class="defrow"><div class="t"><b>Branch</b></div><input class="miniinput" style="width:120px" id="ghBranch"></div>
-        <div class="defrow"><div class="t"><b>Token (PAT)</b><span>Fica só neste browser. Usa um token de curta duração.</span></div>
-          <input class="miniinput" type="password" style="width:200px" id="ghToken" placeholder="ghp_…"></div>
-        <div class="defrow"><div class="t"><b>Guardar token neste browser</b></div><div class="tg" id="tgSaveTok"></div></div>
-        <div class="defrow"><div class="t"><b>Modo só-leitura</b><span>Esconde edição (para partilhar via Pages)</span></div>
-          <div class="tg" id="tgRO"></div></div>
+        <div class="defrow"><div class="t"><b>Sessão iniciada como</b><span id="sessaoInfo">—</span></div>
+          <button class="btn sm" id="btnLogout">Terminar sessão</button></div>
       </div>
       <div class="grid g2" style="margin-top:14px">
-        <button class="btn primary full ro-hideable" id="btnPush">☁︎ Guardar na nuvem</button>
-        <button class="btn full" id="btnPull">⤓ Recarregar da nuvem</button>
-      </div>
-      <div class="grid g3" style="margin-top:10px">
-        <button class="btn full" id="btnExport">Exportar JSON</button>
-        <button class="btn full ro-hideable" id="btnImport">Importar JSON</button>
-        <button class="btn full ro-hideable" id="btnReset">Repor exemplo</button>
+        <button class="btn full" id="btnExport">Exportar JSON (cópia local)</button>
       </div>
     </div>
-
-    <input type="file" id="fileInput" accept="application/json" style="display:none">
   </section>
 </div>
 
-<button class="fab ro-hideable" id="fab"><span class="pl">+</span> Movimento</button>
+<button class="fab" id="fab"><span class="pl">+</span> Movimento</button>
 
 <!-- MODAL MOVIMENTO -->
 <div class="overlay" id="ovMov"><div class="modal">
@@ -672,709 +682,7 @@ td.datecell{white-space:nowrap;font-variant-numeric:tabular-nums;width:1%;font-w
 
 <div class="toast" id="toast"></div>
 
-<script>
-const SEED = {"saldoInicial":2900,"dataInicial":"2026-04-04","movimentos":[{"id":"m1","data":"2026-04-23","descricao":"Reembolso IRS","valor":1136.2,"tipo":"receita","pessoa":"Comum"},{"id":"m2","data":"2026-04-23","descricao":"Voos Paris","valor":-513.99,"tipo":"despesa","pessoa":"Comum"},{"id":"m3","data":"2026-04-23","descricao":"Depósito Disney","valor":-344.46,"tipo":"despesa","pessoa":"Comum"},{"id":"m4","data":"2026-04-23","descricao":"Sinal Altura","valor":-450.0,"tipo":"despesa","pessoa":"Comum"},{"id":"m5","data":"2026-05-03","descricao":"Poupança Diogo","valor":200.0,"tipo":"contribuicao","pessoa":"Diogo"},{"id":"m6","data":"2026-05-04","descricao":"Poupança Margarida","valor":160.0,"tipo":"contribuicao","pessoa":"Margarida"},{"id":"m7","data":"2026-05-26","descricao":"Santa Eulália","valor":-1375.89,"tipo":"despesa","pessoa":"Comum"},{"id":"m8","data":"2026-06-01","descricao":"Poupança Diogo","valor":200.0,"tipo":"contribuicao","pessoa":"Diogo"},{"id":"m9","data":"2026-06-01","descricao":"Poupança Margarida","valor":160.0,"tipo":"contribuicao","pessoa":"Margarida"},{"id":"m10","data":"2026-06-29","descricao":"Depósito Férias Diogo","valor":825.0,"tipo":"contribuicao","pessoa":"Diogo"},{"id":"m11","data":"2026-06-29","descricao":"Depósito Férias Margarida","valor":675.0,"tipo":"contribuicao","pessoa":"Margarida"},{"id":"m12","data":"2026-07-01","descricao":"Poupança Diogo","valor":200.0,"tipo":"contribuicao","pessoa":"Diogo"},{"id":"m13","data":"2026-07-01","descricao":"Poupança Margarida","valor":160.0,"tipo":"contribuicao","pessoa":"Margarida"},{"id":"m14","data":"2026-07-01","descricao":"Adriana","valor":-1685.0,"tipo":"despesa","pessoa":"Comum"},{"id":"m15","data":"2026-08-01","descricao":"Poupança Diogo","valor":200.0,"tipo":"contribuicao","pessoa":"Diogo"},{"id":"m16","data":"2026-08-01","descricao":"Poupança Margarida","valor":160.0,"tipo":"contribuicao","pessoa":"Margarida"},{"id":"m17","data":"2026-08-01","descricao":"Altura","valor":-950.0,"tipo":"despesa","pessoa":"Comum"},{"id":"m18","data":"2026-09-01","descricao":"Poupança Diogo","valor":200.0,"tipo":"contribuicao","pessoa":"Diogo"},{"id":"m19","data":"2026-09-01","descricao":"Poupança Margarida","valor":160.0,"tipo":"contribuicao","pessoa":"Margarida"},{"id":"m21","data":"2026-10-01","descricao":"Poupança Diogo","valor":200.0,"tipo":"contribuicao","pessoa":"Diogo"},{"id":"m22","data":"2026-10-01","descricao":"Poupança Margarida","valor":160.0,"tipo":"contribuicao","pessoa":"Margarida"},{"id":"m24","data":"2026-11-01","descricao":"Poupança Diogo","valor":200.0,"tipo":"contribuicao","pessoa":"Diogo"},{"id":"m25","data":"2026-11-01","descricao":"Poupança Margarida","valor":160.0,"tipo":"contribuicao","pessoa":"Margarida"},{"id":"m27","data":"2026-11-25","descricao":"Disneyland","valor":-1985.12,"tipo":"despesa","pessoa":"Comum"},{"id":"m28","data":"2026-12-01","descricao":"Poupança Diogo","valor":200.0,"tipo":"contribuicao","pessoa":"Diogo"},{"id":"m29","data":"2026-12-01","descricao":"Poupança Margarida","valor":160.0,"tipo":"contribuicao","pessoa":"Margarida"},{"id":"m30","data":"2027-01-01","descricao":"Poupança Diogo","valor":200.0,"tipo":"contribuicao","pessoa":"Diogo"},{"id":"m31","data":"2027-01-01","descricao":"Poupança Margarida","valor":160.0,"tipo":"contribuicao","pessoa":"Margarida"},{"id":"m32","data":"2027-02-01","descricao":"Poupança Diogo","valor":200.0,"tipo":"contribuicao","pessoa":"Diogo"},{"id":"m33","data":"2027-02-01","descricao":"Poupança Margarida","valor":160.0,"tipo":"contribuicao","pessoa":"Margarida"},{"id":"m34","data":"2027-03-01","descricao":"Poupança Diogo","valor":200.0,"tipo":"contribuicao","pessoa":"Diogo"},{"id":"m35","data":"2027-03-01","descricao":"Poupança Margarida","valor":160.0,"tipo":"contribuicao","pessoa":"Margarida"},{"id":"m36","data":"2027-04-01","descricao":"Poupança Diogo","valor":200.0,"tipo":"contribuicao","pessoa":"Diogo"},{"id":"m37","data":"2027-04-01","descricao":"Poupança Margarida","valor":160.0,"tipo":"contribuicao","pessoa":"Margarida"},{"id":"m38","data":"2027-05-01","descricao":"Poupança Diogo","valor":200.0,"tipo":"contribuicao","pessoa":"Diogo"},{"id":"m39","data":"2027-05-01","descricao":"Poupança Margarida","valor":160.0,"tipo":"contribuicao","pessoa":"Margarida"},{"id":"m40","data":"2027-06-01","descricao":"Poupança Diogo","valor":200.0,"tipo":"contribuicao","pessoa":"Diogo"},{"id":"m41","data":"2027-06-01","descricao":"Poupança Margarida","valor":160.0,"tipo":"contribuicao","pessoa":"Margarida"},{"id":"m42","data":"2027-07-01","descricao":"Poupança Diogo","valor":200.0,"tipo":"contribuicao","pessoa":"Diogo"},{"id":"m43","data":"2027-07-01","descricao":"Poupança Margarida","valor":160.0,"tipo":"contribuicao","pessoa":"Margarida"},{"id":"m44","data":"2027-08-01","descricao":"Poupança Diogo","valor":200.0,"tipo":"contribuicao","pessoa":"Diogo"},{"id":"m45","data":"2027-08-01","descricao":"Poupança Margarida","valor":160.0,"tipo":"contribuicao","pessoa":"Margarida"}],"penas":[{"id":"p1","data":"2026-06-06","valor":826.0,"obs":"Saldo Edenred"},{"id":"p2","data":"2026-06-30","valor":320.0,"obs":"Carregamento Edenred"},{"id":"p3","data":"2026-06-30","valor":-505.0,"obs":"Mensalidade Penas"},{"id":"p4","data":"2026-07-31","valor":320.0,"obs":"Carregamento Edenred"},{"id":"p5","data":"2026-07-31","valor":-505.0,"obs":"Mensalidade Penas"},{"id":"p6","data":"2026-08-31","valor":320.0,"obs":"Carregamento Edenred"},{"id":"p7","data":"2026-08-31","valor":-505.0,"obs":"Mensalidade Penas"},{"id":"p8","data":"2026-09-30","valor":320.0,"obs":"Carregamento Edenred"},{"id":"p9","data":"2026-09-30","valor":-590.0,"obs":"Mensalidade Penas"},{"id":"p10","data":"2026-09-30","valor":-35.0,"obs":"Seguro Anual","ferias":35},{"id":"p11","data":"2026-10-31","valor":320.0,"obs":"Carregamento Edenred"},{"id":"p12","data":"2026-10-31","valor":-590.0,"obs":"Mensalidade Penas","ferias":269},{"id":"p13","data":"2026-11-30","valor":320.0,"obs":"Carregamento Edenred"},{"id":"p14","data":"2026-11-30","valor":-590.0,"obs":"Mensalidade Penas","ferias":270}]};
-const LS_KEY='planoFerias_v2', LS_TOK='pf_ghtoken', LS_TOKSAVE='pf_ghtoksave';
-
-/* ---------- estado ---------- */
-function defConfig(){return{titulo:'Plano de Férias',subtitulo:'Diogo + Margarida',
-  saldoInicial:SEED.saldoInicial,dataInicial:SEED.dataInicial,split:{Diogo:55,Margarida:45},buffer:0,
-  github:{owner:'diogoandrefsilva-ghc',repo:'AppDataJSON',path:'planoferias-data.json',branch:'main'},readonly:false};}
-
-function migrate(d){
-  d=d||{}; d.config=Object.assign(defConfig(),d.config||{});
-  d.config.github=Object.assign(defConfig().github,d.config.github||{});
-  d.config.split=Object.assign({Diogo:55,Margarida:45},d.config.split||{});
-  d.movimentos=Array.isArray(d.movimentos)?d.movimentos:[];
-  d.penas=Array.isArray(d.penas)?d.penas:[];
-  d.penas.forEach(m=>{if(typeof m.ferias!=='number')m.ferias=+m.ferias||0;});
-  penaNormalize(d.penas);
-  d.sims=Array.isArray(d.sims)?d.sims:[];
-  if(!d.config.planoMensal){
-    const rx=/^Poupança (Diogo|Margarida)/;
-    const rec=d.movimentos.filter(m=>rx.test(m.descricao));
-    if(rec.length){
-      const months=[...new Set(rec.map(m=>m.data.slice(0,7)))].sort();
-      const total=rec.reduce((s,m)=>s+m.valor,0);
-      const valorTotal=Math.round(total/months.length);
-      d.config.planoMensal={ativo:true,diaMes:1,ate:months[months.length-1],segmentos:[{desde:months[0],valorTotal}]};
-      d.movimentos=d.movimentos.filter(m=>!rx.test(m.descricao));
-    }else{
-      const mk=new Date().toISOString().slice(0,7);
-      d.config.planoMensal={ativo:false,diaMes:1,ate:mk,segmentos:[{desde:mk,valorTotal:360}]};
-    }
-  }
-  const pm=d.config.planoMensal;
-  if(!pm.segmentos||!pm.segmentos.length)pm.segmentos=[{desde:pm.inicio||'2026-05',valorTotal:pm.valorTotal||360}];
-  const defPct=(d.config.split&&d.config.split.Diogo)||55;
-  pm.segmentos.forEach(s=>{if(typeof s.diogoPct!=='number')s.diogoPct=defPct;});
-  pm.segmentos.sort((a,b)=>a.desde<b.desde?-1:1);
-  pm.diaMes=pm.diaMes||1;
-  return d;
-}
-function freshData(){return migrate({config:defConfig(),movimentos:JSON.parse(JSON.stringify(SEED.movimentos)),penas:JSON.parse(JSON.stringify(SEED.penas))});}
-let DATA, ghToken='', ghSha=null, saveTok=false, RO=false;
-let chS=null, chM=null, chSim=null, editId=null, editPenaId=null, showPast=false, showPastPena=false, penaLastSug=null, reforcoMode=false, penaSign=-1;
-
-function load(){try{const r=localStorage.getItem(LS_KEY);if(r)return migrate(JSON.parse(r));}catch(e){}return freshData();}
-let _autoT=null,_pushRunning=false,_pushQueued=false;const AUTOSAVE_DELAY=3000;
-function persist(noSync){try{localStorage.setItem(LS_KEY,JSON.stringify(DATA));}catch(e){}if(!noSync)ghAutoSave();}
-// Auto-save para o GitHub com debounce (mesmo padrão da app Goals).
-// Só dispara se houver token; sem token, o pill avisa que há alterações locais.
-function ghAutoSave(){
-  if(RO)return;
-  if(!ghToken){setState('','Local — por guardar na nuvem');return;}
-  clearTimeout(_autoT);
-  _autoT=setTimeout(()=>{_autoT=null;ghPush(true);},AUTOSAVE_DELAY);
-}
-window.addEventListener('beforeunload',()=>{if(_autoT){clearTimeout(_autoT);_autoT=null;ghPush(true);}});
-
-/* ---------- utils ---------- */
-const eur=new Intl.NumberFormat('pt-PT',{style:'currency',currency:'EUR'});
-const fmt=v=>eur.format(v||0);
-const r2=v=>Math.round((v||0)*100)/100;
-function mult5up(v){return Math.ceil((v||0)/5)*5;}
-function mult5dn(v){return Math.floor((v||0)/5)*5;}
-function splitBy(total,p){const dp=(typeof p==='number'?p:55);const dio=mult5up((total||0)*dp/100);const marg=mult5dn((total||0)*(100-dp)/100);return{dio:r2(dio),marg:r2(marg),total:r2(dio+marg)};}
-function defPct(){return(DATA.config.split&&DATA.config.split.Diogo)||55;}
-function split55(total){return splitBy(total,defPct());}
-function segAt(mk,segs){let cur=null;segs.forEach(s=>{if(s.desde<=mk)cur=s;});return cur;}
-function ratioForDate(dateISO,sims){const segs=planSegments(sims);const mk=(dateISO||'').slice(0,7);let cur=segAt(mk,segs)||segs[0];return cur&&typeof cur.diogoPct==='number'?cur.diogoPct:defPct();}
-function fmtDate(iso){if(!iso)return'';const[y,m,d]=iso.split('-');return d+'/'+m+'/'+y;}
-function fmtDayMonth(iso){if(!iso)return'';const[y,m,d]=iso.split('-');return d+'/'+m;}
-const MS=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
-function fmtMesAno(iso){const[y,m]=iso.split('-');return MS[+m-1]+'/'+y.slice(2);}
-function todayISO(){return new Date().toISOString().slice(0,10);}
-const uid=()=>'x'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
-function esc(s){return(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
-function toast(t){const e=document.getElementById('toast');e.textContent=t;e.classList.add('show');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('show'),2400);}
-
-/* ---------- geração plano + livro ---------- */
-function planSegments(sims){
-  const pm=DATA.config.planoMensal;const dp=defPct();
-  let segs=(pm.segmentos||[]).map(s=>({desde:s.desde,valorTotal:s.valorTotal,diogoPct:typeof s.diogoPct==='number'?s.diogoPct:dp}));
-  (sims||[]).filter(s=>s.tipo==='mensal').forEach(s=>{
-    let p=s.diogoPct;if(typeof p!=='number'){let cur=null;segs.forEach(x=>{if(x.desde<=s.desde)cur=x;});p=cur?cur.diogoPct:dp;}
-    segs.push({desde:s.desde,valorTotal:s.valorTotal,diogoPct:p});
-  });
-  segs.sort((a,b)=>a.desde<b.desde?-1:1);return segs;
-}
-function monthlyValue(mk,segs){let v=0;segs.forEach(s=>{if(s.desde<=mk)v=s.valorTotal;});return v;}
-function genMonthly(sims){
-  const pm=DATA.config.planoMensal;if(!pm.ativo)return[];
-  const segs=planSegments(sims);if(!segs.length)return[];
-  const start=segs[0].desde,end=pm.ate;if(end<start)return[];
-  const dia=String(Math.min(28,Math.max(1,pm.diaMes||1))).padStart(2,'0');
-  let[y,m]=start.split('-').map(Number);const[ey,em]=end.split('-').map(Number);const out=[];
-  while(y<ey||(y===ey&&m<=em)){
-    const mk=y+'-'+String(m).padStart(2,'0');const seg=segAt(mk,segs);const v=seg?seg.valorTotal:0;
-    if(v>0){const sp=splitBy(v,seg.diogoPct);
-      out.push({id:'auto-'+mk+'-d',data:mk+'-'+dia,descricao:'Poupança Diogo',valor:sp.dio,tipo:'contribuicao',pessoa:'Diogo',auto:true});
-      out.push({id:'auto-'+mk+'-m',data:mk+'-'+dia,descricao:'Poupança Margarida',valor:sp.marg,tipo:'contribuicao',pessoa:'Margarida',auto:true});}
-    m++;if(m>12){m=1;y++;}
-  }return out;
-}
-function buildLedger(sims){
-  const concrete=DATA.movimentos.map(m=>Object.assign({},m));
-  const monthly=genMonthly(sims);
-  const deps=(sims||[]).filter(s=>s.tipo==='deposito').map(s=>({id:'sim-'+s.id,data:s.data,descricao:(s.desc||'Depósito extra')+' (sim)',valor:Math.abs(+s.valor),tipo:'contribuicao',pessoa:'Comum',sim:true}));
-  // parte de cada pagamento do Penas afetada à conta de férias -> despesa automática
-  const penaTops=penaCompute().tops.map(t=>({id:'penas-'+t.id,data:t.data,descricao:'Penas: '+t.obs,valor:-t.valor,tipo:'despesa',pessoa:'Comum',auto:true}));
-  const all=[...concrete,...monthly,...deps,...penaTops].sort((a,b)=>a.data<b.data?-1:a.data>b.data?1:0);
-  let bal=DATA.config.saldoInicial;const out=[];
-  for(const m of all){bal+=m.valor;out.push(Object.assign({},m,{saldo:r2(bal)}));}
-  return out;
-}
-function targetDate(L){const h=new Date();const nye=(h.getFullYear()+1)+'-12-31';const last=L.length?L[L.length-1].data:DATA.config.dataInicial;return last<nye?last:nye;}
-function calc(L){
-  const t=todayISO();let saldoHoje=DATA.config.saldoInicial;L.forEach(m=>{if(m.data<=t)saldoHoje=m.saldo;});
-  const td=targetDate(L);let saldoTarget=DATA.config.saldoInicial;L.forEach(m=>{if(m.data<=td)saldoTarget=m.saldo;});
-  const upto=L.filter(m=>m.data<=td);
-  const desp=upto.filter(m=>m.tipo==='despesa');
-  const low=[...desp].sort((a,b)=>a.saldo-b.saldo).slice(0,3);
-  let c=0,r=0,d=0;L.forEach(m=>{if(m.tipo==='contribuicao')c+=m.valor;else if(m.tipo==='receita')r+=m.valor;else if(m.tipo==='despesa')d+=m.valor;});
-  return{L,saldoHoje:r2(saldoHoje),target:td,saldoTarget:r2(saldoTarget),low,c:r2(c),r:r2(r),d:r2(d)};
-}
-
-/* ---------- HERO + RESUMO ---------- */
-function renderHeader(){
-  document.getElementById('appTitle').textContent=DATA.config.titulo||'Plano de Férias';
-  const M=calc(buildLedger());
-  document.getElementById('saldoHoje').textContent=fmt(M.saldoHoje);
-  document.getElementById('saldoHojeMeta').textContent='Em '+fmtDate(todayISO());
-  const mn=M.low[0]||{saldo:M.saldoTarget,data:M.target,descricao:''};
-  document.getElementById('menorSaldo').textContent=fmt(mn.saldo);
-  document.getElementById('menorSaldoMeta').textContent=fmtDate(mn.data)+(mn.descricao?' · '+mn.descricao:'');
-}
-function renderResumo(){
-  const t=todayISO(), buf=DATA.config.buffer||0, L=buildLedger();
-  // próximos reforços extraordinários: créditos que não vêm do plano automático
-  const ref=L.filter(m=>m.tipo==='contribuicao'&&!m.auto&&m.data>=t).sort((a,b)=>a.data<b.data?-1:1).slice(0,6);
-  const rbox=document.getElementById('proxReforcos');
-  if(!ref.length){rbox.innerHTML='<div class="empty"><div class="ic">✦</div>Sem reforços extraordinários previstos.</div>';}
-  else rbox.innerHTML=ref.map(m=>'<div class="proxrow"><span class="d num">'+fmtDayMonth(m.data)+'</span><span class="n">'+esc(m.descricao)+'</span><span class="vbox"><span class="v num pos">+'+fmt(m.valor)+'</span></span></div>').join('');
-  // próximas despesas
-  const prox=L.filter(m=>m.tipo==='despesa'&&m.data>=t).sort((a,b)=>a.data<b.data?-1:1).slice(0,6);
-  const box=document.getElementById('proxDespesas');
-  if(!prox.length){box.innerHTML='<div class="empty"><div class="ic">✦</div>Sem despesas futuras registadas.</div>';}
-  else box.innerHTML=prox.map(m=>'<div class="proxrow"><span class="d num">'+fmtDayMonth(m.data)+'</span><span class="n">'+esc(m.descricao)+'</span><span class="vbox"><span class="v num">'+fmt(m.valor)+'</span><span class="s num'+(m.saldo<buf?' low':'')+'">'+fmt(m.saldo)+'</span></span></div>').join('');
-}
-
-/* ---------- MOVIMENTOS ---------- */
-function renderMov(){
-  const L=buildLedger(), t=todayISO(), buf=DATA.config.buffer||0;
-  const C=calc(L);const minSaldo=C.low[0]?C.low[0].saldo:null, minData=C.low[0]?C.low[0].data:null;
-  const fs=document.getElementById('mSearch').value.toLowerCase().trim();
-  const ft=document.getElementById('mTipo').value;
-  const pastCount=L.filter(m=>m.data<t).length;
-  const btn=document.getElementById('btnPast');
-  if(btn){btn.style.display=pastCount?'inline-flex':'none';btn.textContent=showPast?'Ocultar anteriores':'Mostrar anteriores ('+pastCount+')';btn.classList.toggle('primary',showPast);}
-  const rows=L.filter(m=>(showPast||m.data>=t)&&(!fs||m.descricao.toLowerCase().includes(fs))&&(!ft||m.tipo===ft));
-  const body=document.getElementById('movBody');
-  if(!rows.length){body.innerHTML='<tr><td colspan="3"><div class="empty"><div class="ic">∅</div>Sem movimentos.</div></td></tr>';return;}
-  let html='',lastM='';
-  rows.forEach(m=>{
-    const mo=m.data.slice(0,7);
-    if(mo!==lastM){lastM=mo;html+='<tr class="divider-month"><td colspan="3">'+fmtMesAno(m.data)+'</td></tr>';}
-    const fut=m.data>t,pos=m.valor>=0;
-    const chip=m.tipo==='contribuicao'?'<span class="chip contrib">Contribuição</span>':m.tipo==='receita'?'<span class="chip receita">Receita</span>':'<span class="chip despesa">Despesa</span>';
-    const isMin=m.data===minData&&m.saldo===minSaldo;
-    const editable=!m.auto&&!RO;
-    html+='<tr class="'+(fut?'future ':'')+(isMin?'minrow ':'')+(m.auto?'autorow ':'')+'"'+(editable?' data-edit="'+m.id+'"':'')+'>'
-      +'<td class="datecell">'+fmtDayMonth(m.data)+'</td>'
-      +'<td class="desccell"><b>'+esc(m.descricao)+'</b><div class="tcell">'+chip+(m.auto?' <span class="tag-auto">auto</span>':'')+'</div></td>'
-      +'<td class="r valcell"><span class="val num '+(pos?'pos':'neg')+'">'+fmt(m.valor)+'</span>'
-      +'<span class="saldo num '+(m.saldo<buf?'low':'')+'">'+fmt(m.saldo)+'</span></td></tr>';
-  });
-  body.innerHTML=html;
-  body.querySelectorAll('tr[data-edit]').forEach(tr=>tr.onclick=()=>openMov(tr.dataset.edit));
-  applyRO();
-}
-
-/* ---------- MODAL movimento ---------- */
-let mTipo='contribuicao';
-function openMov(id){
-  reforcoMode=false;
-  editId=id||null;
-  document.getElementById('movModalTitle').textContent=id?'Editar movimento':'Novo movimento';
-  document.getElementById('btnDelMov').style.display=id?'flex':'none';
-  if(id){const m=DATA.movimentos.find(x=>x.id===id);mTipo=m.tipo;
-    document.getElementById('fData').value=m.data;document.getElementById('fValor').value=Math.abs(m.valor);document.getElementById('fDesc').value=m.descricao;}
-  else{mTipo='contribuicao';document.getElementById('fData').value=todayISO();document.getElementById('fValor').value='';document.getElementById('fDesc').value='';}
-  document.querySelectorAll('#segTipo button').forEach(b=>b.classList.toggle('on',b.dataset.t===mTipo));
-  show('ovMov');
-}
-function openReforcoMov(total){
-  reforcoMode=true;editId=null;mTipo='contribuicao';
-  document.getElementById('movModalTitle').textContent='Registar reforço';
-  document.getElementById('btnDelMov').style.display='none';
-  document.getElementById('fData').value=todayISO();
-  document.getElementById('fValor').value=total;
-  document.getElementById('fDesc').value='Reforço';
-  document.querySelectorAll('#segTipo button').forEach(b=>b.classList.toggle('on',b.dataset.t===mTipo));
-  show('ovMov');
-}
-function saveMov(){
-  const data=document.getElementById('fData').value;let v=parseFloat(document.getElementById('fValor').value);
-  const desc=document.getElementById('fDesc').value.trim();
-  if(!data||isNaN(v)||!desc){toast('Preenche data, valor e descrição');return;}
-  v=Math.abs(v);
-  if(reforcoMode&&mTipo==='contribuicao'){
-    const sp=splitBy(v,ratioForDate(data,null));reforcoMode=false;
-    DATA.movimentos.push({id:uid(),data,descricao:desc+' Diogo',valor:sp.dio,tipo:'contribuicao',pessoa:'Diogo'});
-    DATA.movimentos.push({id:uid(),data,descricao:desc+' Margarida',valor:sp.marg,tipo:'contribuicao',pessoa:'Margarida'});
-    persist();close();renderAll();toast('Reforço registado ✓ (2 movimentos)');return;
-  }
-  reforcoMode=false;
-  if(mTipo==='despesa')v=-v;
-  if(editId){Object.assign(DATA.movimentos.find(x=>x.id===editId),{data,valor:v,descricao:desc,tipo:mTipo,pessoa:'Comum'});}
-  else DATA.movimentos.push({id:uid(),data,descricao:desc,valor:v,tipo:mTipo,pessoa:'Comum'});
-  persist();close();renderAll();toast(editId?'Movimento atualizado':'Movimento adicionado');
-}
-function delMov(){if(!editId)return;if(!confirm('Eliminar este movimento?'))return;DATA.movimentos=DATA.movimentos.filter(x=>x.id!==editId);persist();close();renderAll();toast('Eliminado');}
-
-/* ---------- SIMULAÇÃO ---------- */
-let simType='deposito';
-function openSim(type){
-  simType=type;document.querySelectorAll('#segSim button').forEach(b=>b.classList.toggle('on',b.dataset.s===type));
-  document.getElementById('simFldDep').style.display=type==='deposito'?'block':'none';
-  document.getElementById('simFldMen').style.display=type==='mensal'?'block':'none';
-  document.getElementById('sData').value=todayISO();
-  document.getElementById('sDesde').value=todayISO().slice(0,7);
-  document.getElementById('sValor').value='';document.getElementById('sDesc').value='';document.getElementById('sMensal').value='';
-  updSimHint();show('ovSim');
-}
-function updSimHint(){const v=parseFloat(document.getElementById('sMensal').value);const sp=isNaN(v)?null:split55(v);
-  document.getElementById('simMenHint').textContent=sp?('Divisão: Diogo '+fmt(sp.dio)+' · Margarida '+fmt(sp.marg)+' (total '+fmt(sp.total)+')'):'';}
-function saveSim(){
-  if(simType==='deposito'){const data=document.getElementById('sData').value,v=parseFloat(document.getElementById('sValor').value),desc=document.getElementById('sDesc').value.trim();
-    if(!data||isNaN(v)){toast('Indica data e valor');return;}DATA.sims.push({id:uid(),tipo:'deposito',data,valor:Math.abs(v),desc:desc||'Depósito extra'});}
-  else{const desde=document.getElementById('sDesde').value,v=parseFloat(document.getElementById('sMensal').value);
-    if(!desde||isNaN(v)){toast('Indica mês e valor');return;}DATA.sims.push({id:uid(),tipo:'mensal',desde,valorTotal:v});}
-  persist();close();renderSim();toast('Ajuste adicionado ao cenário');
-}
-function renderSim(){
-  const list=document.getElementById('simList'),res=document.getElementById('simResult');
-  if(!DATA.sims.length){list.innerHTML='<div class="empty"><div class="ic">✦</div>Sem ajustes. Adiciona um depósito ou alteração para simular.</div>';res.style.display='none';return;}
-  list.innerHTML='<div class="card" style="padding:2px 4px">'+DATA.sims.map(s=>{
-    const txt=s.tipo==='deposito'?{ic:'dep',t:esc(s.desc),s:fmt(s.valor)+' · '+fmtDate(s.data)}:{ic:'men',t:'Poupança mensal → '+fmt(s.valorTotal),s:'a partir de '+fmtMesAno(s.desde+'-01')};
-    return '<div class="simitem"><div class="ic '+txt.ic+'">'+(s.tipo==='deposito'?'€':'↻')+'</div><div class="t"><b>'+txt.t+'</b><span>'+txt.s+'</span></div>'
-      +(RO?'':'<button class="iconbtn" data-rmsim="'+s.id+'">✕</button>')+'</div>';}).join('')+'</div>';
-  list.querySelectorAll('[data-rmsim]').forEach(b=>b.onclick=()=>{DATA.sims=DATA.sims.filter(x=>x.id!==b.dataset.rmsim);persist();renderSim();});
-  res.style.display='block';
-  const base=calc(buildLedger()), sim=calc(buildLedger(DATA.sims));
-  const dT=sim.saldoTarget-base.saldoTarget, dM=(sim.low[0]?sim.low[0].saldo:0)-(base.low[0]?base.low[0].saldo:0);
-  const dl=(v)=>v===0?'':'<span class="delta '+(v>0?'up':'down')+'">'+(v>0?'+':'')+fmt(v)+'</span>';
-  document.getElementById('simCmp').innerHTML=
-    '<div class="cmpcard"><div class="lbl">Plano atual</div>'
-    +'<div class="cmpline"><span class="k">Saldo previsto <span class="muted" style="font-size:11px;font-weight:400">('+fmtDate(base.target)+')</span></span><span class="vv">'+fmt(base.saldoTarget)+'</span></div>'
-    +'<div class="cmpline"><span class="k">Saldo mínimo <span class="muted" style="font-size:11px;font-weight:400">'+(base.low[0]?'('+fmtDate(base.low[0].data)+')':'')+'</span></span><span class="vv">'+fmt(base.low[0]?base.low[0].saldo:0)+'</span></div></div>'
-    +'<div class="cmpcard" style="border-color:var(--diogo)"><div class="lbl" style="color:var(--diogo)">Simulado</div>'
-    +'<div class="cmpline"><span class="k">Saldo previsto <span class="muted" style="font-size:11px;font-weight:400">('+fmtDate(sim.target)+')</span></span><span class="vv">'+fmt(sim.saldoTarget)+dl(dT)+'</span></div>'
-    +'<div class="cmpline"><span class="k">Saldo mínimo <span class="muted" style="font-size:11px;font-weight:400">'+(sim.low[0]?'('+fmtDate(sim.low[0].data)+')':'')+'</span></span><span class="vv">'+fmt(sim.low[0]?sim.low[0].saldo:0)+dl(dM)+'</span></div></div>';
-  renderSimChart(base.L,sim.L);
-  document.getElementById('btnSimAplicar').style.display=RO?'none':'inline-flex';
-}
-function balAt(L,date){let b=DATA.config.saldoInicial;L.forEach(m=>{if(m.data<=date)b=m.saldo;});return r2(b);}
-function renderSimChart(baseL,simL){
-  if(typeof Chart==='undefined')return;
-  const dates=[...new Set([...baseL.map(m=>m.data),...simL.map(m=>m.data)])].sort();
-  const labels=dates.map(fmtDate), bs=dates.map(d=>balAt(baseL,d)), ss=dates.map(d=>balAt(simL,d));
-  if(chSim)chSim.destroy();
-  chSim=new Chart(document.getElementById('chartSim'),{type:'line',data:{labels,datasets:[
-    {label:'Plano atual',data:bs,borderColor:'#7C8A82',borderWidth:2,borderDash:[5,4],pointRadius:0,tension:.2},
-    {label:'Simulado',data:ss,borderColor:'#1C6B79',borderWidth:2.6,pointRadius:0,pointHoverRadius:5,tension:.2,fill:false}]},
-    options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
-      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.dataset.label+': '+fmt(c.parsed.y)}}},
-      scales:{x:{ticks:{maxTicksLimit:7,color:'#7C8A82',font:{size:10}},grid:{display:false}},
-        y:{ticks:{color:'#7C8A82',font:{size:11},callback:v=>v+' €'},grid:{color:'rgba(21,48,42,.07)'}}}}});
-}
-function aplicarSim(){
-  if(!DATA.sims.length)return;if(!confirm('Aplicar a simulação ao plano real?'))return;
-  DATA.sims.forEach(s=>{
-    if(s.tipo==='deposito'){const base=s.desc||'Depósito extra';const tot=Math.abs(s.valor);const dio=splitBy(tot,ratioForDate(s.data,null)).dio;const marg=r2(tot-dio);
-      DATA.movimentos.push({id:uid(),data:s.data,descricao:base+' (Diogo)',valor:dio,tipo:'contribuicao',pessoa:'Diogo'});
-      DATA.movimentos.push({id:uid(),data:s.data,descricao:base+' (Margarida)',valor:marg,tipo:'contribuicao',pessoa:'Margarida'});}
-    else{const segs=DATA.config.planoMensal.segmentos;const ex=segs.find(x=>x.desde===s.desde);if(ex)ex.valorTotal=s.valorTotal;else segs.push({desde:s.desde,valorTotal:s.valorTotal});segs.sort((a,b)=>a.desde<b.desde?-1:1);}
-  });
-  DATA.sims=[];persist();renderAll();renderSim();toast('Simulação aplicada ao plano ✓');
-}
-
-/* ---------- REFORÇOS ---------- */
-function renderReforco(){
-  const pToday=ratioForDate(todayISO(),null);
-  document.getElementById('splitView').value=pToday+'% / '+r2(100-pToday)+'%';
-  const buf=parseFloat(document.getElementById('bufInput').value)||0;
-  const M=calc(buildLedger()), out=document.getElementById('reforcoResult');
-  const min=M.low[0]?M.low[0]:{saldo:DATA.config.saldoInicial,data:DATA.config.dataInicial};
-  const need=buf-min.saldo;
-  if(need<=0){out.innerHTML='<div class="callout ok">✓ Tudo certo. O saldo previsto nunca desce abaixo de '+fmt(buf)+' (mínimo: '+fmt(min.saldo)+' em '+fmtDate(min.data)+'). Sem reforço necessário.</div>';return;}
-  const base=Math.ceil(need/10)*10;
-  const sp=splitBy(base,pToday);const total=sp.total,d=sp.dio,mg=sp.marg;
-  out.innerHTML='<div class="callout warn">⚠︎ O saldo previsto desce até <b>'+fmt(min.saldo)+'</b> em '+fmtDate(min.data)+'. Para manteres sempre '+fmt(buf)+', precisas de reforçar <b>'+fmt(total)+'</b> antes dessa data.</div>'
-    +'<div class="reforco-out"><div class="pcard diogo"><div class="who">Diogo</div><div class="amt num">'+fmt(d)+'</div><div class="pct">'+pToday+'% do reforço</div></div>'
-    +'<div class="pcard marg"><div class="who">Margarida</div><div class="amt num">'+fmt(mg)+'</div><div class="pct">'+r2(100-pToday)+'% do reforço</div></div></div>';
-}
-function renderQuick(){
-  const v=parseFloat(document.getElementById('quickRef').value);
-  const out=document.getElementById('quickOut'),btn=document.getElementById('btnAplicarRef'),hint=document.getElementById('quickRatioHint');
-  if(isNaN(v)||v<=0){out.style.display='none';btn.style.display='none';if(hint)hint.textContent='';return;}
-  const p=ratioForDate(todayISO(),null),sp=splitBy(v,p),d=sp.dio,mg=sp.marg;
-  out.style.display='grid';
-  out.innerHTML='<div class="pcard diogo"><div class="who">Diogo</div><div class="amt num">'+fmt(d)+'</div><div class="pct">'+p+'% · múlt. de 5</div></div>'
-    +'<div class="pcard marg"><div class="who">Margarida</div><div class="amt num">'+fmt(mg)+'</div><div class="pct">'+r2(100-p)+'% · múlt. de 5</div></div>';
-  if(hint)hint.textContent='Pré-visualização com o rácio de hoje ('+p+'/'+r2(100-p)+'). Ao registar, podes escolher a data — a divisão usa o rácio em vigor nessa data.';
-  btn.style.display=RO?'none':'inline-flex';btn._v={total:v};
-}
-function aplicarRef(){const btn=document.getElementById('btnAplicarRef');if(!btn._v)return;openReforcoMov(btn._v.total);}
-
-/* ---------- EDENRED PENAS ---------- */
-// Calcula o livro do Edenred Penas. A Edenred não pode ser reforçada: só
-// entra dinheiro pelos carregamentos. Numa saída, parte do pagamento pode
-// ser afetada à conta de férias (campo 'ferias'): essa parte NÃO sai do
-// Edenred — sai diretamente da conta de férias. O que sai do Edenred é
-// (valor + ferias). Os 'tops' são depois lançados como despesa na conta
-// de férias. O saldo do Edenred pode ficar negativo se a divisão não
-// chegar — fica a vermelho como aviso.
-function penaCompute(){
-  const ms=[...DATA.penas].sort((a,b)=>a.data<b.data?-1:a.data>b.data?1:0);
-  let bal=0;const ledger=[],tops=[];
-  for(const m of ms){
-    const fer=m.valor<0?Math.max(0,Math.min(Math.abs(m.valor),+m.ferias||0)):0;
-    const edenred=r2(m.valor+fer);
-    bal=r2(bal+edenred);
-    ledger.push(Object.assign({},m,{ferias:fer,edenred,saldo:bal}));
-    if(fer>0.005)tops.push({id:m.id,data:m.data,valor:fer,obs:m.obs});
-  }
-  return{ledger,tops};
-}
-function penaLedger(){return penaCompute().ledger;}
-function penaBalBefore(dateISO,excludeId){
-  let bal=0;
-  [...DATA.penas].filter(m=>m.id!==excludeId).sort((a,b)=>a.data<b.data?-1:a.data>b.data?1:0)
-    .forEach(m=>{if(m.data<=dateISO){const fer=m.valor<0?Math.max(0,+m.ferias||0):0;bal=r2(bal+m.valor+fer);}});
-  return bal;
-}
-function renderPenas(){
-  const L=penaLedger(),t=todayISO();
-  const pastCount=L.filter(m=>m.data<t).length;
-  const pbtn=document.getElementById('btnPastPena');
-  if(pbtn){pbtn.style.display=pastCount?'inline-flex':'none';pbtn.textContent=showPastPena?'Ocultar anteriores':'Mostrar anteriores ('+pastCount+')';pbtn.classList.toggle('primary',showPastPena);}
-  const rows=L.filter(m=>showPastPena||m.data>=t);
-  const body=document.getElementById('penaBody');
-  if(!rows.length){body.innerHTML='<tr><td colspan="3"><div class="empty"><div class="ic">∅</div>Sem movimentos.</div></td></tr>';return;}
-  let html='',lastM='';
-  rows.forEach(m=>{
-    const mo=m.data.slice(0,7);
-    if(mo!==lastM){lastM=mo;html+='<tr class="divider-month"><td colspan="3">'+fmtMesAno(m.data)+'</td></tr>';}
-    const pos=m.edenred>=0,fut=m.data>t;
-    const chip=m.valor>=0?'<span class="chip receita">Entrada</span>':'<span class="chip despesa">Saída</span>';
-    const its=Array.isArray(m.itens)?m.itens:[];
-    let brk='';
-    if(its.length){
-      const base=typeof m.base==='number'?m.base:r2(Math.abs(m.valor)-its.reduce((s,i)=>s+i.v,0));
-      brk='<div class="psub">'+fmt(base)+its.map(i=>(i.v<0?' − ':' + ')+esc(i.d)+' '+fmt(Math.abs(i.v))).join('')+'</div>';
-    }
-    const split=m.ferias>0.005?'<div class="psub">Total '+fmt(Math.abs(m.valor))+' · '+fmt(m.ferias)+' pela conta de férias</div>':'';
-    const editable=!RO;
-    html+='<tr class="'+(fut?'future ':'')+(m.saldo<-0.005?'minrow ':'')+'"'+(editable?' data-pe="'+m.id+'"':'')+'>'
-      +'<td class="datecell">'+fmtDayMonth(m.data)+'</td>'
-      +'<td class="desccell"><b>'+esc(m.obs)+'</b><div class="tcell">'+chip+'</div>'+brk+split+'</td>'
-      +'<td class="r valcell"><span class="val num '+(pos?'pos':'neg')+'">'+fmt(m.edenred)+'</span>'
-      +'<span class="saldo num '+(m.saldo<-0.005?'low':'')+'">'+fmt(m.saldo)+'</span></td></tr>';
-  });
-  body.innerHTML=html;
-  body.querySelectorAll('tr[data-pe]').forEach(tr=>tr.onclick=()=>openPena(tr.dataset.pe));applyRO();
-}
-// Regra de divisão sugerida (o Edenred NUNCA pode ficar negativo):
-// - parte do Edenred ficaria < 50 € -> paga-se tudo pela conta de férias
-// - sobra para a conta de férias < 10 € -> a conta de férias paga 10 € e o
-//   Edenred paga o resto (continua positivo). Nunca há parcelas < 10 €.
-function penaSuggestFerias(total,available){
-  available=Math.max(0,available);
-  if(available>=total)return 0;            // Edenred cobre tudo
-  const overflow=r2(total-available);
-  if(available<50)return r2(total);        // Edenred só daria <50 € -> tudo pela conta de férias
-  if(overflow<10)return 10;                // sobra <10 € p/ férias -> férias paga 10 €, Edenred paga total-10 (fica positivo)
-  return overflow;                         // divisão normal: Edenred fica a 0
-}
-// Reequilibra os splits em cadeia. Sempre que um movimento é criado, editado
-// ou eliminado, o saldo Edenred disponível nos movimentos seguintes muda —
-// e os splits guardados ficariam desatualizados (Edenred a negativo).
-// Splits automáticos seguem sempre a regra de sugestão; splits manuais
-// (feriasManual) mantêm-se, mas sobem ao mínimo se o Edenred fosse ficar negativo.
-function penaNormalize(arr){
-  const ms=[...(arr||DATA.penas)].sort((a,b)=>a.data<b.data?-1:a.data>b.data?1:0);
-  let bal=0,changed=false;
-  for(const m of ms){
-    if(m.valor<0){
-      const total=Math.abs(m.valor),avail=Math.max(0,bal);
-      let fer=m.feriasManual?Math.max(0,+m.ferias||0):penaSuggestFerias(total,avail);
-      const minF=r2(Math.max(0,total-avail));
-      if(fer<minF-0.005)fer=minF;
-      fer=r2(Math.min(fer,total));
-      if(Math.abs(fer-(+m.ferias||0))>0.005){m.ferias=fer;changed=true;}
-      bal=r2(bal+m.valor+fer);
-    }else bal=r2(bal+m.valor);
-  }
-  return changed;
-}
-function updPenaSplit(){
-  const mag=parseFloat(document.getElementById('pValor').value);
-  const isCred=penaSign>0;
-  const valRaw=isNaN(mag)?NaN:(isCred?Math.abs(mag):-Math.abs(mag));
-  const data=document.getElementById('pData').value||todayISO();
-  const ferEl=document.getElementById('pFerias'),wrap=document.getElementById('pFeriasWrap'),hint=document.getElementById('pSplitHint');
-  const itWrap=document.getElementById('pItensWrap'),itHint=document.getElementById('pItensHint');
-  itWrap.style.display=isCred?'none':'block';
-  if(isCred||isNaN(valRaw)){
-    ferEl.value='';ferEl.disabled=true;wrap.style.opacity='.5';penaLastSug=null;if(itHint)itHint.textContent='';
-    hint.textContent=isCred?'Carregamento — entra totalmente no Edenred, sem divisão.':'Indica o valor do pagamento. A divisão com a conta de férias aparece aqui.';
-    return;
-  }
-  ferEl.disabled=false;wrap.style.opacity='1';
-  const itens=penaItemsRead(),base=Math.abs(valRaw),total=Math.max(0,penaTotalFromForm(base));
-  if(itHint)itHint.textContent=itens.length?'Total do pagamento: '+fmt(total)+' ('+fmt(base)+(itens.reduce((s,i)=>s+i.v,0)>=0?' + ':' − ')+fmt(Math.abs(r2(total-base)))+' de itens)':'';
-  const avail=Math.max(0,penaBalBefore(data,editPenaId));
-  const sug=penaSuggestFerias(total,avail),minF=r2(Math.max(0,total-avail));
-  // auto-preenche a sugestão enquanto o utilizador não mexer manualmente no campo
-  const cur=parseFloat(ferEl.value);
-  if(ferEl.value===''||(penaLastSug!==null&&Math.abs((isNaN(cur)?0:cur)-penaLastSug)<0.005))ferEl.value=sug>0.005?r2(sug):'';
-  penaLastSug=sug;
-  let fer=parseFloat(ferEl.value);if(isNaN(fer)||fer<0)fer=0;if(fer>total)fer=total;
-  const edenred=r2(total-fer);
-  let msg='Edenred paga '+fmt(edenred)+' · conta de férias paga '+fmt(fer)+'. Disponível no Edenred: '+fmt(avail)+'.';
-  const warn=fer<minF-0.005?' <b style="color:var(--neg)">O Edenred não pode ficar negativo — a conta de férias tem de cobrir ≥ '+fmt(minF)+'.</b>':'';
-  if(Math.abs(fer-sug)>0.005){
-    hint.innerHTML=msg+warn+' <button type="button" class="btn sm" id="pFerSug" style="margin-top:8px">↺ Usar sugestão (férias '+fmt(sug)+')</button>';
-    document.getElementById('pFerSug').onclick=()=>{document.getElementById('pFerias').value=sug>0.005?r2(sug):'';penaLastSug=sug;updPenaSplit();};
-    return;
-  }
-  hint.textContent=msg;
-}
-function setPenaSignUI(){document.querySelectorAll('#segPenaSinal button').forEach(b=>b.classList.toggle('on',(+b.dataset.ps)===penaSign));}
-/* sub-itens (extras / descontos) de um pagamento */
-function penaItemRow(d,v){
-  const row=document.createElement('div');row.className='pitem-row';
-  row.innerHTML='<input type="text" class="pi-d" placeholder="ex.: Seguro anual"><input type="number" step="0.01" class="pi-v" placeholder="+/− €"><button type="button" class="pi-x" title="Remover">×</button>';
-  row.querySelector('.pi-d').value=d||'';
-  row.querySelector('.pi-v').value=(v!=null&&v!=='')?v:'';
-  row.querySelector('.pi-x').onclick=()=>{row.remove();updPenaSplit();};
-  row.querySelectorAll('input').forEach(i=>i.addEventListener('input',updPenaSplit));
-  document.getElementById('pItens').appendChild(row);
-}
-function penaItemsRead(){
-  return[...document.querySelectorAll('#pItens .pitem-row')].map(r=>({d:r.querySelector('.pi-d').value.trim(),v:parseFloat(r.querySelector('.pi-v').value)}))
-    .filter(i=>i.d&&!isNaN(i.v)&&Math.abs(i.v)>0.005).map(i=>({d:i.d,v:r2(i.v)}));
-}
-function penaTotalFromForm(base){return r2(base+penaItemsRead().reduce((s,i)=>s+i.v,0));}
-function openPena(id){editPenaId=id||null;document.getElementById('penaModalTitle').textContent=id?'Editar — Edenred Penas':'Movimento — Edenred Penas';
-  document.getElementById('btnDelPena').style.display=id?'flex':'none';
-  document.getElementById('pItens').innerHTML='';
-  if(id){const m=DATA.penas.find(x=>x.id===id);penaSign=m.valor<0?-1:1;document.getElementById('pData').value=m.data;
-    const its=Array.isArray(m.itens)?m.itens:[];
-    const base=its.length?(typeof m.base==='number'?m.base:r2(Math.abs(m.valor)-its.reduce((s,i)=>s+i.v,0))):Math.abs(m.valor);
-    document.getElementById('pValor').value=base;its.forEach(i=>penaItemRow(i.d,i.v));
-    document.getElementById('pObs').value=m.obs;document.getElementById('pFerias').value=(m.ferias>0?m.ferias:'');}
-  else{penaSign=-1;document.getElementById('pData').value=todayISO();document.getElementById('pValor').value='';document.getElementById('pObs').value='';document.getElementById('pFerias').value='';}
-  setPenaSignUI();penaLastSug=null;updPenaSplit();show('ovPena');}
-function savePena(){const data=document.getElementById('pData').value,mag=parseFloat(document.getElementById('pValor').value),o=document.getElementById('pObs').value.trim();
-  if(!data||isNaN(mag)||!o){toast('Preenche os campos');return;}
-  const base=Math.abs(mag),itens=penaSign<0?penaItemsRead():[];
-  const totalAbs=penaSign<0?penaTotalFromForm(base):base;
-  if(penaSign<0&&totalAbs<=0.005){toast('O total do pagamento tem de ser positivo (os descontos excedem o valor)');return;}
-  const v=penaSign>0?base:-totalAbs;
-  let fer=parseFloat(document.getElementById('pFerias').value);if(isNaN(fer)||fer<0)fer=0;let adj=false,manual=false;
-  if(v<0){const total=Math.abs(v);fer=Math.min(fer,total);
-    const avail=Math.max(0,penaBalBefore(data,editPenaId)),minF=r2(Math.max(0,total-avail));
-    manual=Math.abs(fer-penaSuggestFerias(total,avail))>0.005;
-    if(fer<minF-0.005){fer=minF;adj=true;}}
-  else fer=0;
-  const rec={data,valor:r2(v),obs:o,ferias:r2(fer),feriasManual:manual};
-  if(itens.length){rec.base=r2(base);rec.itens=itens;}
-  if(editPenaId){const m=DATA.penas.find(x=>x.id===editPenaId);delete m.base;delete m.itens;Object.assign(m,rec);}else DATA.penas.push(Object.assign({id:uid()},rec));
-  const reb=penaNormalize();
-  persist();close();renderAll();toast(adj?'Guardado — divisão ajustada (o Edenred não pode ficar negativo)':reb?'Guardado — divisões seguintes reequilibradas':'Guardado');}
-function delPena(){if(!editPenaId)return;if(!confirm('Eliminar?'))return;DATA.penas=DATA.penas.filter(x=>x.id!==editPenaId);penaNormalize();persist();close();renderAll();}
-
-/* ---------- CHARTS ---------- */
-function renderCharts(){
-  if(typeof Chart==='undefined')return;
-  const L=buildLedger(),buf=DATA.config.buffer||0,t=todayISO();
-  const labels=L.map(m=>fmtDate(m.data)),saldos=L.map(m=>m.saldo);
-  let todayIdx=-1;L.forEach((m,k)=>{if(m.data<=t)todayIdx=k;});
-  if(chS)chS.destroy();
-  chS=new Chart(document.getElementById('chartSaldo'),{type:'line',data:{labels,datasets:[{label:'Saldo',data:saldos,borderColor:'#1C6B79',
-    backgroundColor:(c)=>{const a=c.chart.ctx.createLinearGradient(0,0,0,300);a.addColorStop(0,'rgba(28,107,121,.22)');a.addColorStop(1,'rgba(28,107,121,0)');return a;},
-    fill:true,tension:.25,borderWidth:2.4,pointRadius:0,pointHoverRadius:5}]},
-    options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
-      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>fmt(c.parsed.y)}}},
-      scales:{x:{ticks:{maxTicksLimit:7,color:'#7C8A82',font:{size:10}},grid:{display:false}},
-        y:{ticks:{color:'#7C8A82',font:{size:11},callback:v=>v+' €'},grid:{color:'rgba(21,48,42,.07)'}}}},
-    plugins:[{id:'lines',afterDraw(c){const{ctx,chartArea:{top,bottom,left,right},scales:{x,y}}=c;
-      const yb=y.getPixelForValue(buf);ctx.save();ctx.strokeStyle='rgba(189,70,48,.55)';ctx.setLineDash([5,4]);ctx.lineWidth=1.3;
-      ctx.beginPath();ctx.moveTo(left,yb);ctx.lineTo(right,yb);ctx.stroke();
-      if(todayIdx>=0){const xt=x.getPixelForValue(todayIdx);ctx.strokeStyle='rgba(190,142,58,.8)';ctx.setLineDash([3,3]);
-        ctx.beginPath();ctx.moveTo(xt,top);ctx.lineTo(xt,bottom);ctx.stroke();}ctx.restore();}}]});
-  const map={};L.forEach(m=>{const k=m.data.slice(0,7);if(!map[k])map[k]={in:0,out:0};if(m.valor>=0)map[k].in+=m.valor;else map[k].out+=m.valor;});
-  const keys=Object.keys(map).sort();
-  if(chM)chM.destroy();
-  chM=new Chart(document.getElementById('chartMes'),{type:'bar',data:{labels:keys.map(fmtMesAno),datasets:[
-    {label:'Entradas',data:keys.map(k=>r2(map[k].in)),backgroundColor:'#2E7D5B',borderRadius:5,stack:'s',maxBarThickness:34},
-    {label:'Saídas',data:keys.map(k=>r2(map[k].out)),backgroundColor:'#BD4630',borderRadius:5,stack:'s',maxBarThickness:34},
-    {label:'Saldo do mês',data:keys.map(k=>r2(map[k].in+map[k].out)),type:'line',borderColor:'#15302A',borderWidth:2,pointRadius:2.5,tension:.2}]},
-    options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
-      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.dataset.label+': '+fmt(c.parsed.y)}}},
-      scales:{x:{stacked:true,ticks:{color:'#7C8A82',font:{size:10},maxTicksLimit:9},grid:{display:false}},
-        y:{stacked:true,ticks:{color:'#7C8A82',font:{size:11},callback:v=>v+' €'},grid:{color:'rgba(21,48,42,.07)'}}}}});
-}
-
-/* ---------- DEFINIÇÕES ---------- */
-function renderDef(){
-  const c=DATA.config;
-  document.getElementById('setTitulo').value=c.titulo||'';
-  document.getElementById('setSaldoIni').value=c.saldoInicial;
-  document.getElementById('setDataIni').value=c.dataInicial;
-  document.getElementById('setDataInfo').textContent='Aberto em '+fmtDate(c.dataInicial);
-  document.getElementById('setBuffer').value=c.buffer||0;
-  document.getElementById('ghOwner').value=c.github.owner;document.getElementById('ghRepo').value=c.github.repo;
-  document.getElementById('ghPath').value=c.github.path;document.getElementById('ghBranch').value=c.github.branch;
-  document.getElementById('ghToken').value=ghToken||'';
-  document.getElementById('tgSaveTok').classList.toggle('on',saveTok);
-  document.getElementById('tgRO').classList.toggle('on',RO);
-}
-function prevMonthLabel(mk){let[y,m]=mk.split('-').map(Number);m--;if(m<1){m=12;y--;}return fmtMesAno(y+'-'+String(m).padStart(2,'0')+'-01');}
-function renderPoupanca(){
-  const pm=DATA.config.planoMensal;
-  document.getElementById('tgPlano').classList.toggle('on',pm.ativo);
-  document.getElementById('planoAte').value=pm.ate;
-  document.getElementById('planoDia').value=pm.diaMes;
-  const segs=pm.segmentos,host=document.getElementById('segList');
-  host.innerHTML=segs.map((s,i)=>{
-    const p=typeof s.diogoPct==='number'?s.diogoPct:defPct();const mp=r2(100-p);const sp=splitBy(s.valorTotal,p);
-    const next=segs[i+1];
-    const fim=next?prevMonthLabel(next.desde):(pm.ate?('em diante (até '+fmtMesAno(pm.ate+'-01')+')'):'em diante');
-    return '<div class="segcard">'
-      +'<div class="seghead"><span class="period">'+fmtMesAno(s.desde+'-01')+' → '+fim+'</span>'
-      +(segs.length>1&&!RO?'<button class="iconbtn" data-rmseg="'+i+'">✕</button>':'')+'</div>'
-      +'<div class="segfields">'
-        +'<label class="full">Desde<input type="month" data-seg="'+i+'" data-k="desde" value="'+s.desde+'"></label>'
-        +'<label>Valor mensal (€)<input type="number" step="10" data-seg="'+i+'" data-k="valorTotal" value="'+s.valorTotal+'"></label>'
-        +'<label>Rácio (D / M)<div class="ratiopair">'
-          +'<input type="number" min="0" max="100" step="1" data-seg="'+i+'" data-k="diogoPct" value="'+p+'">'
-          +'<span>/</span>'
-          +'<input type="number" class="locked" data-mpct="'+i+'" value="'+mp+'" disabled></div></label>'
-      +'</div>'
-      +'<div class="segsplit">'
-        +'<span class="pill diogo"><span class="nm">Diogo · '+p+'%</span><b>'+fmt(sp.dio)+'</b></span>'
-        +'<span class="pill marg"><span class="nm">Margarida · '+mp+'%</span><b>'+fmt(sp.marg)+'</b></span></div>'
-    +'</div>';
-  }).join('');
-  host.querySelectorAll('[data-k="diogoPct"]').forEach(el=>el.addEventListener('input',()=>{
-    const v=Math.min(100,Math.max(0,parseInt(el.value)||0));const m=host.querySelector('[data-mpct="'+el.dataset.seg+'"]');if(m)m.value=r2(100-v);
-  }));
-  host.querySelectorAll('[data-seg]').forEach(el=>el.addEventListener('change',()=>{
-    const i=+el.dataset.seg,k=el.dataset.k;let val=el.value;
-    if(k==='valorTotal')val=parseFloat(el.value)||0;
-    else if(k==='diogoPct')val=Math.min(100,Math.max(0,parseInt(el.value)||0));
-    DATA.config.planoMensal.segmentos[i][k]=val;
-    DATA.config.planoMensal.segmentos.sort((a,b)=>a.desde<b.desde?-1:1);
-    persist();renderPoupanca();renderAll();
-  }));
-  host.querySelectorAll('[data-rmseg]').forEach(b=>b.onclick=()=>{DATA.config.planoMensal.segmentos.splice(+b.dataset.rmseg,1);persist();renderPoupanca();renderAll();});
-  applyRO();
-}
-function saveDef(){
-  const c=DATA.config;
-  c.titulo=document.getElementById('setTitulo').value.trim()||'Plano de Férias';
-  c.saldoInicial=parseFloat(document.getElementById('setSaldoIni').value)||0;
-  c.dataInicial=document.getElementById('setDataIni').value||c.dataInicial;
-  c.buffer=parseFloat(document.getElementById('setBuffer').value)||0;
-  c.planoMensal.ate=document.getElementById('planoAte').value||c.planoMensal.ate;
-  c.planoMensal.diaMes=Math.min(28,Math.max(1,parseInt(document.getElementById('planoDia').value)||1));
-  c.github.owner=document.getElementById('ghOwner').value.trim();
-  c.github.repo=document.getElementById('ghRepo').value.trim();
-  c.github.path=document.getElementById('ghPath').value.trim();
-  c.github.branch=document.getElementById('ghBranch').value.trim()||'main';
-  persist();renderDef();renderAll();
-}
-
-/* ---------- GITHUB ---------- */
-function ghBase(){const g=DATA.config.github;return'https://api.github.com/repos/'+g.owner+'/'+g.repo+'/contents/'+g.path;}
-function setState(cls,txt){const p=document.getElementById('statePill');p.className='statepill '+cls;document.getElementById('stateTxt').textContent=txt;}
-function b64enc(s){return btoa(unescape(encodeURIComponent(s)));}
-function b64dec(s){return decodeURIComponent(escape(atob(s)));}
-async function ghPull(){
-  const g=DATA.config.github;if(!g.owner||!g.repo||!g.path){toast('Configura o GitHub primeiro');return;}
-  setState('busy','A carregar…');
-  try{
-    let res;
-    if(ghToken)res=await fetch(ghBase()+'?ref='+g.branch+'&t='+Date.now(),{headers:{Authorization:'Bearer '+ghToken,Accept:'application/vnd.github+json'}});
-    else res=await fetch('https://raw.githubusercontent.com/'+g.owner+'/'+g.repo+'/'+g.branch+'/'+g.path+'?t='+Date.now());
-    if(!res.ok){if(res.status===404){setState('ok','Sem ficheiro na nuvem');toast('Ainda não existe ficheiro — usa Guardar para criar');return;}throw new Error(res.status);}
-    let obj;if(ghToken){const j=await res.json();ghSha=j.sha;obj=JSON.parse(b64dec(j.content));}else obj=await res.json();
-    DATA=migrate(obj);persist(true);renderAll();renderDef();renderSim();setState(ghToken?'ok':'ro',ghToken?'Sincronizado':'Lido (raw)');toast('Dados carregados da nuvem');
-  }catch(e){setState('err','Erro ao ler');toast('Erro ao carregar: '+e.message);}
-}
-async function ghPush(silent){
-  const g=DATA.config.github;if(!ghToken){if(!silent)toast('Precisas de um token para guardar');return;}
-  if(!g.owner||!g.repo||!g.path){if(!silent)toast('Configura o GitHub');return;}
-  if(_pushRunning){_pushQueued=true;return;}
-  _pushRunning=true;
-  setState('busy','A guardar…');
-  try{
-    if(ghSha===null){try{const r=await fetch(ghBase()+'?ref='+g.branch,{headers:{Authorization:'Bearer '+ghToken}});if(r.ok)ghSha=(await r.json()).sha;}catch(e){}}
-    const payload={config:DATA.config,movimentos:DATA.movimentos,penas:DATA.penas,sims:DATA.sims,_updated:new Date().toISOString()};
-    const body={message:'Atualizar plano de férias '+new Date().toISOString(),content:b64enc(JSON.stringify(payload,null,2)),branch:g.branch};
-    if(ghSha)body.sha=ghSha;
-    const res=await fetch(ghBase(),{method:'PUT',headers:{Authorization:'Bearer '+ghToken,Accept:'application/vnd.github+json'},body:JSON.stringify(body)});
-    if(!res.ok){const tx=await res.text();throw new Error(res.status+' '+tx.slice(0,80));}
-    ghSha=(await res.json()).content.sha;setState('ok','Sincronizado');if(!silent)toast('Guardado na nuvem ✓');
-  }catch(e){setState('err','Erro ao guardar');toast('Erro ao guardar na nuvem: '+e.message);ghSha=null;}
-  finally{_pushRunning=false;if(_pushQueued){_pushQueued=false;ghPush(true);}}
-}
-
-/* ---------- helpers ---------- */
-function show(id){document.getElementById(id).classList.add('show');}
-function close(){document.querySelectorAll('.overlay').forEach(o=>o.classList.remove('show'));}
-function applyRO(){document.querySelectorAll('.ro-hideable').forEach(e=>e.classList.toggle('ro-hide',RO));document.getElementById('fab').classList.toggle('ro-hide',RO);}
-function renderAll(){renderHeader();renderResumo();renderMov();renderPoupanca();renderPenas();renderReforco();renderCharts();}
-
-/* ---------- init ---------- */
-function init(){
-  DATA=load();
-  saveTok=localStorage.getItem(LS_TOKSAVE)==='1';
-  if(saveTok)ghToken=localStorage.getItem(LS_TOK)||'';
-  RO=!!DATA.config.readonly||new URLSearchParams(location.search).get('ro')==='1';
-
-  document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>{
-    document.querySelectorAll('#tabs button').forEach(x=>x.classList.remove('active'));b.classList.add('active');
-    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
-    document.getElementById('p-'+b.dataset.tab).classList.add('active');
-    if(b.dataset.tab==='evolucao')setTimeout(renderCharts,30);
-    if(b.dataset.tab==='simulacao'){renderSim();setTimeout(()=>{if(DATA.sims.length)renderSim();},30);}
-  });
-
-  document.getElementById('fab').onclick=()=>{const at=document.querySelector('#tabs button.active');if(at&&at.dataset.tab==='penas')openPena(null);else openMov(null);};
-  document.querySelectorAll('[data-close]').forEach(b=>b.onclick=close);
-  document.querySelectorAll('.overlay').forEach(o=>o.onclick=e=>{if(e.target===o)close();});
-  document.querySelectorAll('#segTipo button').forEach(b=>b.onclick=()=>{mTipo=b.dataset.t;document.querySelectorAll('#segTipo button').forEach(x=>x.classList.toggle('on',x===b));});
-  document.getElementById('btnSaveMov').onclick=saveMov;document.getElementById('btnDelMov').onclick=delMov;
-  ['mSearch','mTipo'].forEach(id=>document.getElementById(id).oninput=renderMov);
-  document.getElementById('btnPast').onclick=()=>{showPast=!showPast;renderMov();};
-
-  // sim
-  document.getElementById('btnSimDep').onclick=()=>openSim('deposito');
-  document.getElementById('btnSimMen').onclick=()=>openSim('mensal');
-  document.querySelectorAll('#segSim button').forEach(b=>b.onclick=()=>openSim(b.dataset.s));
-  document.getElementById('sMensal').oninput=updSimHint;
-  document.getElementById('btnSaveSim').onclick=saveSim;
-  document.getElementById('btnSimAplicar').onclick=aplicarSim;
-  document.getElementById('btnSimLimpar').onclick=()=>{if(DATA.sims.length&&confirm('Limpar o cenário?')){DATA.sims=[];persist();renderSim();}};
-
-  // reforços
-  document.getElementById('bufInput').value=DATA.config.buffer||0;
-  document.getElementById('bufInput').oninput=renderReforco;
-  document.getElementById('quickRef').oninput=renderQuick;
-  document.getElementById('btnAplicarRef').onclick=aplicarRef;
-
-  // penas
-  document.getElementById('btnAddPena').onclick=()=>openPena(null);
-  document.querySelectorAll('#segPenaSinal button').forEach(b=>b.onclick=()=>{penaSign=+b.dataset.ps;setPenaSignUI();penaLastSug=null;updPenaSplit();});
-  document.getElementById('btnPastPena').onclick=()=>{showPastPena=!showPastPena;renderPenas();};
-  document.getElementById('btnSavePena').onclick=savePena;document.getElementById('btnDelPena').onclick=delPena;
-  ['pValor','pFerias','pData'].forEach(id=>document.getElementById(id).addEventListener('input',updPenaSplit));
-  document.getElementById('btnAddItem').onclick=()=>{penaItemRow('','');updPenaSplit();};
-
-  // plano
-  document.getElementById('tgPlano').onclick=()=>{DATA.config.planoMensal.ativo=!DATA.config.planoMensal.ativo;persist();renderPoupanca();renderAll();};
-  document.getElementById('planoAte').addEventListener('change',saveDef);
-  document.getElementById('planoDia').addEventListener('change',saveDef);
-  document.getElementById('btnAddSeg').onclick=()=>{const segs=DATA.config.planoMensal.segmentos;const last=segs[segs.length-1];const[y,m]=last.desde.split('-').map(Number);const nm=m===12?(y+1)+'-01':y+'-'+String(m+1).padStart(2,'0');segs.push({desde:nm,valorTotal:last.valorTotal,diogoPct:typeof last.diogoPct==='number'?last.diogoPct:defPct()});segs.sort((a,b)=>a.desde<b.desde?-1:1);persist();renderPoupanca();renderAll();};
-
-  // definições
-  ['setTitulo','setSaldoIni','setDataIni','setBuffer','ghOwner','ghRepo','ghPath','ghBranch'].forEach(id=>document.getElementById(id).addEventListener('change',saveDef));
-  document.getElementById('ghToken').addEventListener('input',e=>{ghToken=e.target.value.trim();ghSha=null;if(saveTok)localStorage.setItem(LS_TOK,ghToken);});
-  document.getElementById('tgSaveTok').onclick=()=>{saveTok=!saveTok;localStorage.setItem(LS_TOKSAVE,saveTok?'1':'0');if(saveTok)localStorage.setItem(LS_TOK,ghToken);else localStorage.removeItem(LS_TOK);renderDef();};
-  document.getElementById('tgRO').onclick=()=>{RO=!RO;DATA.config.readonly=RO;persist();applyRO();renderDef();renderAll();renderSim();};
-  document.getElementById('btnPush').onclick=()=>ghPush(false);document.getElementById('btnPull').onclick=ghPull;
-  document.getElementById('btnExport').onclick=()=>{const blob=new Blob([JSON.stringify({config:DATA.config,movimentos:DATA.movimentos,penas:DATA.penas,sims:DATA.sims},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=(DATA.config.github.path||'planoferias-data.json').split('/').pop();a.click();};
-  document.getElementById('btnImport').onclick=()=>document.getElementById('fileInput').click();
-  document.getElementById('fileInput').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{DATA=migrate(JSON.parse(r.result));persist();renderAll();renderDef();renderSim();toast('Importado');}catch(err){toast('Ficheiro inválido');}};r.readAsText(f);};
-  document.getElementById('btnReset').onclick=()=>{if(confirm('Repor os dados de exemplo? Perdes as alterações locais.')){DATA=freshData();persist();renderAll();renderDef();renderSim();toast('Dados repostos');}};
-
-  // accordions definições
-  ['conta','github'].forEach(id=>{
-    const hdr=document.getElementById('acc-'+id),body=document.getElementById('accb-'+id);
-    hdr.onclick=()=>{hdr.classList.toggle('open');body.classList.toggle('open');};
-  });
-
-  renderAll();renderDef();renderSim();applyRO();
-  setState(RO?'ro':'','Local'+(RO?' · só-leitura':''));
-  if(ghToken)ghPull();
-}
-document.addEventListener('DOMContentLoaded',init);
-</script>
+<script type="module" src="js/app.js"></script>
 
 <script>
 if ('serviceWorker' in navigator) {
